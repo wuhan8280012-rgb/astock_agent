@@ -1,0 +1,10 @@
+2026-02-24 01:20:02 [INFO] ✅ EventLog 已加载
+2026-02-24 01:20:02 [WARNING] ⚠️ Brain 加载失败: 'AgentBrain' object has no attribute 'memory_count'
+2026-02-24 01:20:02 [INFO] ✅ DeepSeek LLM 已连接
+2026-02-24 01:20:02 [INFO] ✅ AutoJournal 已加载
+2026-02-24 01:20:02 [INFO] ✅ CronEngine 已加载 (7 个任务)
+2026-02-24 01:22:32 [INFO] ✅ EventLog 已加载
+2026-02-24 01:22:32 [INFO] ✅ Brain 已加载
+2026-02-24 01:22:32 [INFO] ✅ DeepSeek LLM 已连接
+2026-02-24 01:22:32 [INFO] ✅ AutoJournal 已加载
+2026-02-24 01:22:32 [INFO] ✅ CronEngine 已加载 (7 个任务)

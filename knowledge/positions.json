@@ -1,0 +1,497 @@
+[
+  {
+    "ts_code": "512200.SH",
+    "name": "房地产ETF",
+    "position_pct": 0.0002,
+    "cost_price": 92.6286,
+    "current_price": 1.536,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "513060.SH",
+    "name": "恒生医疗ETF博时",
+    "position_pct": 0.0389,
+    "cost_price": 0.9057,
+    "current_price": 0.631,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "513090.SH",
+    "name": "香港证券ETF易方达",
+    "position_pct": 0.0017,
+    "cost_price": 4.1018,
+    "current_price": 2.044,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "513260.SH",
+    "name": "恒生科技ETF汇添富",
+    "position_pct": 0.0101,
+    "cost_price": 1.6157,
+    "current_price": 1.359,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "589720.SH",
+    "name": "科创创新药ETF国泰",
+    "position_pct": 0.1095,
+    "cost_price": 0.9122,
+    "current_price": 0.881,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "600076.SH",
+    "name": "康欣新材",
+    "position_pct": 0.0053,
+    "cost_price": 3.975,
+    "current_price": 3.95,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "600088.SH",
+    "name": "中视传媒",
+    "position_pct": 0.0024,
+    "cost_price": 18.17,
+    "current_price": 17.79,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "600185.SH",
+    "name": "珠免集团",
+    "position_pct": 0.01,
+    "cost_price": 7.5073,
+    "current_price": 7.4,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "600580.SH",
+    "name": "卧龙电驱",
+    "position_pct": 0.006,
+    "cost_price": 44.68,
+    "current_price": 44.66,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "601360.SH",
+    "name": "三六零",
+    "position_pct": 0.0017,
+    "cost_price": 13.06,
+    "current_price": 12.9,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "601595.SH",
+    "name": "上海电影",
+    "position_pct": 0.0044,
+    "cost_price": 29.5565,
+    "current_price": 32.51,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "601600.SH",
+    "name": "中国铝业",
+    "position_pct": 0.0068,
+    "cost_price": 14.175,
+    "current_price": 12.69,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "603000.SH",
+    "name": "人民网",
+    "position_pct": 0.0416,
+    "cost_price": 25.5575,
+    "current_price": 25.72,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "603829.SH",
+    "name": "洛凯股份",
+    "position_pct": 0.0033,
+    "cost_price": 24.67,
+    "current_price": 24.38,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "603888.SH",
+    "name": "新华网",
+    "position_pct": 0.0134,
+    "cost_price": 24.65,
+    "current_price": 24.79,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "603993.SH",
+    "name": "洛阳钼业",
+    "position_pct": 0.0119,
+    "cost_price": 32.5759,
+    "current_price": 21.98,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688002.SH",
+    "name": "睿创微纳",
+    "position_pct": 0.0309,
+    "cost_price": 108.722,
+    "current_price": 114.66,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688062.SH",
+    "name": "迈威生物-U",
+    "position_pct": 0.0364,
+    "cost_price": 73.0562,
+    "current_price": 36.42,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688127.SH",
+    "name": "蓝特光学",
+    "position_pct": 0.0261,
+    "cost_price": 46.2,
+    "current_price": 48.43,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688325.SH",
+    "name": "赛微微电",
+    "position_pct": 0.0899,
+    "cost_price": 118.8158,
+    "current_price": 100.1,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688327.SH",
+    "name": "云从科技-U",
+    "position_pct": 0.0088,
+    "cost_price": 15.985,
+    "current_price": 16.27,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688443.SH",
+    "name": "智翔金泰-U",
+    "position_pct": 0.0087,
+    "cost_price": 62.4015,
+    "current_price": 28.38,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688580.SH",
+    "name": "伟思医疗",
+    "position_pct": 0.0309,
+    "cost_price": 61.6101,
+    "current_price": 57.31,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "688639.SH",
+    "name": "华恒生物",
+    "position_pct": 0.0472,
+    "cost_price": 42.6835,
+    "current_price": 34.3,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "000156.SZ",
+    "name": "华数传媒",
+    "position_pct": 0.0048,
+    "cost_price": 9.2125,
+    "current_price": 8.86,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "000977.SZ",
+    "name": "浪潮信息",
+    "position_pct": 0.0088,
+    "cost_price": 59.3879,
+    "current_price": 65.33,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "001266.SZ",
+    "name": "宏英智能",
+    "position_pct": 0.0047,
+    "cost_price": 34.93,
+    "current_price": 34.6,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002050.SZ",
+    "name": "三花智控",
+    "position_pct": 0.0072,
+    "cost_price": 53.5922,
+    "current_price": 53.48,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002268.SZ",
+    "name": "电科网安",
+    "position_pct": 0.0055,
+    "cost_price": 20.685,
+    "current_price": 20.37,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002292.SZ",
+    "name": "奥飞娱乐",
+    "position_pct": 0.0026,
+    "cost_price": 9.835,
+    "current_price": 9.61,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002400.SZ",
+    "name": "省广集团",
+    "position_pct": 0.0015,
+    "cost_price": 338.0007,
+    "current_price": 11.06,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002624.SZ",
+    "name": "完美世界",
+    "position_pct": 0.0202,
+    "cost_price": 21.4409,
+    "current_price": 21.42,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002739.SZ",
+    "name": "万达电影",
+    "position_pct": 0.0017,
+    "cost_price": 12.33,
+    "current_price": 12.49,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "002921.SZ",
+    "name": "联诚精密",
+    "position_pct": 0.0097,
+    "cost_price": 24.03,
+    "current_price": 23.94,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "159567.SZ",
+    "name": "港股创新药ETF",
+    "position_pct": 0.0751,
+    "cost_price": 0.8179,
+    "current_price": 0.779,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "159607.SZ",
+    "name": "中概互联网ETF嘉实",
+    "position_pct": 0.0018,
+    "cost_price": 1.5832,
+    "current_price": 1.009,
+    "sector": "ETF",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300014.SZ",
+    "name": "亿纬锂能",
+    "position_pct": 0.0086,
+    "cost_price": 63.2401,
+    "current_price": 63.78,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300058.SZ",
+    "name": "蓝色光标",
+    "position_pct": 0.1255,
+    "cost_price": 21.0263,
+    "current_price": 19.0,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300115.SZ",
+    "name": "长盈精密",
+    "position_pct": 0.0163,
+    "cost_price": 41.0035,
+    "current_price": 40.22,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300133.SZ",
+    "name": "华策影视",
+    "position_pct": 0.0025,
+    "cost_price": 9.625,
+    "current_price": 9.44,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300353.SZ",
+    "name": "东土科技",
+    "position_pct": 0.0032,
+    "cost_price": 24.21,
+    "current_price": 24.01,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300418.SZ",
+    "name": "昆仑万维",
+    "position_pct": 0.0081,
+    "cost_price": 60.5891,
+    "current_price": 60.39,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300424.SZ",
+    "name": "航新科技",
+    "position_pct": 0.0026,
+    "cost_price": 19.43,
+    "current_price": 19.4,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300528.SZ",
+    "name": "幸福蓝海",
+    "position_pct": 0.0033,
+    "cost_price": 25.1,
+    "current_price": 24.59,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300593.SZ",
+    "name": "新雷能",
+    "position_pct": 0.0079,
+    "cost_price": 29.73,
+    "current_price": 29.28,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300710.SZ",
+    "name": "万隆光电",
+    "position_pct": 0.0043,
+    "cost_price": 31.64,
+    "current_price": 31.62,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300751.SZ",
+    "name": "迈为股份",
+    "position_pct": 0.0383,
+    "cost_price": 307.3295,
+    "current_price": 284.47,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300770.SZ",
+    "name": "新媒股份",
+    "position_pct": 0.0063,
+    "cost_price": 47.33,
+    "current_price": 46.65,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "300913.SZ",
+    "name": "兆龙互连",
+    "position_pct": 0.0218,
+    "cost_price": 52.1747,
+    "current_price": 54.01,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "301080.SZ",
+    "name": "百普赛斯",
+    "position_pct": 0.0135,
+    "cost_price": 66.4924,
+    "current_price": 50.08,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "301136.SZ",
+    "name": "招标股份",
+    "position_pct": 0.0024,
+    "cost_price": 18.31,
+    "current_price": 17.71,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "301172.SZ",
+    "name": "君逸数码",
+    "position_pct": 0.0039,
+    "cost_price": 29.26,
+    "current_price": 29.0,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "301312.SZ",
+    "name": "智立方",
+    "position_pct": 0.0102,
+    "cost_price": 76.3144,
+    "current_price": 75.8,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "301468.SZ",
+    "name": "博盈特焊",
+    "position_pct": 0.0095,
+    "cost_price": 69.5778,
+    "current_price": 70.14,
+    "sector": "未知",
+    "buy_date": ""
+  },
+  {
+    "ts_code": "302132.SZ",
+    "name": "中航成飞",
+    "position_pct": 0.0107,
+    "cost_price": 79.5475,
+    "current_price": 79.46,
+    "sector": "未知",
+    "buy_date": ""
+  }
+]

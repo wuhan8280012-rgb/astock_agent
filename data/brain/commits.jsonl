@@ -1,0 +1,1 @@
+{"_schema": true, "fields": {"ts": "timestamp", "symbol": "stock", "action": "buy/sell/skip", "reason": "why", "env_score": "int"}}

@@ -1,0 +1,186 @@
+[
+  {
+    "job_id": "pre_market_scan",
+    "name": "盘前扫描",
+    "description": "盘前准备：扫描隔夜重大消息、集合竞价异动、北向资金动向",
+    "schedule_time": "09:00",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "high",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行盘前扫描任务：\n1. 检查隔夜重大新闻和公告（特别是持仓股相关）\n2. 分析集合竞价数据（如有）：高开/低开个股\n3. 查看北向资金预期动向\n4. 检查持仓股是否有利空/利好消息\n5. 输出今日操作计划建议\n\n{brain_context}\n\n请给出具体的今日关注清单和操作建议。",
+    "tools_required": [
+      "sentiment_analysis",
+      "sector_rotation"
+    ],
+    "tags": [
+      "盘前",
+      "扫描",
+      "新闻"
+    ],
+    "last_run": null
+  },
+  {
+    "job_id": "morning_momentum",
+    "name": "早盘动量扫描",
+    "description": "开盘30分钟后扫描量价异动和板块强度",
+    "schedule_time": "10:00",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "high",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行早盘动量扫描：\n1. 扫描开盘30分钟量价异动个股\n2. 分析今日板块强弱排名\n3. 检查是否有板块突然启动的信号\n4. 对比昨日预判是否准确\n5. 是否需要调整今日操作计划\n\n{brain_context}\n\n重点关注异常放量和板块轮动信号。",
+    "tools_required": [
+      "technical_analysis",
+      "sector_rotation"
+    ],
+    "tags": [
+      "早盘",
+      "动量",
+      "板块"
+    ],
+    "last_run": null
+  },
+  {
+    "job_id": "midday_review",
+    "name": "午间复盘",
+    "description": "午休期间对上午走势做简要复盘",
+    "schedule_time": "11:35",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "normal",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行午间复盘：\n1. 上午大盘走势总结（指数、成交额、涨跌比）\n2. 上午板块表现排名\n3. 持仓股上午表现\n4. 下午需要关注的风险点\n5. 是否需要在下午做调仓\n\n{brain_context}\n\n简明扼要即可。",
+    "tools_required": [
+      "technical_analysis"
+    ],
+    "tags": [
+      "午盘",
+      "复盘"
+    ],
+    "last_run": null
+  },
+  {
+    "job_id": "closing_scan",
+    "name": "尾盘扫描",
+    "description": "尾盘异动扫描和明日布局",
+    "schedule_time": "14:45",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "high",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行尾盘扫描：\n1. 扫描尾盘异动（尾盘拉升/跳水的个股和板块）\n2. 今日涨停板梳理（板块分布、连板高度）\n3. 明日可能的方向预判\n4. 是否有尾盘需要执行的操作\n\n{brain_context}\n\n重点关注尾盘资金动向和明日潜在机会。",
+    "tools_required": [
+      "technical_analysis",
+      "sector_rotation"
+    ],
+    "tags": [
+      "尾盘",
+      "异动",
+      "布局"
+    ],
+    "last_run": null
+  },
+  {
+    "job_id": "post_market_review",
+    "name": "盘后复盘",
+    "description": "全天复盘总结，更新 Brain 认知状态",
+    "schedule_time": "15:30",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "critical",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行盘后全面复盘：\n1. 今日大盘总结（指数、成交额、涨跌比、北向资金）\n2. 板块轮动分析（今日主线、明日可能切换方向）\n3. 持仓股逐一点评，标记需要止损/止盈的\n4. 今日操作回顾（做对了什么、做错了什么）\n5. 更新市场情绪判断\n6. 明日操作计划\n7. 将今日重要洞察存入长期记忆\n\n{brain_context}\n\n这是一天中最重要的任务，请详细分析。",
+    "tools_required": [
+      "sentiment_analysis",
+      "sector_rotation",
+      "canslim"
+    ],
+    "tags": [
+      "复盘",
+      "总结",
+      "板块轮动",
+      "情绪"
+    ],
+    "last_run": 1771865628.2466218
+  },
+  {
+    "job_id": "weekly_review",
+    "name": "周度复盘",
+    "description": "每周五盘后的深度复盘",
+    "schedule_time": "20:00",
+    "weekdays": [
+      4
+    ],
+    "priority": "critical",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行周度深度复盘：\n1. 本周大盘走势回顾\n2. 本周板块轮动路径总结\n3. 本周所有交易决策回顾和胜率统计\n4. 策略有效性评估（CANSLIM、板块轮动等各策略本周表现）\n5. 需要调整的策略参数\n6. 下周市场展望和操作计划\n7. 更新长期记忆中的板块规律\n\n{brain_context}\n{win_rate_stats}\n\n请做深度分析，这关系到策略的持续优化。",
+    "tools_required": [
+      "sentiment_analysis",
+      "sector_rotation",
+      "canslim"
+    ],
+    "tags": [
+      "周报",
+      "复盘",
+      "策略评估"
+    ],
+    "last_run": null
+  },
+  {
+    "job_id": "risk_check",
+    "name": "盘中风控检查",
+    "description": "定时检查持仓风险",
+    "schedule_time": "10:30",
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "priority": "critical",
+    "enabled": true,
+    "require_trading_day": true,
+    "prompt_template": "执行风控检查：\n1. 检查各持仓股是否触及止损线\n2. 检查总仓位是否超限\n3. 检查单板块集中度是否超标\n4. 检查是否有持仓股临近涨跌停\n5. 检查账户整体回撤是否超限\n\n如有风险，立即告警。",
+    "tools_required": [
+      "risk_manager"
+    ],
+    "tags": [
+      "风控",
+      "止损"
+    ],
+    "last_run": null
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "backtest": {
+    "start_date": "2020-01-01",
+    "end_date": "2023-12-31",
+    "initial_capital": 1000000,
+    "rebalance_frequency": "weekly",
+    "max_positions": 10,
+    "equal_weight": true
+  },
+  "data": {
+    "source": "tushare",
+    "tushare_token": "ba015995912d9cc88c5eba6643f89c56769a5cfac861ae15ed4b8f0f",
+    "cache_dir": "data/cache",
+    "stock_pool": {
+      "index": "000300.SH",
+      "min_list_days": 60,
+      "filter_st": true,
+      "min_avg_volume": 1000
+    }
+  },
+  "factors": {
+    "momentum_20d_weight": 0.3,
+    "momentum_60d_weight": 0.3,
+    "volatility_penalty_weight": 0.2,
+    "volume_amplification_weight": 0.2,
+    "momentum": {
+      "period_20d": 20,
+      "period_60d": 60
+    },
+    "volatility": {
+      "period": 20,
+      "penalty_factor": 0.5
+    },
+    "volume": {
+      "period": 20,
+      "amplification_factor": 1.5
+    }
+  },
+  "trend_gate": {
+    "enabled": true,
+    "ma_short": 50,
+    "ma_long": 200,
+    "market_gate_enabled": true,
+    "market_index": "000300.SH"
+  },
+  "risk_control": {
+    "stop_loss_method": "percentage",
+    "stop_loss_percentage": -0.08,
+    "atr_stop_loss_multiplier": 2.0,
+    "atr_period": 14,
+    "portfolio_drawdown": {
+      "enabled": true,
+      "threshold": -0.15,
+      "position_ratio_after_drawdown": 0.5
+    }
+  },
+  "costs": {
+    "commission_rate": 0.3,
+    "stamp_tax_rate": 0.5,
+    "slippage_rate": 0.5
+  },
+  "output": {
+    "report_dir": "data/reports",
+    "save_equity_curve": true,
+    "save_trades": true,
+    "save_positions": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/backtest.log",
+    "console": true
+  }
+}

@@ -1,0 +1,127 @@
+# A股周频多因子回测系统配置文件
+# 支持股票池选择、因子权重、风控参数等配置
+
+# 基础配置
+backtest:
+  # 回测开始日期
+  start_date: "2018-01-01"
+  # 回测结束日期
+  end_date: "2026-01-01"
+  # 初始资金
+  initial_capital: 1000000
+  # 调仓频率 (weekly: 周一)
+  rebalance_frequency: "weekly"
+  # 最大持仓数量
+  max_positions: 10
+  # 等权持仓
+  equal_weight: true
+
+# 数据配置
+data:
+  # 数据源 (tushare/yahoo/local)
+  source: "tushare"
+  # Tushare token (如果使用tushare)
+  tushare_token: "ba015995912d9cc88c5eba6643f89c56769a5cfac861ae15ed4b8f0f"
+  # 本地数据缓存目录
+  cache_dir: "data/cache"
+  # 股票池配置
+  stock_pool:
+    # 股票池选择: 000300.SH (沪深300) 或 000852.SH (中证800)
+    index: "000300.SH"
+    # 最小上市天数
+    min_list_days: 60
+    # 过滤ST股票
+    filter_st: true
+    # 最小日均成交额(万元)
+    min_avg_volume: 1000
+
+# 多因子信号配置
+factors:
+  # 20日动量因子权重
+  momentum_20d_weight: 0.3
+  # 60日动量因子权重
+  momentum_60d_weight: 0.3
+  # 波动率惩罚因子权重
+  volatility_penalty_weight: 0.2
+  # 成交额放大因子权重
+  volume_amplification_weight: 0.2
+
+  # 因子参数
+  momentum:
+    # 20日动量计算周期
+    period_20d: 20
+    # 60日动量计算周期
+    period_60d: 60
+
+  volatility:
+    # 波动率计算周期
+    period: 20
+    # 波动率惩罚系数
+    penalty_factor: 0.5
+
+  volume:
+    # 成交额放大计算周期
+    period: 20
+    # 成交额放大系数
+    amplification_factor: 1.5
+
+# 趋势闸门配置
+trend_gate:
+  # 启用趋势过滤
+  enabled: true
+  # MA周期
+  ma_short: 50
+  ma_long: 200
+  # 市场闸门:指数收盘在MA200之上才允许持仓
+  market_gate_enabled: true
+  # 市场指数代码
+  market_index: "000300.SH"
+
+# 风控配置
+risk_control:
+  # 单票止损方式: percentage (百分比) 或 atr (ATR倍数)
+  stop_loss_method: "percentage"
+  # 百分比止损阈值
+  stop_loss_percentage: -0.08
+  # ATR倍数止损
+  atr_stop_loss_multiplier: 2.0
+  # ATR计算周期
+  atr_period: 14
+
+  # 组合回撤控制
+  portfolio_drawdown:
+    # 启用回撤控制
+    enabled: true
+    # 回撤阈值
+    threshold: -0.15
+    # 回撤触发后的仓位比例 (0表示空仓)
+    position_ratio_after_drawdown: 0.5
+
+# 交易成本配置
+costs:
+  # 佣金比例 (万分之几)
+  commission_rate: 0.3
+  # 印花税率 (卖出时，万分之几)
+  stamp_tax_rate: 0.5
+  # 滑点比例 (万分之几)
+  slippage_rate: 0.5
+
+# 输出配置
+output:
+  # 报告输出目录
+  report_dir: "data/reports"
+  # 保存资金曲线
+  save_equity_curve: true
+  # 保存交易明细
+  save_trades: true
+  # 保存持仓记录
+  save_positions: true
+
+# 日志配置
+logging:
+  # 日志级别
+  level: "INFO"
+  # 日志文件
+  file: "logs/backtest.log"
+  # 控制台输出
+  console: true

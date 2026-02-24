@@ -1,0 +1,554 @@
+{
+  "step": "signal",
+  "timestamp": "21:02:52",
+  "preview": "市场环境: 64/100 (一般) - 谨慎交易\n\n共 10 个信号:\n\n[1] 600015.SH (600015.SH) 评分82 [ladder_breakout]\n    60天新高: 否 (-4.7%)\n    量比: 1.55\n    形态: 一般\n    价格: 收6.73 / 突破6.68 / 止损6.12\n    依据: 阶梯整理16天, 振幅5.9%, 量比1.55, 突破0.7%\n    风险: 无\n\n[2] 600893.SH (600893.SH) 评分77 [ladder_breakout]\n    60天新高: 是 (0.0%)\n    量比: 1.52\n    形态: 一般\n    价格: 收57.17 / 突破39.3 / 止损35.11\n    依据: 阶梯整理16天, 振幅8.6%, 量比1.52, 突破45.5%\n    风险: 无\n\n[3] 300251.SZ (300251.SZ) 评分75 [ladder_breakout]\n    60天新高: 否 (-8.9%)\n    量比: 2.42\n    形态: 一般\n    价格: 收27.2",
+  "data": {
+    "date": "20260224",
+    "market_env": {
+      "date": "20260224",
+      "version": "v6.1",
+      "source": "tushare",
+      "scores": {
+        "trend": 58,
+        "sentiment": 60,
+        "volume": 85,
+        "sector": 60
+      },
+      "total_score": 64,
+      "level": "一般",
+      "advice": "谨慎交易",
+      "summary": "市场环境: 64/100 (一般) - 谨慎交易",
+      "weights": {
+        "trend": 0.25,
+        "sentiment": 0.3,
+        "volume": 0.2,
+        "sector": 0.25
+      },
+      "details": {
+        "trend": {
+          "close": 4082.07,
+          "ma5": 4119.91,
+          "ma10": 4092.67,
+          "ma20": 4111.49,
+          "ma60": 4004.45,
+          "above_ma_count": 1,
+          "pct_5d": 0.41,
+          "bullish_order": false
+        },
+        "sentiment": {
+          "note": "无数据"
+        },
+        "volume": {
+          "today_amount": 846808338.0,
+          "avg_20_amount": 1128781959.0,
+          "vol_ratio": 0.75,
+          "full_market_billion": 16936,
+          "source": "tushare"
+        },
+        "sector": {
+          "note": "无板块数据"
+        }
+      }
+    },
+    "signals": [
+      {
+        "type": "ladder_breakout",
+        "symbol": "600015.SH",
+        "name": "600015.SH",
+        "score": 82,
+        "action": "BUY",
+        "price": {
+          "close": 6.73,
+          "breakout": 6.68,
+          "stop_loss": 6.12
+        },
+        "confidence": 0.82,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅5.9%",
+          "量比1.55",
+          "突破0.7%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": false,
+          "pct_from_high": -4.7,
+          "pattern_quality": "一般",
+          "vol_ratio": 1.55,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "ladder_breakout",
+        "symbol": "600893.SH",
+        "name": "600893.SH",
+        "score": 77,
+        "action": "BUY",
+        "price": {
+          "close": 57.17,
+          "breakout": 39.3,
+          "stop_loss": 35.11
+        },
+        "confidence": 0.77,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅8.6%",
+          "量比1.52",
+          "突破45.5%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": true,
+          "pct_from_high": 0.0,
+          "pattern_quality": "一般",
+          "vol_ratio": 1.52,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "ladder_breakout",
+        "symbol": "300251.SZ",
+        "name": "300251.SZ",
+        "score": 75,
+        "action": "BUY",
+        "price": {
+          "close": 27.22,
+          "breakout": 18.99,
+          "stop_loss": 16.17
+        },
+        "confidence": 0.75,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅13.9%",
+          "量比2.42",
+          "突破43.3%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": false,
+          "pct_from_high": -8.9,
+          "pattern_quality": "一般",
+          "vol_ratio": 2.42,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "leader_breakout",
+        "symbol": "000818.SZ",
+        "name": "000818.SZ",
+        "score": 75,
+        "action": "BUY",
+        "price": {
+          "close": 24.3,
+          "high_60d": 24.99,
+          "stop_loss": 19.84
+        },
+        "confidence": 0.75,
+        "reasons": [
+          "板块龙头(化学原料)",
+          "回调15.9%后突破",
+          "接近60日新高"
+        ],
+        "risk_notes": []
+      },
+      {
+        "type": "leader_breakout",
+        "symbol": "000818.SZ",
+        "name": "000818.SZ",
+        "score": 75,
+        "action": "BUY",
+        "price": {
+          "close": 24.3,
+          "high_60d": 24.99,
+          "stop_loss": 19.84
+        },
+        "confidence": 0.75,
+        "reasons": [
+          "板块龙头(化学原料)",
+          "回调15.9%后突破",
+          "接近60日新高"
+        ],
+        "risk_notes": []
+      },
+      {
+        "type": "ladder_breakout",
+        "symbol": "600026.SH",
+        "name": "600026.SH",
+        "score": 73,
+        "action": "BUY",
+        "price": {
+          "close": 16.95,
+          "breakout": 12.97,
+          "stop_loss": 11.02
+        },
+        "confidence": 0.73,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅14.2%",
+          "量比1.68",
+          "突破30.7%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": false,
+          "pct_from_high": -9.5,
+          "pattern_quality": "一般",
+          "vol_ratio": 1.68,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "ladder_breakout",
+        "symbol": "600176.SH",
+        "name": "600176.SH",
+        "score": 71,
+        "action": "BUY",
+        "price": {
+          "close": 25.73,
+          "breakout": 16.88,
+          "stop_loss": 14.45
+        },
+        "confidence": 0.71,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅13.3%",
+          "量比1.38",
+          "突破52.4%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": false,
+          "pct_from_high": -7.5,
+          "pattern_quality": "一般",
+          "vol_ratio": 1.38,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "ladder_breakout",
+        "symbol": "600875.SH",
+        "name": "600875.SH",
+        "score": 71,
+        "action": "BUY",
+        "price": {
+          "close": 31.86,
+          "breakout": 28.13,
+          "stop_loss": 23.88
+        },
+        "confidence": 0.71,
+        "reasons": [
+          "阶梯整理16天",
+          "振幅14.3%",
+          "量比1.25",
+          "突破13.3%"
+        ],
+        "risk_notes": [],
+        "auxiliary_info": {
+          "is_60d_high": false,
+          "pct_from_high": -5.3,
+          "pattern_quality": "一般",
+          "vol_ratio": 1.25,
+          "sector_resonance": "待计算",
+          "risk_notes": []
+        }
+      },
+      {
+        "type": "leader_breakout",
+        "symbol": "000672.SZ",
+        "name": "000672.SZ",
+        "score": 65,
+        "action": "BUY",
+        "price": {
+          "close": 15.8,
+          "high_60d": 15.91,
+          "stop_loss": 13.01
+        },
+        "confidence": 0.65,
+        "reasons": [
+          "板块龙头(农产品加工)",
+          "回调15.1%后突破",
+          "接近60日新高"
+        ],
+        "risk_notes": []
+      },
+      {
+        "type": "leader_breakout",
+        "symbol": "000672.SZ",
+        "name": "000672.SZ",
+        "score": 65,
+        "action": "BUY",
+        "price": {
+          "close": 15.8,
+          "high_60d": 15.91,
+          "stop_loss": 13.01
+        },
+        "confidence": 0.65,
+        "reasons": [
+          "板块龙头(农产品加工)",
+          "回调15.1%后突破",
+          "接近60日新高"
+        ],
+        "risk_notes": []
+      }
+    ],
+    "by_type": {
+      "ladder_breakout": [
+        {
+          "type": "ladder_breakout",
+          "symbol": "600015.SH",
+          "name": "600015.SH",
+          "score": 82,
+          "action": "BUY",
+          "price": {
+            "close": 6.73,
+            "breakout": 6.68,
+            "stop_loss": 6.12
+          },
+          "confidence": 0.82,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅5.9%",
+            "量比1.55",
+            "突破0.7%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": false,
+            "pct_from_high": -4.7,
+            "pattern_quality": "一般",
+            "vol_ratio": 1.55,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        },
+        {
+          "type": "ladder_breakout",
+          "symbol": "600893.SH",
+          "name": "600893.SH",
+          "score": 77,
+          "action": "BUY",
+          "price": {
+            "close": 57.17,
+            "breakout": 39.3,
+            "stop_loss": 35.11
+          },
+          "confidence": 0.77,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅8.6%",
+            "量比1.52",
+            "突破45.5%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": true,
+            "pct_from_high": 0.0,
+            "pattern_quality": "一般",
+            "vol_ratio": 1.52,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        },
+        {
+          "type": "ladder_breakout",
+          "symbol": "300251.SZ",
+          "name": "300251.SZ",
+          "score": 75,
+          "action": "BUY",
+          "price": {
+            "close": 27.22,
+            "breakout": 18.99,
+            "stop_loss": 16.17
+          },
+          "confidence": 0.75,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅13.9%",
+            "量比2.42",
+            "突破43.3%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": false,
+            "pct_from_high": -8.9,
+            "pattern_quality": "一般",
+            "vol_ratio": 2.42,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        },
+        {
+          "type": "ladder_breakout",
+          "symbol": "600026.SH",
+          "name": "600026.SH",
+          "score": 73,
+          "action": "BUY",
+          "price": {
+            "close": 16.95,
+            "breakout": 12.97,
+            "stop_loss": 11.02
+          },
+          "confidence": 0.73,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅14.2%",
+            "量比1.68",
+            "突破30.7%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": false,
+            "pct_from_high": -9.5,
+            "pattern_quality": "一般",
+            "vol_ratio": 1.68,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        },
+        {
+          "type": "ladder_breakout",
+          "symbol": "600176.SH",
+          "name": "600176.SH",
+          "score": 71,
+          "action": "BUY",
+          "price": {
+            "close": 25.73,
+            "breakout": 16.88,
+            "stop_loss": 14.45
+          },
+          "confidence": 0.71,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅13.3%",
+            "量比1.38",
+            "突破52.4%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": false,
+            "pct_from_high": -7.5,
+            "pattern_quality": "一般",
+            "vol_ratio": 1.38,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        },
+        {
+          "type": "ladder_breakout",
+          "symbol": "600875.SH",
+          "name": "600875.SH",
+          "score": 71,
+          "action": "BUY",
+          "price": {
+            "close": 31.86,
+            "breakout": 28.13,
+            "stop_loss": 23.88
+          },
+          "confidence": 0.71,
+          "reasons": [
+            "阶梯整理16天",
+            "振幅14.3%",
+            "量比1.25",
+            "突破13.3%"
+          ],
+          "risk_notes": [],
+          "auxiliary_info": {
+            "is_60d_high": false,
+            "pct_from_high": -5.3,
+            "pattern_quality": "一般",
+            "vol_ratio": 1.25,
+            "sector_resonance": "待计算",
+            "risk_notes": []
+          }
+        }
+      ],
+      "leader_breakout": [
+        {
+          "type": "leader_breakout",
+          "symbol": "000818.SZ",
+          "name": "000818.SZ",
+          "score": 75,
+          "action": "BUY",
+          "price": {
+            "close": 24.3,
+            "high_60d": 24.99,
+            "stop_loss": 19.84
+          },
+          "confidence": 0.75,
+          "reasons": [
+            "板块龙头(化学原料)",
+            "回调15.9%后突破",
+            "接近60日新高"
+          ],
+          "risk_notes": []
+        },
+        {
+          "type": "leader_breakout",
+          "symbol": "000818.SZ",
+          "name": "000818.SZ",
+          "score": 75,
+          "action": "BUY",
+          "price": {
+            "close": 24.3,
+            "high_60d": 24.99,
+            "stop_loss": 19.84
+          },
+          "confidence": 0.75,
+          "reasons": [
+            "板块龙头(化学原料)",
+            "回调15.9%后突破",
+            "接近60日新高"
+          ],
+          "risk_notes": []
+        },
+        {
+          "type": "leader_breakout",
+          "symbol": "000672.SZ",
+          "name": "000672.SZ",
+          "score": 65,
+          "action": "BUY",
+          "price": {
+            "close": 15.8,
+            "high_60d": 15.91,
+            "stop_loss": 13.01
+          },
+          "confidence": 0.65,
+          "reasons": [
+            "板块龙头(农产品加工)",
+            "回调15.1%后突破",
+            "接近60日新高"
+          ],
+          "risk_notes": []
+        },
+        {
+          "type": "leader_breakout",
+          "symbol": "000672.SZ",
+          "name": "000672.SZ",
+          "score": 65,
+          "action": "BUY",
+          "price": {
+            "close": 15.8,
+            "high_60d": 15.91,
+            "stop_loss": 13.01
+          },
+          "confidence": 0.65,
+          "reasons": [
+            "板块龙头(农产品加工)",
+            "回调15.1%后突破",
+            "接近60日新高"
+          ],
+          "risk_notes": []
+        }
+      ],
+      "canslim": [],
+      "sector_rotation": [],
+      "value_undervalued": []
+    },
+    "summary": "=== 交易信号扫描 20260224 ===\n市场环境: 64/100 (一般) - 谨慎交易\n总信号: 10 个\n  ladder_breakout: 6 个\n  leader_breakout: 4 个\n最强信号: 600015.SH (600015.SH) 评分82"
+  }
+}
