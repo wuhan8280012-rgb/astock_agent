@@ -181,6 +181,15 @@ class MarketEnvironment:
         ]
         return "\n".join(lines)
 
+    def to_brief(self, result: dict) -> str:
+        """压缩评分 (~30 tokens)"""
+        s = result["scores"]
+        return (
+            f"[环境] {result['total_score']}/100({result['level']}) "
+            f"趋势{s['trend']} 情绪{s['sentiment']} 量能{s['volume']} 板块{s['sector']} "
+            f"→ {result['advice']}"
+        )
+
     # ─────────────────────────────────────────
     # 维度 1: 大盘趋势 (v6.1: +当日动量)
     # ─────────────────────────────────────────
@@ -278,6 +287,7 @@ class MarketEnvironment:
         limit_up = intraday.get("limit_up")
         limit_down = intraday.get("limit_down")
         north_flow = intraday.get("north_flow")
+        fund_source = "intraday" if north_flow is not None else None
 
         # 不在 intraday 里的字段，回退到 Tushare
         if up is None or down is None:
@@ -287,10 +297,18 @@ class MarketEnvironment:
                 down = down if down is not None else stats.get("down_count", 0)
                 limit_up = limit_up if limit_up is not None else stats.get("limit_up", 0)
                 limit_down = limit_down if limit_down is not None else stats.get("limit_down", 0)
-                north_flow = north_flow if north_flow is not None else stats.get("north_flow", 0)
+                if north_flow is None and "north_flow" in stats:
+                    north_flow = stats.get("north_flow")
+                    fund_source = "tushare"
             else:
                 log.append("情绪: 无数据（Tushare+intraday均无）→ 默认60")
                 return 60, {"note": "无数据"}
+        elif north_flow is None:
+            # up/down 已有盘中数据，但 north_flow 可能缺失，补拉 market_stats
+            stats = self._get_market_stats(date)
+            if stats and "north_flow" in stats:
+                north_flow = stats.get("north_flow")
+                fund_source = "tushare"
 
         # 涨跌比 (v6.1: 放大系数 40→60，涨跌比信号更强)
         total_stocks = (up or 0) + (down or 0)
@@ -316,7 +334,21 @@ class MarketEnvironment:
                 score -= 5
             log.append(f"情绪跌停: {limit_down} → {-12 if limit_down>30 else -5 if limit_down>15 else 0}")
 
-        # 北向资金 (v6.1: 更细的分档)
+        # 资金流向 (v6.2: 北向失败时三层降级)
+        if north_flow is None:
+            try:
+                from fund_flow_proxy import FundFlowProxy
+                proxy = FundFlowProxy(self.fetcher)
+                fund_result = proxy.get_flow(days=5)
+                if fund_result.source != "none":
+                    north_flow = fund_result.latest_flow
+                    fund_source = fund_result.source
+                else:
+                    fund_source = "none"
+            except Exception as e:
+                fund_source = "none"
+                log.append(f"情绪资金流: Proxy失败 {e}")
+
         if north_flow is not None:
             if north_flow > 80:
                 bonus = 12
@@ -330,8 +362,18 @@ class MarketEnvironment:
                 bonus = -8
             else:
                 bonus = -12
+
+            # ETF/两融替代时降低影响幅度
+            if fund_source not in ("intraday", "northbound", "tushare", None):
+                bonus = int(round(bonus * 0.7))
+
             score += bonus
-            log.append(f"情绪北向: {north_flow}亿 → +{bonus}")
+            log.append(f"情绪资金流: {north_flow}亿 [{fund_source}] → +{bonus}")
+        else:
+            # 显式标记缺失并做轻微负向补偿，防虚高
+            log.append("情绪资金流: 全部数据源失败 ⚠️ 评分可能偏高")
+            score -= 3
+            log.append("情绪资金流: 缺失补偿 -3")
 
         score = max(0, min(100, score))
 
@@ -341,6 +383,7 @@ class MarketEnvironment:
             "limit_up": limit_up,
             "limit_down": limit_down,
             "north_flow": north_flow,
+            "fund_source": fund_source,
             "source": "intraday" if intraday.get("up_count") is not None else "tushare",
         }
         log.append(f"情绪最终: {score}")

@@ -65,6 +65,22 @@ class RiskReport:
             ],
         }
 
+    def to_brief(self) -> str:
+        """压缩报告 (~50 tokens)"""
+        stops = [p.name for p in self.position_checks if p.action == "止损"]
+        warns = [p.name for p in self.position_checks if "减仓" in p.action]
+        parts = [
+            f"[风控] 仓位{self.total_position*100:.0f}%/{self.max_position_limit*100:.0f}%上限",
+            f"预警{len(self.portfolio_alerts)}条",
+        ]
+        if stops:
+            parts.append(f"止损:{','.join(stops)}")
+        if warns:
+            parts.append(f"减仓:{','.join(warns)}")
+        if not stops and not warns:
+            parts.append("持仓正常")
+        return " | ".join(parts)
+
 
 class RiskControlSkill:
     """T+1 风控模型"""
@@ -156,15 +172,39 @@ class RiskControlSkill:
         return report
 
     def _get_max_position(self, sentiment_level: str) -> float:
-        """根据情绪等级确定最大仓位"""
-        mapping = {
+        """
+        根据情绪等级确定最大仓位 — 逆向策略
+
+        逻辑: 市场越热 → 允许仓位越低；市场越冷 → 允许仓位越高
+        这是一种纪律约束，不是预测。
+        """
+        contrarian_map = {
             "极度贪婪": 0.30,
             "贪婪": 0.50,
             "中性": 0.70,
             "恐慌": 0.80,
             "极度恐慌": 0.90,
         }
-        return mapping.get(sentiment_level, 0.70)
+        return contrarian_map.get(sentiment_level, 0.70)
+
+    def get_position_perspectives(self, sentiment_level: str) -> dict:
+        """
+        三视角仓位建议 — 供 debate.py 风控环节使用
+        """
+        contrarian = self._get_max_position(sentiment_level)
+        trend_map = {
+            "极度贪婪": 0.90,
+            "贪婪": 0.80,
+            "中性": 0.50,
+            "恐慌": 0.30,
+            "极度恐慌": 0.20,
+        }
+        trend_follow = trend_map.get(sentiment_level, 0.50)
+        return {
+            "contrarian": contrarian,
+            "trend_follow": trend_follow,
+            "neutral": round((contrarian + trend_follow) / 2, 2),
+        }
 
     def _check_position(self, pos: dict) -> PositionCheck:
         """检查单个持仓"""

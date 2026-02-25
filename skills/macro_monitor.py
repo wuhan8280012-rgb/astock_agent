@@ -59,6 +59,15 @@ class MacroReport:
             ],
         }
 
+    def to_brief(self) -> str:
+        """压缩报告 (~40 tokens)"""
+        sig_parts = [f"{s.name}{s.score:+d}" for s in self.signals]
+        warn = " ⚠降级" if any("⚠" in (s.detail or "") for s in self.signals) else ""
+        return (
+            f"[宏观] {self.liquidity_level}({self.overall_score:+.1f}) "
+            f"{self.market_impact} | {','.join(sig_parts)}{warn}"
+        )
+
 
 class MacroSkill:
     """宏观流动性监控"""
@@ -84,10 +93,10 @@ class MacroSkill:
         if sig:
             report.signals.append(sig)
 
-        # 4. 市场成交额趋势
-        sig = self._analyze_turnover_trend()
-        if sig:
-            report.signals.append(sig)
+        # 4. 成交额趋势 — 已移交 MarketEnvironment (v6.2)
+        # sig = self._analyze_turnover_trend()
+        # if sig:
+        #     report.signals.append(sig)
 
         # 综合
         self._compute_overall(report)
@@ -147,17 +156,37 @@ class MacroSkill:
             return None
 
     def _analyze_north_trend(self) -> Optional[MacroSignal]:
-        """北向资金中期趋势（区别于情绪Skill的短期分析）"""
+        """资金流向中期趋势（三层降级）"""
         try:
-            df = self.fetcher.get_north_flow(days=20)
-            if df.empty or "north_money_yi" not in df.columns:
-                return None
+            try:
+                from fund_flow_proxy import FundFlowProxy
+                proxy = FundFlowProxy(self.fetcher)
+                flow = proxy.get_flow(days=20)
+            except Exception:
+                flow = None
 
-            # 累计净流入
-            total_20d = df["north_money_yi"].sum()
-            # 近5日 vs 前5日
-            recent_5d = df.tail(5)["north_money_yi"].sum()
-            prev_5d = df.iloc[-10:-5]["north_money_yi"].sum() if len(df) >= 10 else 0
+            if flow is None:
+                # 兼容回退：旧北向逻辑
+                df = self.fetcher.get_north_flow(days=20)
+                if df.empty or "north_money_yi" not in df.columns:
+                    return None
+                total_20d = float(df["north_money_yi"].sum())
+                recent_5d = float(df.tail(5)["north_money_yi"].sum())
+                source_tag = "北向"
+                degraded = False
+                confidence = 1.0
+            else:
+                if flow.source == "none":
+                    return None
+                total_20d = float(flow.flow_20d)
+                recent_5d = float(flow.flow_5d)
+                source_tag = {
+                    "northbound": "北向",
+                    "etf_fund_flow": "ETF资金流",
+                    "margin_enhanced": "融资替代",
+                }.get(flow.source, "?")
+                degraded = bool(flow.degraded)
+                confidence = float(flow.confidence)
 
             if total_20d > 200:
                 trend, score = "持续流入", 2
@@ -170,15 +199,21 @@ class MacroSkill:
             else:
                 trend, score = "持续流出", -2
 
+            if degraded:
+                score = int(round(score * confidence))
+
             return MacroSignal(
-                name="北向资金趋势",
+                name="资金流向趋势",
                 value=round(total_20d, 2),
                 trend=trend,
                 score=score,
-                detail=f"20日累计{total_20d:+.1f}亿 | 近5日{recent_5d:+.1f}亿 vs 前5日{prev_5d:+.1f}亿",
+                detail=(
+                    f"[{source_tag}] 20日累计{total_20d:+.1f}亿 | 近5日{recent_5d:+.1f}亿"
+                    f"{' ⚠降级' if degraded else ''}"
+                ),
             )
         except Exception as e:
-            print(f"[Macro] 北向趋势分析失败: {e}")
+            print(f"[Macro] 资金流向趋势分析失败: {e}")
             return None
 
     def _analyze_margin_trend(self) -> Optional[MacroSignal]:
@@ -221,6 +256,7 @@ class MacroSkill:
             return None
 
     def _analyze_turnover_trend(self) -> Optional[MacroSignal]:
+        # 已废弃(v6.2): 成交额趋势统一由 MarketEnvironment 评估
         """全市场成交额趋势"""
         try:
             df = self.fetcher.get_index_daily("000001.SH", days=30)

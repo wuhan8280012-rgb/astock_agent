@@ -56,6 +56,7 @@ CACHE_DIR = Path("cache/tushare")
 
 # API 调用间隔（秒），避免频率限制
 API_INTERVAL = 0.12  # Tushare 免费版限 500次/分钟
+TUSHARE_HTTP_TIMEOUT = int(os.environ.get("TUSHARE_HTTP_TIMEOUT_SEC", "15") or 15)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -87,12 +88,14 @@ class DataFetcher:
         try:
             # 兼容受限环境：tushare 可能尝试写 ~/tk.csv
             ts.set_token(token)
-            self.pro = ts.pro_api()
+            self.pro = ts.pro_api(timeout=TUSHARE_HTTP_TIMEOUT)
         except Exception as e:
             print(f"  ⚠️ ts.set_token 失败，改用直传 token: {e}")
-            self.pro = ts.pro_api(token)
+            self.pro = ts.pro_api(token, timeout=TUSHARE_HTTP_TIMEOUT)
         self._last_call = 0
         self._name_cache = {}
+        self._name_map = {}
+        self._name_map_inited = False
 
         # 缓存目录
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -299,10 +302,50 @@ class DataFetcher:
     # 股票名称
     # ─────────────────────────────────────────
 
+    def _init_name_map(self):
+        """
+        一次性加载全市场名称映射（ts_code -> name）。
+        优先读本地缓存，失败再请求 Tushare。
+        """
+        if self._name_map_inited:
+            return
+
+        cache_key = f"name_map_{datetime.now().strftime('%Y%m%d')}"
+        cached = self._read_cache(cache_key, max_age_hours=36)
+        if cached is not None and not cached.empty and "ts_code" in cached.columns and "name" in cached.columns:
+            self._name_map = dict(zip(cached["ts_code"].astype(str), cached["name"].astype(str)))
+            self._name_map_inited = True
+            return
+
+        try:
+            self._throttle()
+            df = self.pro.stock_basic(
+                exchange="",
+                list_status="L",
+                fields="ts_code,name",
+            )
+            if df is not None and not df.empty:
+                self._name_map = dict(zip(df["ts_code"].astype(str), df["name"].astype(str)))
+                self._name_map_inited = True
+                # 仅缓存必要列，减小体积
+                self._write_cache(cache_key, df[["ts_code", "name"]].copy())
+                return
+        except Exception as e:
+            print(f"  ⚠️ 名称映射预加载失败: {e}")
+
+        self._name_map_inited = True
+
     def get_stock_name(self, symbol: str) -> str:
         """获取股票名称"""
         if symbol in self._name_cache:
             return self._name_cache[symbol]
+
+        # 优先内存映射（避免逐只 HTTP）
+        self._init_name_map()
+        if symbol in self._name_map:
+            name = self._name_map[symbol]
+            self._name_cache[symbol] = name
+            return name
 
         self._throttle()
         try:
@@ -310,6 +353,7 @@ class DataFetcher:
             if df is not None and not df.empty:
                 name = df.iloc[0]["name"]
                 self._name_cache[symbol] = name
+                self._name_map[symbol] = name
                 return name
         except Exception:
             pass
@@ -319,6 +363,7 @@ class DataFetcher:
             if df is not None and not df.empty:
                 name = df.iloc[0]["name"]
                 self._name_cache[symbol] = name
+                self._name_map[symbol] = name
                 return name
         except Exception:
             pass
@@ -453,9 +498,29 @@ class DataFetcher:
 
         return 0.0
 
-    def get_north_flow(self, date: str) -> float:
-        """公开接口"""
-        return self._get_north_flow(date)
+    def get_north_flow(self, date: str = None, days: int = None):
+        """
+        公开接口（兼容两种调用）：
+          1) get_north_flow("20260224") -> float(亿元)
+          2) get_north_flow(days=10) -> DataFrame[trade_date, north_money_yi]
+        """
+        if days is not None:
+            return self.get_north_flow_history(days=days)
+        if isinstance(date, str) and date.isdigit() and len(date) == 8:
+            return self._get_north_flow(date)
+        if isinstance(date, int):
+            return self.get_north_flow_history(days=date)
+        return self._get_north_flow(datetime.now().strftime("%Y%m%d"))
+
+    def get_north_flow_history(self, days: int = 10) -> pd.DataFrame:
+        """获取近N日北向净流入（亿元）"""
+        end = self.get_latest_trade_date()
+        start = self._date_sub(end, max(days * 3, 30))
+        tdays = self.get_trading_days(start, end)[-days:]
+        rows = []
+        for d in tdays:
+            rows.append({"trade_date": d, "north_money_yi": self._get_north_flow(d)})
+        return pd.DataFrame(rows)
 
     # ─────────────────────────────────────────
     # 板块表现
@@ -619,6 +684,174 @@ class DataFetcher:
             return {}
 
     # ─────────────────────────────────────────
+    # 兼容层：供 Skills 统一调用
+    # ─────────────────────────────────────────
+
+    def get_latest_trade_date(self) -> str:
+        """获取最近交易日（优先 trade_cal，失败回退到最近工作日）。"""
+        today = datetime.now().strftime("%Y%m%d")
+        cache_key = f"latest_trade_{today}"
+        cached = self._read_cache(cache_key, max_age_hours=12)
+        if cached is not None and len(cached) > 0 and "trade_date" in cached.columns:
+            return str(cached.iloc[0]["trade_date"])
+
+        try:
+            self._throttle()
+            cal = self.pro.trade_cal(
+                exchange="SSE",
+                start_date=self._date_sub(today, 20),
+                end_date=today,
+                fields="cal_date,is_open",
+            )
+            if cal is not None and not cal.empty:
+                cal = cal[cal["is_open"] == 1].sort_values("cal_date")
+                if len(cal) > 0:
+                    td = str(cal.iloc[-1]["cal_date"])
+                    self._write_cache(cache_key, pd.DataFrame([{"trade_date": td}]))
+                    return td
+        except Exception:
+            pass
+
+        # 回退：最近工作日
+        dt = datetime.now()
+        while dt.weekday() >= 5:
+            dt -= timedelta(days=1)
+        return dt.strftime("%Y%m%d")
+
+    def get_prev_trade_date(self, n: int = 1) -> str:
+        """获取往前第 n 个交易日。"""
+        end = self.get_latest_trade_date()
+        start = self._date_sub(end, max(n * 4, 20))
+        tdays = self.get_trading_days(start, end)
+        if len(tdays) <= n:
+            return tdays[0] if tdays else end
+        return tdays[-(n + 1)]
+
+    def get_market_breadth(self, date: str = None) -> dict:
+        """市场宽度（涨跌平家数和比值）。"""
+        date = date or self.get_latest_trade_date()
+        stats = self.get_market_stats(date) or {}
+        up = int(stats.get("up_count", 0))
+        down = int(stats.get("down_count", 0))
+        flat = 0
+        ratio = up / down if down > 0 else float(up)
+        return {"up": up, "down": down, "flat": flat, "ratio": round(ratio, 3)}
+
+    def get_limit_list(self, date: str = None) -> pd.DataFrame:
+        """涨跌停列表（兼容 sentiment 接口）。"""
+        date = date or self.get_latest_trade_date()
+        try:
+            self._throttle()
+            df = self.pro.limit_list_d(trade_date=date)
+            if df is None or df.empty:
+                return pd.DataFrame(columns=["limit"])
+            if "limit_type" in df.columns and "limit" not in df.columns:
+                df = df.rename(columns={"limit_type": "limit"})
+            return df
+        except Exception:
+            return pd.DataFrame(columns=["limit"])
+
+    def get_margin_data(self, days: int = 20) -> pd.DataFrame:
+        """融资融券余额（全国汇总，字段 rzye）。"""
+        end = self.get_latest_trade_date()
+        start = self._date_sub(end, max(days * 3, 30))
+        try:
+            self._throttle()
+            df = self.pro.margin(start_date=start, end_date=end)
+            if df is None or df.empty:
+                return pd.DataFrame(columns=["trade_date", "rzye"])
+            if "trade_date" not in df.columns:
+                return pd.DataFrame(columns=["trade_date", "rzye"])
+            g = df.groupby("trade_date", as_index=False)["rzye"].sum()
+            g = g.sort_values("trade_date").tail(days).reset_index(drop=True)
+            return g
+        except Exception:
+            return pd.DataFrame(columns=["trade_date", "rzye"])
+
+    def get_shibor(self, days: int = 30) -> pd.DataFrame:
+        """SHIBOR 历史（列：date,on,1w...）。"""
+        end = self.get_latest_trade_date()
+        start = self._date_sub(end, max(days * 2, 40))
+        try:
+            self._throttle()
+            df = self.pro.shibor(start_date=start, end_date=end)
+            if df is None or df.empty:
+                return pd.DataFrame(columns=["date", "on", "1w"])
+            if "date" not in df.columns and "trade_date" in df.columns:
+                df = df.rename(columns={"trade_date": "date"})
+            return df.sort_values("date").tail(days).reset_index(drop=True)
+        except Exception:
+            return pd.DataFrame(columns=["date", "on", "1w"])
+
+    def get_daily_basic(self, date: str) -> pd.DataFrame:
+        """兼容 CANSLIM：返回当日 daily_basic。"""
+        try:
+            self._throttle()
+            df = self.pro.daily_basic(trade_date=date)
+            return df if df is not None else pd.DataFrame()
+        except Exception:
+            return pd.DataFrame()
+
+    def get_stock_daily(self, ts_code: str, days: int = 60) -> pd.DataFrame:
+        """兼容别名。"""
+        df = self.get_daily(ts_code, days=days)
+        return df if df is not None else pd.DataFrame()
+
+    def get_all_sector_performance(self, days: int = 120) -> pd.DataFrame:
+        """
+        兼容 SectorRotationSkill:
+        返回列 ts_code,name,close,ret_5d,ret_20d,ret_60d,vol_ratio
+        """
+        end = self.get_latest_trade_date()
+        start = self._date_sub(end, max(days * 2, 180))
+        try:
+            self._throttle()
+            df = self.pro.sw_daily(start_date=start, end_date=end)
+            if df is None or df.empty:
+                raise ValueError("sw_daily empty")
+            out = []
+            for code, g in df.groupby("ts_code"):
+                g = g.sort_values("trade_date").reset_index(drop=True)
+                if len(g) < 65:
+                    continue
+                close = g["close"].astype(float).values
+                vol = g["vol"].astype(float).values if "vol" in g.columns else np.ones_like(close)
+                r5 = (close[-1] / close[-6] - 1) * 100 if len(close) >= 6 else 0
+                r20 = (close[-1] / close[-21] - 1) * 100 if len(close) >= 21 else 0
+                r60 = (close[-1] / close[-61] - 1) * 100 if len(close) >= 61 else 0
+                v5 = np.mean(vol[-5:]) if len(vol) >= 5 else np.mean(vol)
+                v20 = np.mean(vol[-20:]) if len(vol) >= 20 else np.mean(vol)
+                vr = float(v5 / v20) if v20 > 0 else 1.0
+                out.append({
+                    "ts_code": code,
+                    "name": str(g.iloc[-1].get("name", code)),
+                    "close": round(float(close[-1]), 3),
+                    "ret_5d": round(float(r5), 3),
+                    "ret_20d": round(float(r20), 3),
+                    "ret_60d": round(float(r60), 3),
+                    "vol_ratio": round(vr, 3),
+                })
+            if out:
+                return pd.DataFrame(out)
+        except Exception:
+            pass
+
+        # 回退：仅用当日涨跌构造最小字段
+        sp = self.get_sector_performance(end)
+        rows = []
+        for i, s in enumerate(sp):
+            rows.append({
+                "ts_code": f"fallback_{i}",
+                "name": s.get("name", f"S{i}"),
+                "close": 0.0,
+                "ret_5d": float(s.get("pct_change", 0)),
+                "ret_20d": float(s.get("pct_change", 0)),
+                "ret_60d": float(s.get("pct_change", 0)),
+                "vol_ratio": 1.0,
+            })
+        return pd.DataFrame(rows)
+
+    # ─────────────────────────────────────────
     # 基本面数据（价值投资用）
     # ─────────────────────────────────────────
 
@@ -765,6 +998,17 @@ class DataFetcher:
         ]
         print(f"  使用回退股票池: {len(pool)} 只")
         return pool
+
+
+_FETCHER_SINGLETON = None
+
+
+def get_fetcher(token: str = None) -> DataFetcher:
+    """兼容旧模块的全局 DataFetcher 工厂。"""
+    global _FETCHER_SINGLETON
+    if _FETCHER_SINGLETON is None:
+        _FETCHER_SINGLETON = DataFetcher(token=token)
+    return _FETCHER_SINGLETON
 
 
 # ═══════════════════════════════════════════════════════════════

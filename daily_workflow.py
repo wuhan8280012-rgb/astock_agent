@@ -36,6 +36,7 @@ daily_workflow.py — 每日 4 命令工作流（Context Engineering 重构）
 import sys
 import json
 import time
+import signal
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -51,7 +52,8 @@ class DailyWorkflow:
 
     def __init__(self, data_fetcher=None, router=None, brain=None,
                  event_log=None, llm=None, signal_generator=None,
-                 market_env=None, news_service=None, notifier=None):
+                 market_env=None, news_service=None, notifier=None,
+                 trade_scanner=None):
         self.fetcher = data_fetcher
         self.router = router
         self.brain = brain
@@ -61,6 +63,7 @@ class DailyWorkflow:
         self.market_env = market_env
         self.news_service = news_service
         self.notifier = notifier
+        self.trade_scanner = trade_scanner
 
         self.status_dir = Path("data/workflow")
         self.status_dir.mkdir(parents=True, exist_ok=True)
@@ -204,6 +207,18 @@ class DailyWorkflow:
             self.brain.set_intent("信号扫描 → 寻找交易机会")
 
         # ── Step 1: 环境评估 ──
+        # 数据缓存更新（盘后增量，首次自动回填）
+        if self.signal_gen and getattr(self.signal_gen, "data_cache", None):
+            try:
+                import os
+                today_ymd = datetime.now().strftime("%Y%m%d")
+                if os.getenv("DATA_CACHE_SKIP_HISTORY", "1") != "1":
+                    history_days = int(os.getenv("DATA_CACHE_HISTORY_DAYS", "120") or 120)
+                    self.signal_gen.data_cache.ensure_history(today_ymd, days=history_days)
+                self.signal_gen.data_cache.daily_update(today_ymd)
+            except Exception as e:
+                print(f"  ⚠️ 数据缓存更新失败，回退远程模式: {e}")
+
         env_result = self._evaluate_env_smart()
         env_score = 65  # 默认
         if env_result:
@@ -229,7 +244,13 @@ class DailyWorkflow:
         # ── Step 2: 信号扫描 ──
         if self.signal_gen:
             try:
-                raw_result = self.signal_gen.scan_all()
+                timeout_sec = int(__import__("os").getenv("SIGNAL_SCAN_TIMEOUT_SEC", "600") or 600)
+                raw_result = self._scan_with_timeout(timeout_sec)
+                if raw_result is None:
+                    msg = f"信号扫描超时（>{timeout_sec}s），已中止本次扫描"
+                    print(msg)
+                    self._save_status("signal", msg)
+                    return msg
                 signals = raw_result.get("signals", [])
 
                 # ── 新闻舆情验证（可选）──
@@ -237,6 +258,13 @@ class DailyWorkflow:
                     print("  📰 搜索信号股票新闻...")
                     signals = self.news_service.enrich_signals(signals)
                     raw_result["signals"] = signals
+                    # v2: 同步更新 buy/observe 结构，供仪表盘分组展示
+                    raw_result["buy_signals"] = [
+                        s for s in signals if s.get("signal_stage") == "buy"
+                    ]
+                    raw_result["observe_signals"] = [
+                        s for s in signals if s.get("signal_stage") == "observe"
+                    ]
 
                 output = self.signal_gen.format_dashboard(raw_result, env_score)
 
@@ -400,6 +428,11 @@ class DailyWorkflow:
         if not result:
             result = "未配置 LLM/Router，无法复盘"
 
+        # ── 交易决策链路（Stage → Pipeline → TradeSignal → Debate）──
+        trade_chain = self._run_trade_decision_chain(env_post)
+        if trade_chain:
+            result = f"{result}\n\n{trade_chain}"
+
         # ── Brain: Observation Masking — 提取洞察 ──
         if self.brain and result:
             # 写日志（完整保存，但 Brain 只学摘要）
@@ -427,6 +460,170 @@ class DailyWorkflow:
             if pushed:
                 print(f"  📱 已推送: {', '.join(pushed)}")
         return result
+
+    def _run_trade_decision_chain(self, env_post: Optional[dict]) -> str:
+        """
+        盘后交易链路:
+          SectorStageFilter -> Pipeline -> TradeSignalScanner.scan
+          - 卖出 urgency=立即: 直接执行队列（不走辩论）
+          - 买入信号: 交 DebateEngine 裁决（若 LLM 可用）
+        """
+        if not self.fetcher:
+            return ""
+        try:
+            from skills.sentiment import SentimentSkill
+            from skills.sector_rotation import SectorRotationSkill
+            from skills.sector_stage_filter import SectorStageFilter
+            from skills.stock_pipeline import StockPipeline
+            from skills.canslim_screener import StockScore
+            from trade_signal import TradeSignalScanner
+            from debate import DebateEngine
+        except Exception as e:
+            return f"[TradeChain] 初始化失败: {e}"
+
+        scanner = self.trade_scanner or TradeSignalScanner()
+        env_score = int((env_post or {}).get("total_score", 65))
+
+        # 1) 上游：情绪/板块/Stage/候选
+        sent = SentimentSkill()
+        sent.fetcher = self.fetcher
+        sentiment = sent.analyze()
+
+        sec = SectorRotationSkill()
+        sec.fetcher = self.fetcher
+        sector = sec.analyze()
+
+        stage = SectorStageFilter()
+        stage.fetcher = self.fetcher
+        stage.sector_skill = sec
+        stage_result = stage.analyze(sector_report=sector, verbose=False)
+
+        # pipeline 生成 watchlist，若失败则回退 stage candidates
+        watchlist = []
+        try:
+            pipe = StockPipeline()
+            pipe.fetcher = self.fetcher
+            pipe.sector_skill = sec
+
+            class _MockC:
+                def screen(self, stock_pool=None, top_n=30, market_sentiment="中性"):
+                    class _R:
+                        candidates = []
+                    r = _R()
+                    for c in (stock_pool or [])[: max(5, min(20, len(stock_pool or [])))]:
+                        r.candidates.append(StockScore(
+                            ts_code=c,
+                            name=self.fetcher.get_stock_name(c),
+                            total_score=70,
+                            grade="B",
+                            flags=[],
+                        ))
+                    return r
+
+            # 若系统已有正式 canslim 则优先；否则用兜底 mock 仅验证链路
+            if not getattr(pipe, "canslim", None):
+                pipe.canslim = _MockC()
+            pipeline_report = pipe.run(
+                top_n_result=15,
+                sentiment_result=sentiment,
+                sector_result=sector,
+                stage_filter_result=stage_result,
+                verbose=False,
+            )
+            for c in pipeline_report.candidates:
+                watchlist.append({
+                    "ts_code": c.ts_code,
+                    "name": c.name,
+                    "sector": c.sector,
+                    "breakout_price": getattr(getattr(c, "consolidation", None), "breakout_price", 0),
+                    "suggested_stop": c.suggested_stop,
+                })
+        except Exception:
+            for c in stage_result.candidates[:20]:
+                watchlist.append({
+                    "ts_code": c.ts_code,
+                    "name": c.name,
+                    "sector": c.sector,
+                    "breakout_price": 0,
+                    "suggested_stop": 0,
+                })
+
+        # 2) 持仓加载
+        holdings = []
+        pos_file = Path("knowledge/positions.json")
+        if pos_file.exists():
+            try:
+                holdings = json.loads(pos_file.read_text(encoding="utf-8"))
+            except Exception:
+                holdings = []
+
+        # 3) 扫描
+        blacklisted = [s.name for s in stage_result.blacklisted]
+        signal_report = scanner.scan(
+            watchlist=watchlist,
+            holdings=holdings,
+            env_score=env_score,
+            blacklisted_sectors=blacklisted,
+            verbose=False,
+        )
+
+        # 4) 执行分流
+        immediate_sells = [s for s in signal_report.sell_signals if s.urgency == "立即"]
+        debated_buys = []
+        llm_obj = self.llm or getattr(self.router, "llm", None)
+        if llm_obj and signal_report.buy_signals:
+            engine = DebateEngine(llm_obj)
+            env_brief = (self.market_env.to_brief(env_post)
+                         if self.market_env and env_post else f"[环境] {env_score}/100")
+            ctx = "\n".join([
+                sentiment.to_brief(),
+                stage_result.to_brief(),
+                signal_report.to_brief(),
+            ])
+            for b in signal_report.buy_signals[:5]:
+                q = f"候选{b.name}({b.ts_code})触发{b.signal_type}，是否执行?"
+                res = engine.run(
+                    question=q,
+                    context_brief=ctx,
+                    env_score=env_score,
+                    env_brief=env_brief,
+                    risk_brief="[风控] 卖出优先，买入需审慎",
+                )
+                debated_buys.append((b, res))
+
+        # 5) 输出摘要 + 记录
+        lines = [
+            "📌 决策链路结果",
+            f"- 上游候选: Stage通过{len(stage_result.candidates)}只, watchlist={len(watchlist)}",
+            f"- 扫描结果: 卖出{len(signal_report.sell_signals)} (立即{len(immediate_sells)}) | 买入{len(signal_report.buy_signals)}",
+        ]
+        if immediate_sells:
+            lines.append("- 立即卖出(直执行): " + ", ".join([f"{s.name}({s.ts_code})" for s in immediate_sells[:5]]))
+        if debated_buys:
+            lines.append("- 买入辩论裁决:")
+            for b, r in debated_buys[:5]:
+                lines.append(f"  • {b.name}({b.ts_code}) {b.signal_type} -> {r.action}({r.confidence}%)")
+
+        # 状态落盘
+        self._save_status("trade_scan", "\n".join(lines), data=signal_report.to_dict())
+
+        if self.brain:
+            try:
+                self.brain.update_status("trade_scan", signal_report.to_brief())
+            except Exception:
+                pass
+        if self.event_log:
+            try:
+                self.event_log.emit("workflow.step", {
+                    "step": "trade_scan",
+                    "summary": signal_report.summary,
+                    "sell_immediate": len(immediate_sells),
+                    "buy_count": len(signal_report.buy_signals),
+                }, source="daily_workflow")
+            except Exception:
+                pass
+
+        return "\n".join(lines)
 
     # ═══════════════════════════════════════════
     # 命令 4: 确认执行
@@ -646,6 +843,24 @@ class DailyWorkflow:
         path = self.dashboard_dir / f"{date_tag}.txt"
         path.write_text(content, encoding="utf-8")
 
+    def _scan_with_timeout(self, timeout_sec: int):
+        if timeout_sec <= 0:
+            return self.signal_gen.scan_all()
+
+        def _handler(signum, frame):
+            raise TimeoutError("signal scan timeout")
+
+        old_handler = signal.getsignal(signal.SIGALRM)
+        try:
+            signal.signal(signal.SIGALRM, _handler)
+            signal.alarm(timeout_sec)
+            return self.signal_gen.scan_all()
+        except TimeoutError:
+            return None
+        finally:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old_handler)
+
 
 # ═══════════════════════════════════════════
 # CLI 入口
@@ -706,6 +921,14 @@ def main():
     except Exception:
         pass
 
+    data_cache = None
+    if fetcher:
+        try:
+            from data_cache import DataCache
+            data_cache = DataCache(fetcher)
+        except Exception:
+            data_cache = None
+
     try:
         from market_environment import MarketEnvironment
         market_env = MarketEnvironment(fetcher)
@@ -719,6 +942,7 @@ def main():
             market_env=market_env,
             event_log=event_log,
             brain=brain,
+            data_cache=data_cache,
         )
     except Exception:
         pass

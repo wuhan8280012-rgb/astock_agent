@@ -137,6 +137,17 @@ class CanslimReport:
             ],
         }
 
+    def to_brief(self) -> str:
+        """压缩报告 (~60 tokens)"""
+        top3 = []
+        for c in self.candidates[:3]:
+            flags_str = "+".join(c.flags[:2]) if c.flags else ""
+            top3.append(f"{c.name}({c.grade},{c.total_score:.0f}){flags_str}")
+        return (
+            f"[CANSLIM] 扫描{self.total_scanned}→通过{self.total_passed} "
+            f"Top3: {', '.join(top3)}"
+        )
+
 
 class CanslimScreener:
     """CANSLIM 选股器"""
@@ -151,6 +162,7 @@ class CanslimScreener:
         sector_codes: List[str] = None,
         top_n: int = 20,
         market_sentiment: str = "中性",
+        prefetch_map: Optional[Dict[str, dict]] = None,
     ) -> CanslimReport:
         """
         执行CANSLIM筛选
@@ -160,6 +172,7 @@ class CanslimScreener:
             sector_codes: 板块代码列表 (从SectorRotation获取的强势板块)
             top_n: 返回前N只
             market_sentiment: 大盘情绪 (M维度判断)
+            prefetch_map: 预筛阶段缓存的股票信息，减少重复 API
         """
         report = CanslimReport(date=self.fetcher.get_latest_trade_date())
 
@@ -187,7 +200,8 @@ class CanslimScreener:
         for i, ts_code in enumerate(stock_pool):
             if (i + 1) % 20 == 0:
                 print(f"  进度: {i+1}/{len(stock_pool)}")
-            score = self._score_stock(ts_code, rs_data)
+            prefetched = prefetch_map.get(ts_code) if prefetch_map else None
+            score = self._score_stock(ts_code, rs_data, prefetched=prefetched)
             if score and not score.disqualified:
                 scored.append(score)
             time.sleep(0.05)  # 控制API频率
@@ -258,27 +272,38 @@ class CanslimScreener:
         try:
             trade_date = self.fetcher.get_latest_trade_date()
             prev_60 = self.fetcher.get_prev_trade_date(60)
-
-            # 用daily_basic获取市场数据来估算RS
-            # 简化版: 用pct_chg累计近60日涨幅排名
-            df = self.fetcher._fetch_with_cache(
-                "daily_basic_rs",
-                self.fetcher.pro.daily_basic,
-                trade_date=trade_date,
-                fields="ts_code,close,total_mv"
-            )
-            if df.empty:
+            self.fetcher._throttle()
+            now_df = self.fetcher.pro.daily(trade_date=trade_date, fields="ts_code,close")
+            self.fetcher._throttle()
+            prev_df = self.fetcher.pro.daily(trade_date=prev_60, fields="ts_code,close")
+            if now_df is None or prev_df is None or now_df.empty or prev_df.empty:
                 return {}
-
-            # 返回空字典，后续用个股数据单独计算
-            return {}
+            merged = now_df.merge(prev_df, on="ts_code", suffixes=("_now", "_prev"))
+            merged["ret_60d"] = (
+                pd.to_numeric(merged["close_now"], errors="coerce")
+                / pd.to_numeric(merged["close_prev"], errors="coerce")
+                - 1
+            ) * 100
+            merged = merged.dropna(subset=["ret_60d"])
+            if merged.empty:
+                return {}
+            merged["rs_pctile"] = merged["ret_60d"].rank(pct=True) * 100
+            return {
+                str(row["ts_code"]): float(row["rs_pctile"])
+                for _, row in merged.iterrows()
+            }
         except Exception:
             return {}
 
     # ========================================================
     # 单股评分
     # ========================================================
-    def _score_stock(self, ts_code: str, rs_data: dict) -> Optional[StockScore]:
+    def _score_stock(
+        self,
+        ts_code: str,
+        rs_data: dict,
+        prefetched: Optional[dict] = None,
+    ) -> Optional[StockScore]:
         """对单只股票进行CANSLIM评分"""
         try:
             score = StockScore(ts_code=ts_code, name="")
@@ -288,36 +313,46 @@ class CanslimScreener:
                 # 科创板/北交所 可以保留，但标记
                 score.flags.append("科创/北交")
 
-            # 获取股票名称和基本信息
-            basic = self.fetcher.get_daily_basic(self.fetcher.get_latest_trade_date())
-            if basic.empty:
-                return None
-
-            stock_basic = basic[basic["ts_code"] == ts_code]
-            if stock_basic.empty:
-                return None
-
-            score.circ_mv = float(stock_basic.iloc[0].get("circ_mv", 0)) * 1e4  # 万→元
+            if prefetched:
+                score.name = str(prefetched.get("name", "") or "")
+                score.circ_mv = float(prefetched.get("circ_mv", 0) or 0)
 
             # --- 风控排除 ---
-            disq = self._check_disqualification(ts_code, score)
-            if disq:
-                return score
+            if prefetched and prefetched.get("is_prefiltered"):
+                # 上游已做 ST / 市值 / 流动性预筛，保留上市时间等底线检查
+                if not score.name:
+                    score.name = ts_code
+            else:
+                # 获取股票名称和基本信息
+                basic = self.fetcher.get_daily_basic(self.fetcher.get_latest_trade_date())
+                if basic.empty:
+                    return None
+                stock_basic = basic[basic["ts_code"] == ts_code]
+                if stock_basic.empty:
+                    return None
+                score.circ_mv = float(stock_basic.iloc[0].get("circ_mv", 0)) * 1e4  # 万→元
+                disq = self._check_disqualification(ts_code, score)
+                if disq:
+                    return score
+
+            # --- 一次性拉取财务和日线，供各维度共享 ---
+            fina = self.fetcher.get_financial_indicator(ts_code)
+            daily = self.fetcher.get_stock_daily(ts_code, days=70)
 
             # --- C: 季度盈利 ---
-            score.score_c = self._score_c(ts_code, score)
+            score.score_c = self._score_c_with_data(fina, score)
 
             # --- A: 年度盈利 ---
-            score.score_a = self._score_a(ts_code, score)
+            score.score_a = self._score_a_with_data(fina, score)
 
             # --- N: 新高突破 ---
-            score.score_n = self._score_n(ts_code)
+            score.score_n = self._score_n_with_data(daily)
 
             # --- S: 供需 ---
-            score.score_s = self._score_s(ts_code, score)
+            score.score_s = self._score_s_with_data(daily, score)
 
             # --- L: 领导力 ---
-            score.score_l = self._score_l(ts_code, rs_data, score)
+            score.score_l = self._score_l_with_data(daily, rs_data, score)
 
             # --- 风控加分 ---
             score.score_risk = self._score_risk(ts_code)
@@ -334,7 +369,7 @@ class CanslimScreener:
 
             return score
 
-        except Exception as e:
+        except Exception:
             return None
 
     def _check_disqualification(self, ts_code: str, score: StockScore) -> bool:
@@ -384,24 +419,21 @@ class CanslimScreener:
     # ========================================================
     # 各维度评分 (0~100)
     # ========================================================
-    def _score_c(self, ts_code: str, score: StockScore) -> float:
-        """C - 最近季度盈利增速"""
+    def _score_c_with_data(self, fina: pd.DataFrame, score: StockScore) -> float:
+        """C - 最近季度盈利增速（使用预拉取财务数据）"""
         try:
-            fina = self.fetcher.get_financial_indicator(ts_code)
-            if fina.empty:
+            if fina is None or fina.empty:
                 return 30  # 数据缺失给中间分
 
             fina = fina.sort_values("end_date", ascending=False).head(4)
             if fina.empty:
                 return 30
 
-            # 最近一期净利润同比增速
             latest_growth = fina.iloc[0].get("netprofit_yoy", 0)
             if pd.isna(latest_growth):
                 latest_growth = 0
 
             score.latest_eps_growth = latest_growth
-
             min_g = self.p["c_min_growth"]
 
             if latest_growth >= min_g * 2:
@@ -411,9 +443,8 @@ class CanslimScreener:
             elif latest_growth > 0:
                 pts = latest_growth / min_g * 60
             else:
-                pts = max(0, 20 + latest_growth)  # 负增长扣分
+                pts = max(0, 20 + latest_growth)
 
-            # 加速增长 bonus
             if len(fina) >= 2:
                 prev_growth = fina.iloc[1].get("netprofit_yoy", 0)
                 if not pd.isna(prev_growth) and latest_growth > prev_growth + self.p["c_acceleration_bonus"]:
@@ -421,31 +452,30 @@ class CanslimScreener:
                     score.flags.append("盈利加速↑")
 
             return round(min(100, max(0, pts)), 1)
-
         except Exception:
             return 30
 
-    def _score_a(self, ts_code: str, score: StockScore) -> float:
-        """A - 年度盈利质量"""
+    def _score_c(self, ts_code: str, score: StockScore) -> float:
+        """向后兼容：旧入口内部转到 with_data 版本"""
+        fina = self.fetcher.get_financial_indicator(ts_code)
+        return self._score_c_with_data(fina, score)
+
+    def _score_a_with_data(self, fina: pd.DataFrame, score: StockScore) -> float:
+        """A - 年度盈利质量（使用预拉取财务数据）"""
         try:
-            fina = self.fetcher.get_financial_indicator(ts_code)
-            if fina.empty:
+            if fina is None or fina.empty:
                 return 30
 
-            # 取年报数据
-            annual = fina[fina["end_date"].str.endswith("1231")].sort_values("end_date", ascending=False)
+            annual = fina[fina["end_date"].astype(str).str.endswith("1231")].sort_values("end_date", ascending=False)
             if annual.empty:
                 return 30
 
-            # ROE
             latest_roe = annual.iloc[0].get("roe_dt", 0)
             if pd.isna(latest_roe):
                 latest_roe = 0
             score.latest_roe = latest_roe
 
             pts = 0
-
-            # ROE 评分
             min_roe = self.p["a_min_roe"]
             if latest_roe >= min_roe * 1.5:
                 pts += 50
@@ -453,44 +483,41 @@ class CanslimScreener:
                 pts += 30 + (latest_roe - min_roe) / (min_roe * 0.5) * 20
             elif latest_roe > 0:
                 pts += latest_roe / min_roe * 30
-            else:
-                pts += 0
 
-            # 连续增长
             if len(annual) >= self.p["a_min_years"]:
                 roe_series = annual.head(self.p["a_min_years"])["roe_dt"].tolist()
                 if all(not pd.isna(r) and r >= min_roe for r in roe_series):
                     pts += 30
                     score.flags.append(f"ROE连续{self.p['a_min_years']}年>{min_roe}%")
 
-            # 营收增速
             rev_growth = annual.iloc[0].get("or_yoy", 0)
             if not pd.isna(rev_growth) and rev_growth >= self.p["a_min_revenue_growth"]:
                 pts += 20
                 score.flags.append(f"营收+{rev_growth:.0f}%")
 
             return round(min(100, max(0, pts)), 1)
-
         except Exception:
             return 30
 
-    def _score_n(self, ts_code: str) -> float:
-        """N - 创新高 + 突破"""
+    def _score_a(self, ts_code: str, score: StockScore) -> float:
+        """向后兼容：旧入口内部转到 with_data 版本"""
+        fina = self.fetcher.get_financial_indicator(ts_code)
+        return self._score_a_with_data(fina, score)
+
+    def _score_n_with_data(self, daily: pd.DataFrame) -> float:
+        """N - 创新高 + 突破（使用预拉取日线）"""
         try:
-            df = self.fetcher.get_stock_daily(ts_code, days=self.p["n_new_high_days"])
-            if df.empty or len(df) < 20:
+            if daily is None or daily.empty or len(daily) < 20:
                 return 30
+            df = daily.sort_values("trade_date").reset_index(drop=True)
+            df_n = df.tail(max(60, self.p["n_new_high_days"]))
 
-            df = df.sort_values("trade_date").reset_index(drop=True)
-            latest_close = df.iloc[-1]["close"]
-            high_n = df["high"].max()
-
-            # 距离N日高点的位置
+            latest_close = df_n.iloc[-1]["close"]
+            high_n = df_n["high"].max()
             ratio = latest_close / high_n if high_n > 0 else 0
 
-            pts = 0
             if ratio >= 0.97:
-                pts = 80  # 接近或创新高
+                pts = 80
             elif ratio >= 0.90:
                 pts = 60
             elif ratio >= 0.80:
@@ -498,38 +525,35 @@ class CanslimScreener:
             else:
                 pts = 20
 
-            # 突破时放量
-            if len(df) >= 5 and "vol" in df.columns:
-                vol_avg = df["vol"].tail(20).mean()
-                vol_latest = df["vol"].iloc[-1]
+            if len(df_n) >= 5 and "vol" in df_n.columns:
+                vol_avg = df_n["vol"].tail(20).mean()
+                vol_latest = df_n["vol"].iloc[-1]
                 if vol_latest > vol_avg * self.p["s_volume_expansion"] and ratio >= 0.95:
                     pts = min(100, pts + 20)
 
             return round(min(100, max(0, pts)), 1)
-
         except Exception:
             return 30
 
-    def _score_s(self, ts_code: str, score: StockScore) -> float:
-        """S - 供需"""
-        try:
-            pts = 50  # 基础分
+    def _score_n(self, ts_code: str) -> float:
+        """向后兼容：旧入口内部转到 with_data 版本"""
+        df = self.fetcher.get_stock_daily(ts_code, days=max(70, self.p["n_new_high_days"]))
+        return self._score_n_with_data(df)
 
-            # 流通市值: 中等偏好
+    def _score_s_with_data(self, daily: pd.DataFrame, score: StockScore) -> float:
+        """S - 供需（使用预拉取日线）"""
+        try:
+            pts = 50
             mv = score.circ_mv
             if mv > 0:
                 mv_yi = mv / 1e8
                 if 50 <= mv_yi <= 300:
-                    pts += 30  # 中盘股最佳
+                    pts += 30
                 elif 30 <= mv_yi <= 500:
                     pts += 15
-                else:
-                    pts += 0
 
-            # 量能: 近5日放量
-            df = self.fetcher.get_stock_daily(ts_code, days=30)
-            if not df.empty and "vol" in df.columns:
-                df = df.sort_values("trade_date")
+            if daily is not None and not daily.empty and "vol" in daily.columns:
+                df = daily.sort_values("trade_date")
                 vol_5 = df["vol"].tail(5).mean()
                 vol_20 = df["vol"].tail(20).mean()
                 if vol_20 > 0:
@@ -540,40 +564,55 @@ class CanslimScreener:
                         pts += 10
 
             return round(min(100, max(0, pts)), 1)
-
         except Exception:
             return 40
 
-    def _score_l(self, ts_code: str, rs_data: dict, score: StockScore) -> float:
-        """L - 相对强度 (简化版: 用60日涨幅排名)"""
+    def _score_s(self, ts_code: str, score: StockScore) -> float:
+        """向后兼容：旧入口内部转到 with_data 版本"""
+        df = self.fetcher.get_stock_daily(ts_code, days=70)
+        return self._score_s_with_data(df, score)
+
+    def _score_l_with_data(
+        self,
+        daily: pd.DataFrame,
+        rs_data: Dict[str, float],
+        score: StockScore,
+    ) -> float:
+        """L - 领导力（使用预拉取日线 + 全市场 RS）"""
         try:
-            df = self.fetcher.get_stock_daily(ts_code, days=70)
-            if df.empty or len(df) < 60:
+            if daily is None or daily.empty or len(daily) < 60:
                 return 30
 
-            df = df.sort_values("trade_date")
+            df = daily.sort_values("trade_date")
             ret_60 = (df.iloc[-1]["close"] / df.iloc[-61]["close"] - 1) * 100 if len(df) > 60 else 0
 
-            # 简化: 用涨幅绝对值映射到分数
-            # 实际应该和全市场排名比较
-            if ret_60 > 30:
-                pts = 95
-            elif ret_60 > 20:
-                pts = 80
-            elif ret_60 > 10:
-                pts = 65
-            elif ret_60 > 0:
-                pts = 50
-            elif ret_60 > -10:
-                pts = 30
+            # 优先使用全市场百分位，失败时回退到绝对涨幅映射
+            rs_pctile = float(rs_data.get(score.ts_code, 0) or 0)
+            if rs_pctile > 0:
+                pts = rs_pctile
             else:
-                pts = 10
+                if ret_60 > 30:
+                    pts = 95
+                elif ret_60 > 20:
+                    pts = 80
+                elif ret_60 > 10:
+                    pts = 65
+                elif ret_60 > 0:
+                    pts = 50
+                elif ret_60 > -10:
+                    pts = 30
+                else:
+                    pts = 10
 
-            score.rs_rank = pts
-            return round(pts, 1)
-
+            score.rs_rank = round(float(pts), 1)
+            return round(float(pts), 1)
         except Exception:
             return 30
+
+    def _score_l(self, ts_code: str, rs_data: dict, score: StockScore) -> float:
+        """向后兼容：旧入口内部转到 with_data 版本"""
+        df = self.fetcher.get_stock_daily(ts_code, days=70)
+        return self._score_l_with_data(df, rs_data, score)
 
     def _score_risk(self, ts_code: str) -> float:
         """风控维度: 商誉/负债/质押"""

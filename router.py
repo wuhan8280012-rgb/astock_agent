@@ -39,6 +39,14 @@ except Exception:
 from data_fetcher import get_fetcher
 from scratchpad import Scratchpad
 from knowledge_base import KnowledgeBase, init_default_knowledge
+from debate import DebateEngine, needs_debate
+
+try:
+    from cron_and_tools import ToolCenter, ContextCompactor, CronEngine
+except Exception:
+    ToolCenter = None
+    ContextCompactor = None
+    CronEngine = None
 
 # EventLog + Brain（可选）
 _event_log = None
@@ -56,6 +64,7 @@ except Exception:
 # Skills
 from skills.sentiment import SentimentSkill
 from skills.sector_rotation import SectorRotationSkill
+from skills.sector_stage_filter import SectorStageFilter
 from skills.macro_monitor import MacroSkill
 from skills.risk_control import RiskControlSkill
 
@@ -90,6 +99,12 @@ ROUTES = {
         "keywords": ["板块", "行业", "轮动", "强势", "电子", "计算机", "医药", "新能源",
                       "AI", "半导体", "消费", "金融", "周期", "哪个板块", "追"],
         "skills": ["sector_rotation"],
+    },
+    "sector_stage": {
+        "name": "板块Stage联合过滤",
+        "description": "板块相对强度+黑名单+底部/收紧/R:R过滤",
+        "keywords": ["板块轮动", "板块分析", "强势板块", "资金流向", "选股", "底部", "大底", "Stage", "stage", "哪些板块", "板块排名", "轮动"],
+        "skills": ["sector_rotation", "sector_stage"],
     },
     "macro_liquidity": {
         "name": "宏观流动性",
@@ -130,28 +145,30 @@ class Router:
         self.sp = Scratchpad()
         self.kb = init_default_knowledge()
         self.llm = _llm
-        self.use_llm = bool(self.llm and self.llm.has_key()) or bool(CLAUDE_API_KEY)
+        self.use_llm = self._llm_available() or bool(CLAUDE_API_KEY)
         self.event_log = event_log if event_log is not None else _event_log
         self.brain = brain if brain is not None else _brain
-        self.compactor = ContextCompactor(max_tokens=8000)
+        self.compactor = ContextCompactor(max_tokens=8000) if ContextCompactor else None
+        self.debate_engine = DebateEngine(self.llm)
+
+    def _llm_available(self) -> bool:
+        if not self.llm:
+            return False
+        if hasattr(self.llm, "has_key"):
+            try:
+                return bool(self.llm.has_key())
+            except Exception:
+                return False
+        return hasattr(self.llm, "chat")
 
     def answer(self, question: str) -> str:
-        """
-        回答用户问题
-
-        流程:
-          1. 路由: 理解问题 → 选择1-2个Skill
-          2. 执行: 运行选中的Skill
-          3. 回答: 整合结果生成答案
-        """
+        """增强版回答流程: 信息查询走快速路径，决策问题走辩论"""
         print(f"\n💬 问题: {question}")
-
-        # Step 1: 路由
         route_keys = self._route(question)
-        route_names = [
-            (ToolCenter.get_route(k) or {}).get("name") or ROUTES.get(k, {}).get("name", k)
-            for k in route_keys
-        ]
+        route_names = []
+        for k in route_keys:
+            route_info = (ToolCenter.get_route(k) if ToolCenter else None) or ROUTES.get(k, {})
+            route_names.append(route_info.get("name", k))
         print(f"🔀 路由: {' + '.join(route_names)}")
 
         # 写入 EventLog（若可用）
@@ -169,16 +186,49 @@ class Router:
         except Exception:
             pass
 
-        # Step 2: 执行Skills
         skill_results = self._execute_skills(route_keys, question)
+        brief_context = self._build_brief_context(skill_results)
 
-        # Step 3: 生成回答
-        if self.use_llm:
-            answer = self._answer_with_llm(question, skill_results)
+        env_score = 65
+        env_brief = ""
+        if "market_environment" in skill_results:
+            env_data = skill_results["market_environment"]
+            if isinstance(env_data, dict):
+                env_score = env_data.get("total_score", 65)
+                env_brief = f"[环境] {env_score}/100({env_data.get('level', '?')})"
+
+        if needs_debate(question, route_keys) and self._llm_available():
+            risk_brief = ""
+            risk_data = skill_results.get("risk")
+            if isinstance(risk_data, dict) and "error" not in risk_data:
+                total = float(risk_data.get("total_position", 0))
+                limit = float(risk_data.get("max_position_limit", 0))
+                alerts = risk_data.get("portfolio_alerts", [])
+                risk_brief = f"[风控] 仓位{total*100:.0f}%/{limit*100:.0f}%上限 | 预警{len(alerts)}条"
+            elif risk_data:
+                risk_brief = str(risk_data)[:200]
+
+            debate_result = self.debate_engine.run(
+                question=question,
+                context_brief=brief_context,
+                env_score=env_score,
+                env_brief=env_brief,
+                risk_brief=risk_brief,
+            )
+
+            if self.brain:
+                try:
+                    self.brain.learn_from_output("debate", question, debate_result.to_dict())
+                except Exception:
+                    pass
+
+            answer = self._format_debate_answer(question, debate_result, brief_context)
         else:
-            answer = self._answer_with_template(question, route_keys, skill_results)
+            if self.use_llm:
+                answer = self.debate_engine.run_quick(question, brief_context)
+            else:
+                answer = self._answer_with_template(question, route_keys, skill_results)
 
-        # 记录到Scratchpad
         self.sp.log("router", output_data={
             "question": question,
             "routes": route_keys,
@@ -186,6 +236,61 @@ class Router:
         })
 
         return answer
+
+    def _build_brief_context(self, skill_results: dict) -> str:
+        """
+        将所有 Skill 结果转为压缩上下文
+        优先用 to_brief()，回退到 to_dict() 截断
+        """
+        parts = []
+        for _, result in skill_results.items():
+            if result is None:
+                continue
+            if hasattr(result, "to_brief"):
+                parts.append(result.to_brief())
+            elif isinstance(result, dict):
+                if "total_score" in result and "scores" in result:
+                    s = result["scores"]
+                    parts.append(
+                        f"[环境] {result['total_score']}/100({result.get('level','?')}) "
+                        f"趋势{s.get('trend',0)} 情绪{s.get('sentiment',0)} "
+                        f"量能{s.get('volume',0)} 板块{s.get('sector',0)}"
+                    )
+                else:
+                    parts.append(json.dumps(result, ensure_ascii=False)[:200])
+            else:
+                parts.append(str(result)[:200])
+        return "\n".join(parts)
+
+    def _format_debate_answer(self, question: str, result, context: str) -> str:
+        """格式化辩论结果为用户可读回答"""
+        del question
+        del context
+        sections = []
+
+        if result.env_gate == "拦截":
+            sections.append(f"⛔ 环境门控: {result.verdict}")
+            return "\n".join(sections)
+
+        icon = {"买入": "🟢", "持有": "🔵", "减仓": "🟡", "卖出": "🔴", "观望": "⚪"}.get(result.action, "❓")
+        sections.append(f"{icon} **决策: {result.action}** (置信度 {result.confidence}%)")
+        sections.append(f"理由: {result.verdict}")
+        sections.append(f"\n📈 看多要点:\n{result.bull_case}")
+        sections.append(f"\n📉 看空要点:\n{result.bear_case}")
+
+        if result.risk_perspectives:
+            rp = result.risk_perspectives
+            sections.append("\n🛡️ 风控三视角:")
+            sections.append(f"  进攻: {rp.get('aggressive', 'N/A')}")
+            sections.append(f"  均衡: {rp.get('neutral', 'N/A')}")
+            sections.append(f"  防守: {rp.get('conservative', 'N/A')}")
+
+        if result.env_gate == "警告":
+            sections.append("\n⚠️ 环境偏弱，已降低置信度")
+
+        t = result.token_usage
+        sections.append(f"\n---\n🔧 辩论耗时{result.elapsed_sec:.1f}s tokens≈{t.get('input',0)+t.get('output',0)}")
+        return "\n".join(sections)
 
     # ========================================================
     # 路由层
@@ -198,6 +303,8 @@ class Router:
 
     def _route_with_keywords(self, question: str) -> List[str]:
         """关键词匹配路由 (离线模式)，使用 ToolCenter 注册的路由表"""
+        if not ToolCenter:
+            return ["market_sentiment"]
         matches = ToolCenter.match_by_keywords(question, top_k=3)
         if matches:
             return matches
@@ -206,7 +313,7 @@ class Router:
     def _route_with_llm(self, question: str) -> List[str]:
         """LLM路由 (DeepSeek 优先，否则 Claude)，工具列表来自 ToolCenter，注入 Brain 上下文"""
         try:
-            tool_prompt = ToolCenter.get_router_prompt()
+            tool_prompt = ToolCenter.get_router_prompt() if ToolCenter else ""
             brain_context = ""
             if self.brain:
                 brain_context = self.brain.get_context_for_prompt(question)
@@ -222,7 +329,7 @@ class Router:
 回答(只输出key):"""
             messages = [{"role": "user", "content": content}]
 
-            if self.llm and self.llm.has_key():
+            if self._llm_available():
                 text = self.llm.call_for_router(messages)
             else:
                 import anthropic
@@ -235,7 +342,7 @@ class Router:
                 text = response.content[0].text.strip()
 
             keys = [k.strip() for k in text.split(",")]
-            valid = [k for k in keys if ToolCenter.get_route(k) or k in ROUTES]
+            valid = [k for k in keys if (ToolCenter and ToolCenter.get_route(k)) or k in ROUTES]
             return valid if valid else ["market_sentiment"]
 
         except Exception as e:
@@ -251,7 +358,7 @@ class Router:
         skills_to_run = set()
 
         for key in route_keys:
-            r = ToolCenter.get_route(key) or ROUTES.get(key)
+            r = (ToolCenter.get_route(key) if ToolCenter else None) or ROUTES.get(key)
             if r:
                 for skill in r.get("skills", []):
                     skills_to_run.add(skill)
@@ -265,7 +372,10 @@ class Router:
                     results["sentiment"] = r.to_dict()
                     self.sp.log("sentiment", output_data=r.to_dict())
                     if self.brain and r:
-                        self.brain.learn_from_output("sentiment", question, r)
+                        try:
+                            self.brain.learn_from_output("sentiment", question, r.to_brief())
+                        except Exception:
+                            pass
 
                 elif skill_name == "sector_rotation":
                     s = SectorRotationSkill()
@@ -273,7 +383,10 @@ class Router:
                     results["sector"] = r.to_dict()
                     self.sp.log("sector_rotation", output_data=r.to_dict())
                     if self.brain and r:
-                        self.brain.learn_from_output("sector_rotation", question, r)
+                        try:
+                            self.brain.learn_from_output("sector_rotation", question, r.to_brief())
+                        except Exception:
+                            pass
 
                 elif skill_name == "macro":
                     s = MacroSkill()
@@ -281,7 +394,21 @@ class Router:
                     results["macro"] = r.to_dict()
                     self.sp.log("macro", output_data=r.to_dict())
                     if self.brain and r:
-                        self.brain.learn_from_output("macro", question, r)
+                        try:
+                            self.brain.learn_from_output("macro", question, r.to_brief())
+                        except Exception:
+                            pass
+
+                elif skill_name == "sector_stage":
+                    s = SectorStageFilter()
+                    r = s.analyze(verbose=False)
+                    results["sector_stage"] = r.to_dict()
+                    self.sp.log("sector_stage", output_data=r.to_dict())
+                    if self.brain and r:
+                        try:
+                            self.brain.learn_from_output("sector_stage", question, r.to_brief())
+                        except Exception:
+                            pass
 
                 elif skill_name == "risk":
                     from pathlib import Path
@@ -295,7 +422,10 @@ class Router:
                         results["risk"] = r.to_dict()
                         self.sp.log("risk", output_data=r.to_dict())
                         if self.brain and r:
-                            self.brain.learn_from_output("risk", question, r)
+                            try:
+                                self.brain.learn_from_output("risk", question, r.to_brief())
+                            except Exception:
+                                pass
                     else:
                         results["risk"] = {"error": "未配置持仓"}
 
@@ -394,6 +524,17 @@ class Router:
             m = results["macro"]
             parts.append(f"**流动性: {m.get('liquidity_level', '?')}**")
             parts.append(f"影响: {m.get('market_impact', '')}")
+            parts.append("")
+
+        if "sector_stage" in results and "error" not in results.get("sector_stage", {}):
+            st = results["sector_stage"]
+            parts.append(f"**Stage过滤:** {st.get('summary', '')}")
+            leaders = st.get("leaders", [])
+            if leaders:
+                parts.append("  领涨: " + ", ".join([x.get("name", "") for x in leaders[:3]]))
+            blacks = st.get("blacklisted", [])
+            if blacks:
+                parts.append("  黑名单: " + ", ".join([x.get("name", "") for x in blacks[:3]]))
             parts.append("")
 
         if "risk" in results:
@@ -500,7 +641,7 @@ class Router:
 分析数据:
 {data_str}"""
 
-            if self.llm and self.llm.has_key():
+            if self._llm_available():
                 reply = self.llm.chat(
                     user_content,
                     system="你是A股投研助手，根据数据简洁回答。",

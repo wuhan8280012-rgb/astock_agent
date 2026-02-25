@@ -176,6 +176,19 @@ def register_all_skills(tool_center_class=None):
         skills=["sector_rotation"],
     )
 
+    # ── #2b 板块Stage联合过滤 ──
+    tc.register_route(
+        route_key="sector_stage",
+        name="板块Stage联合过滤",
+        description="板块相对强度+黑名单+底部/收紧/R:R过滤，用于前置筛选",
+        keywords=[
+            "板块轮动", "板块分析", "强势板块", "资金流向",
+            "选股", "底部", "大底", "stage", "Stage",
+            "哪些板块", "板块排名", "轮动",
+        ],
+        skills=["sector_rotation", "sector_stage"],
+    )
+
     # ── #3 CANSLIM选股 ──
     tc.register_route(
         route_key="canslim_screening",
@@ -330,6 +343,7 @@ class AgentSystem:
         self.fetcher = None
         self.market_env = None
         self.signal_gen = None
+        self.trade_scanner = None
         self.cron = None
         self.journal = None
         self.workflow = None
@@ -410,8 +424,10 @@ class AgentSystem:
     def _init_data_fetcher(self):
         try:
             from data_fetcher import get_fetcher
-            self.fetcher = get_fetcher()
-            self._init_log.append("✅ DataFetcher")
+            from data_cache import DailyCache
+            raw_fetcher = get_fetcher()
+            self.fetcher = DailyCache(raw_fetcher)
+            self._init_log.append("✅ DataFetcher + DailyCache")
         except Exception as e:
             self._init_log.append(f"⚠️ DataFetcher: {e}")
 
@@ -436,6 +452,13 @@ class AgentSystem:
         except Exception as e:
             self._init_log.append(f"⚠️ TradeSignalGenerator: {e}")
 
+        try:
+            from trade_signal import TradeSignalScanner
+            self.trade_scanner = TradeSignalScanner()
+            self._init_log.append("✅ TradeSignalScanner (买卖触发)")
+        except Exception as e:
+            self._init_log.append(f"⚠️ TradeSignalScanner: {e}")
+
     def _register_skills(self):
         count = register_all_skills()
         self._init_log.append(f"✅ ToolCenter ({count} 个路由)")
@@ -443,7 +466,10 @@ class AgentSystem:
     def _init_router(self):
         try:
             from router import Router
+            from debate import DebateEngine
             self.router = Router(event_log=self.event_log, brain=self.brain)
+            if self.llm and getattr(self.router, "debate_engine", None) is None:
+                self.router.debate_engine = DebateEngine(self.llm)
             self._init_log.append("✅ Router")
         except Exception as e:
             self._init_log.append(f"⚠️ Router: {e}")
@@ -494,8 +520,15 @@ class AgentSystem:
                 llm=self.llm,
                 signal_generator=self.signal_gen,
                 market_env=self.market_env,
+                trade_scanner=self.trade_scanner,
             )
             self._init_log.append("✅ DailyWorkflow (4命令闭环)")
+
+            # 将 Cron 的 post_market_review 接到工作流盘后链路
+            if self.cron and "post_market_review" in getattr(self.cron, "_jobs", {}):
+                self.cron.register_callback("post_market_review_workflow", self.workflow.evening)
+                self.cron._jobs["post_market_review"].callback = "post_market_review_workflow"
+                self._init_log.append("  └─ Cron post_market_review → workflow.evening")
         except Exception as e:
             self._init_log.append(f"⚠️ DailyWorkflow: {e}")
 

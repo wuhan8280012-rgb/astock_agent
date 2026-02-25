@@ -63,6 +63,17 @@ class SectorReport:
             "summary": self.summary,
         }
 
+    def to_brief(self) -> str:
+        """压缩报告 (~60 tokens)"""
+        tops = []
+        for s in self.top_sectors[:5]:
+            tops.append(f"{s.name}({s.ret_20d:+.1f}%,{s.signal})")
+        signals = "; ".join(self.rotation_signals[:3]) if self.rotation_signals else "无"
+        return (
+            f"[板块] Top: {', '.join(tops)}\n"
+            f"  轮动信号: {signals}"
+        )
+
 
 class SectorRotationSkill:
     """板块轮动分析"""

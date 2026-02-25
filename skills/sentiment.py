@@ -61,6 +61,18 @@ class SentimentReport:
             ],
         }
 
+    def to_brief(self) -> str:
+        """压缩报告 (~50 tokens)，供 LLM 决策上下文"""
+        sig_parts = []
+        for s in self.signals[:5]:
+            sig_parts.append(f"{s.name}{s.score:+d}")
+        sigs = ",".join(sig_parts)
+        warn = " ⚠降级" if any("⚠" in (s.detail or "") for s in self.signals) else ""
+        return (
+            f"[情绪] {self.overall_level}({self.overall_score:+.1f}) "
+            f"仓位:{self.suggested_position} | {sigs}{warn}"
+        )
+
 
 class SentimentSkill:
     """A股市场情绪分析"""
@@ -69,7 +81,18 @@ class SentimentSkill:
         self.fetcher = get_fetcher()
 
     def analyze(self) -> SentimentReport:
-        """执行完整的情绪分析"""
+        """
+        执行情绪分析 (v6.2: 职责瘦身)
+
+        只保留短期温度计指标:
+          1. 涨跌比 (今日) — 市场宽度
+          2. 涨跌停 (今日) — 极端情绪
+          3. 北向资金 (今日+3日) — 外资情绪
+
+        已移除 (避免与 Macro/ME 重复):
+          - 两融余额 → MacroSkill 负责 (中期杠杆水位)
+          - 成交额   → MarketEnvironment 负责 (量能维度)
+        """
         report = SentimentReport(date=self.fetcher.get_latest_trade_date())
 
         # 1. 涨跌比分析
@@ -82,18 +105,8 @@ class SentimentSkill:
         if sig:
             report.signals.append(sig)
 
-        # 3. 北向资金分析
+        # 3. 北向资金分析 (短期: 今日+3日)
         sig = self._analyze_north_flow()
-        if sig:
-            report.signals.append(sig)
-
-        # 4. 两融余额分析
-        sig = self._analyze_margin()
-        if sig:
-            report.signals.append(sig)
-
-        # 5. 成交额分析
-        sig = self._analyze_volume()
         if sig:
             report.signals.append(sig)
 
@@ -183,16 +196,37 @@ class SentimentSkill:
     # 信号3: 北向资金
     # --------------------------------------------------------
     def _analyze_north_flow(self) -> Optional[SentimentSignal]:
-        """北向资金流向分析"""
+        """资金流向分析（北向→ETF→两融 三层降级）"""
         try:
-            df = self.fetcher.get_north_flow(days=10)
-            if df.empty or "north_money_yi" not in df.columns:
-                return None
+            try:
+                from fund_flow_proxy import FundFlowProxy
+                proxy = FundFlowProxy(self.fetcher)
+                flow = proxy.get_flow(days=10)
+            except Exception:
+                flow = None
 
-            # 最近一日
-            latest = df.iloc[-1]["north_money_yi"]
-            # 最近3日累计
-            recent_3d = df.tail(3)["north_money_yi"].sum()
+            if flow is None:
+                # 兼容回退：仍尝试旧北向接口
+                df = self.fetcher.get_north_flow(days=10)
+                if df.empty or "north_money_yi" not in df.columns:
+                    return None
+                latest = float(df.iloc[-1]["north_money_yi"])
+                recent_3d = float(df.tail(3)["north_money_yi"].sum())
+                source_tag = "北向"
+                degraded = False
+                confidence = 1.0
+            else:
+                if flow.source == "none":
+                    return None
+                latest = float(flow.latest_flow)
+                recent_3d = float(flow.flow_3d)
+                source_tag = {
+                    "northbound": "北向",
+                    "etf_fund_flow": "ETF资金流",
+                    "margin_enhanced": "融资替代",
+                }.get(flow.source, "?")
+                degraded = bool(flow.degraded)
+                confidence = float(flow.confidence)
 
             warn_thresh = PARAMS.get("north_flow_warn_threshold", -50)
             bull_thresh = PARAMS.get("north_flow_bull_threshold", 100)
@@ -208,17 +242,26 @@ class SentimentSkill:
             else:
                 level, score = "恐慌", -1
 
+            # 降级时按置信度收敛极端值
+            if degraded:
+                score = int(round(score * confidence))
+
             return SentimentSignal(
-                name="北向资金",
+                name="资金流向",
                 value=round(latest, 2),
                 level=level,
                 score=score,
-                detail=f"今日{latest:+.2f}亿 | 近3日累计{recent_3d:+.2f}亿",
+                detail=(
+                    f"[{source_tag}] 今日{latest:+.1f}亿 | 近3日{recent_3d:+.1f}亿"
+                    f"{' ⚠降级' if degraded else ''}"
+                ),
             )
         except Exception as e:
-            print(f"[Sentiment] 北向资金分析失败: {e}")
+            print(f"[Sentiment] 资金流向分析失败: {e}")
             return None
 
+    # ── 以下方法已废弃(v6.2)，保留代码供回退 ──
+    # 两融余额已移交 MacroSkill，成交额已移交 MarketEnvironment
     # --------------------------------------------------------
     # 信号4: 两融余额
     # --------------------------------------------------------
@@ -306,7 +349,12 @@ class SentimentSkill:
     # 综合评分
     # --------------------------------------------------------
     def _compute_overall(self, report: SentimentReport):
-        """综合评分及仓位建议"""
+        """
+        综合评分及仓位建议 (v6.2)
+
+        score 语义: +2=极热, -2=极冷 (事实描述)
+        仓位建议: 逆向策略 — 越热越谨慎，越冷越积极
+        """
         if not report.signals:
             report.overall_level = "数据不足"
             report.summary = "无法获取足够的市场数据来进行情绪评估"
@@ -316,27 +364,31 @@ class SentimentSkill:
         avg_score = np.mean(scores)
         report.overall_score = round(avg_score, 2)
 
-        # 映射为等级
+        # 等级 = 事实描述
         if avg_score >= 1.5:
             report.overall_level = "极度贪婪"
-            report.suggested_position = "≤30%仓位，警惕回调"
         elif avg_score >= 0.5:
             report.overall_level = "贪婪"
-            report.suggested_position = "50-70%仓位，逢高减仓"
         elif avg_score >= -0.5:
             report.overall_level = "中性"
-            report.suggested_position = "50%仓位，均衡配置"
         elif avg_score >= -1.5:
             report.overall_level = "恐慌"
-            report.suggested_position = "60-80%仓位，逢低加仓"
         else:
             report.overall_level = "极度恐慌"
-            report.suggested_position = "≥80%仓位，分批抄底"
 
-        # 生成摘要
-        parts = []
-        for s in report.signals:
-            parts.append(f"{s.name}:{s.level}({s.detail})")
+        # 仓位建议 = 逆向策略
+        contrarian_position = {
+            "极度贪婪": "≤30%仓位(逆向:极热→防守)",
+            "贪婪": "50-70%仓位(逆向:偏热→谨慎)",
+            "中性": "50%仓位(均衡配置)",
+            "恐慌": "60-80%仓位(逆向:偏冷→积极)",
+            "极度恐慌": "≥80%仓位(逆向:极冷→进攻)",
+        }
+        report.suggested_position = contrarian_position.get(
+            report.overall_level, "50%仓位(均衡配置)"
+        )
+
+        parts = [f"{s.name}:{s.level}({s.score:+d})" for s in report.signals]
         report.summary = " | ".join(parts)
 
 
