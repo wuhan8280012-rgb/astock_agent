@@ -570,6 +570,11 @@ def format_quick_report(features: dict, stock_code: str) -> str:
     return "\n".join(lines)
 
 
+def _async_llm_and_push(bundle: dict, stock_code: str) -> None:
+    """后台推送占位符（Task 5 将替换此函数）"""
+    pass
+
+
 def phase4_llm_synthesis(context_bundle: dict, stock_code: str) -> str:
     """用 LLM 综合分析所有阶段数据"""
     from llm_client import get_llm
@@ -648,6 +653,16 @@ def phase4_llm_synthesis(context_bundle: dict, stock_code: str) -> str:
             return llm.chat(user_prompt, system=SYSTEM_PROMPT, max_tokens=4000)
         except Exception as e2:
             return f"LLM 分析失败: {e2}"
+
+
+def _phase4_with_timeout(bundle: dict, stock_code: str) -> str:
+    """
+    Phase4 LLM 调用，带 LLM_HARD_TIMEOUT 硬超时。
+    超时抛 concurrent.futures.TimeoutError（即 FuturesTimeoutError）。
+    """
+    with ThreadPoolExecutor(max_workers=1) as p:
+        f = p.submit(phase4_llm_synthesis, bundle, stock_code)
+        return f.result(timeout=LLM_HARD_TIMEOUT)
 
 
 # ═══════════════════════════════════════════
@@ -898,6 +913,7 @@ def main():
     args = parser.parse_args()
 
     pure, full, market = normalize_code(args.code)
+    _wall_start = time.time()
     is_quiet = args.json
 
     context_bundle = {}
@@ -978,18 +994,45 @@ def main():
     if not is_quiet:
         print(f"  数据采集完成 {timings['data']}s", file=sys.stderr)
 
-    # Phase 4: LLM 综合分析
-    analysis = None
+    # ── Phase 4: LLM 综合分析（带墙钟检查 + 硬超时）────────────
+    analysis         = None
+    llm_degraded     = False   # True 表示走了快报降级路径
+
     if not args.no_llm:
-        if not is_quiet:
-            print("🤖 Phase 4: LLM 综合分析...", file=sys.stderr)
-        t0 = time.time()
-        try:
-            analysis = phase4_llm_synthesis(context_bundle, pure)
-        except Exception as e:
-            analysis = f"LLM 分析失败: {e}"
-            print(f"⚠️ Phase 4 失败: {e}", file=sys.stderr)
-        timings["phase4"] = round(time.time() - t0, 2)
+        elapsed_before_llm = time.time() - _wall_start
+        time_left = TOTAL_BUDGET - elapsed_before_llm
+
+        if time_left < LLM_HARD_TIMEOUT:
+            # 墙钟已超，直接降级
+            llm_degraded = True
+            if not is_quiet:
+                print(f"⚠️ 墙钟超限({elapsed_before_llm:.1f}s)，走快报降级", file=sys.stderr)
+        else:
+            if not is_quiet:
+                print(f"🤖 Phase4 LLM（剩余预算 {time_left:.0f}s）...", file=sys.stderr)
+            t0 = time.time()
+            try:
+                analysis = _phase4_with_timeout(context_bundle, pure)
+            except FuturesTimeoutError:
+                llm_degraded = True
+                if not is_quiet:
+                    print(f"⚠️ LLM 超时（>{LLM_HARD_TIMEOUT}s），走快报降级", file=sys.stderr)
+            except Exception as e:
+                analysis = f"LLM 分析失败: {e}"
+                print(f"⚠️ Phase4 失败: {e}", file=sys.stderr)
+            timings["phase4"] = round(time.time() - t0, 2)
+
+        if llm_degraded:
+            # 输出本地快报
+            features = extract_local_features(context_bundle, pure)
+            analysis = format_quick_report(features, pure)
+            # 后台推送全量 LLM 分析（Task 5 实现 _async_llm_and_push）
+            _t = threading.Thread(
+                target=_async_llm_and_push,
+                args=(context_bundle, pure),
+                daemon=True,
+            )
+            _t.start()
 
     # 保存 leaf + Obsidian 同步（仅在有 LLM 分析结果时）
     if analysis and not analysis.startswith("LLM 分析失败"):
