@@ -37,6 +37,10 @@ def _is_duplicate(event_id: str) -> bool:
 
 app = FastAPI(title="OpenClaw Feishu Bot")
 
+async def _handle_message(chat_id: str, text: str):
+    """后台任务：路由 → 分析 → 回发卡片（Task 6/7 实现）"""
+    print(f"[Bot] chat={chat_id}  text={text[:80]}")
+
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok", "service": "feishu-bot", "port": PORT}
@@ -64,6 +68,23 @@ async def feishu_events(request: Request, background_tasks: BackgroundTasks):
     event_id = header.get("event_id", "")
     if event_id and _is_duplicate(event_id):
         return JSONResponse({"code": 0, "msg": "duplicate"})
+
+    # ── 消息事件 ──
+    event_type = header.get("event_type", "")
+    if event_type == "im.message.receive_v1":
+        event    = payload.get("event", {})
+        message  = event.get("message", {})
+        msg_type = message.get("message_type", "")
+        chat_id  = message.get("chat_id", "")
+
+        if msg_type == "text" and chat_id:
+            try:
+                text = json.loads(message.get("content", "{}")).get("text", "").strip()
+            except Exception:
+                text = ""
+            if text:
+                background_tasks.add_task(_handle_message, chat_id, text)
+                return JSONResponse({"code": 0, "msg": "ok"})
 
     return JSONResponse({"code": 0, "msg": "ok"})
 
