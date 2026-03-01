@@ -88,7 +88,7 @@ def _call_daily() -> tuple[str, str]:
             [sys.executable, DAILY_SCRIPT],
             capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_DAILY, cwd=ASTOCK_DIR,
         )
-        out = r.stdout.strip() or "日报生成完成"
+        out = r.stdout.strip() or r.stderr.strip() or "日报生成完成"
         return "每日前瞻报告", out
     except subprocess.TimeoutExpired:
         return "每日前瞻报告", f"❌ 生成超时（>{SUBPROCESS_TIMEOUT_DAILY}s）"
