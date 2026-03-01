@@ -8,13 +8,24 @@ A股每日前瞻Agent - 全局配置
 # 注册地址: https://tushare.pro/register
 # ============================================================
 
-TUSHARE_TOKEN = ""
+TUSHARE_TOKEN = "ba015995912d9cc88c5eba6643f89c56769a5cfac861ae15ed4b8f0f"
 
 # ============================================================
-# Claude API 配置 (可选，用于生成自然语言报告)
+# 通义千问 DashScope 配置 (轻量任务: 路由/分类/摘要)
+# 控制台: https://dashscope.console.aliyun.com/
 # ============================================================
-CLAUDE_API_KEY = ""  # 留空则使用本地模板生成报告
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
+DASHSCOPE_API_KEY = "sk-266a007193374990b1be3ae0b55f20c0"
+
+# ============================================================
+# Claude API 配置 (深度推理: 复盘/分析)
+# ============================================================
+CLAUDE_API_KEY = "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"
+CLAUDE_MODEL = "claude-sonnet-4-6"
+
+# ============================================================
+# DeepSeek 配置 (备用 LLM)
+# ============================================================
+DEEPSEEK_API_KEY = "sk-acc855808a5f4481964bded3d11c3f34"
 
 # ============================================================
 # Brain 集成（盘后复盘、记忆、AutoJournal 依赖此开关）
@@ -145,6 +156,14 @@ SKILL_PARAMS = {
 # 企业微信机器人
 WECHAT_WEBHOOK = ""
 # 飞书机器人
-FEISHU_WEBHOOK = ""
+FEISHU_WEBHOOK = "https://open.feishu.cn/open-apis/bot/v2/hook/2d691eb3-0391-4886-8f02-3173e5518a63"
 # Server酱 (微信推送)
 SERVERCHAN_KEY = ""
+
+# ============================================================
+# 飞书自建应用 Bot（双向交互）
+# 开放平台: https://open.feishu.cn/app
+# ============================================================
+FEISHU_APP_ID             = "cli_xxxxxxxxxxxxxx"          # 凭证与基础信息
+FEISHU_APP_SECRET         = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+FEISHU_VERIFICATION_TOKEN = "xxxxxxxxxxxxxxxxxxxxxx"      # 事件订阅安全设置
