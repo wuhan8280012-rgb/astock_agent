@@ -21,6 +21,7 @@ import argparse
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, wait, as_completed, TimeoutError as FuturesTimeoutError
 import json
+import logging
 import os
 import subprocess
 import sys
@@ -35,6 +36,8 @@ from pathlib import Path
 
 ASTOCK_DIR = os.path.expanduser("~/project/astock_agent")
 sys.path.insert(0, ASTOCK_DIR)
+
+logger = logging.getLogger(__name__)
 
 # Skill 脚本路径
 QUOTE_SCRIPT = os.path.expanduser("~/.codex/skills/stock-quote/scripts/quote.py")
@@ -396,6 +399,10 @@ SKILL_TIMEOUTS    = {      # 各子进程独立 timeout（秒）
     "memu":     10,
 }
 
+# ── 后台推送去重（stock_code → last_push_ts）──────────────
+_async_push_seen: dict[str, float] = {}
+ASYNC_PUSH_DEDUP_TTL = 900   # 15 分钟内同一股票只推一次
+
 
 def _load_cache_prices(ts_code: str, days: int = 30) -> list:
     """
@@ -571,8 +578,93 @@ def format_quick_report(features: dict, stock_code: str) -> str:
 
 
 def _async_llm_and_push(bundle: dict, stock_code: str) -> None:
-    """后台推送占位符（Task 5 将替换此函数）"""
-    pass
+    """
+    后台线程：LLM 全量分析 → 飞书推送。
+    含：去重（15min）、CapabilityFrontier 异常记录、失败告警。
+    """
+    # ── 1. 去重检查 ──
+    now = time.time()
+    last = _async_push_seen.get(stock_code, 0)
+    if now - last < ASYNC_PUSH_DEDUP_TTL:
+        logger.info(f"[async_push] {stock_code} 15min 内已推送，跳过")
+        return
+    _async_push_seen[stock_code] = now
+
+    # ── 2. LLM 全量分析（不设额外超时，跑完为止）──
+    try:
+        full_analysis = phase4_llm_synthesis(bundle, stock_code)
+    except Exception as e:
+        full_analysis = None
+        _record_push_failure(
+            stock_code,
+            f"LLM 全量分析失败: {e}",
+            task_desc=f"后台 LLM 分析 {stock_code}",
+        )
+        _feishu_alert(f"[{stock_code}] LLM 全量分析失败", str(e))
+        return
+
+    # ── 3. 飞书推送 ──
+    try:
+        from feishu_bot import push_message_sync
+        ok = push_message_sync(
+            title=f"{stock_code} 深度分析",
+            content=full_analysis,
+        )
+        if not ok:
+            _record_push_failure(
+                stock_code,
+                "push_message_sync 返回 False（chat_id 未配置或发送失败）",
+                task_desc=f"飞书推送 {stock_code}",
+            )
+    except Exception as e:
+        _record_push_failure(
+            stock_code,
+            f"飞书推送异常: {e}",
+            task_desc=f"飞书推送 {stock_code}",
+        )
+        _feishu_alert(f"[{stock_code}] 飞书推送异常", str(e))
+
+    # ── 4. Obsidian 同步（复用原有逻辑，静默失败）──
+    try:
+        save_leaf_and_sync(full_analysis, stock_code, bundle)
+    except Exception:
+        pass
+
+
+def _record_push_failure(stock_code: str, reason: str, task_desc: str) -> None:
+    """写入 capability_frontier.json（静默，不抛异常）"""
+    try:
+        from openclaw_os.memory.capability_frontier import (
+            CapabilityFrontier, FailureType,
+        )
+        cf = CapabilityFrontier(
+            storage_path=os.path.join(
+                ASTOCK_DIR, "openclaw_os", "memory", "capability_frontier.json"
+            )
+        )
+        cf.log_failure(
+            task_description=task_desc,
+            failure_reason=reason,
+            failure_type=FailureType.SYSTEM,
+            confidence_score=0.8,
+            data_sufficiency=0.9,
+            model_limit_flag=False,
+        )
+    except Exception as e:
+        logger.warning(f"[capability_frontier] 记录失败时出错: {e}")
+
+
+def _feishu_alert(title: str, detail: str) -> None:
+    """发送飞书告警（静默，不抛异常）"""
+    try:
+        from feishu_bot import push_message_sync
+        push_message_sync(
+            title=f"⚠️ OpenClaw 告警: {title}",
+            content=f"**原因：** {detail}\n\n*自动告警，请检查日志*",
+            error=True,
+        )
+    except Exception:
+        pass
 
 
 def phase4_llm_synthesis(context_bundle: dict, stock_code: str) -> str:
