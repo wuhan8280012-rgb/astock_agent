@@ -24,7 +24,7 @@ PORT = 8765
 FEISHU_API = "https://open.feishu.cn/open-apis"
 
 # 命名常量，替代魔法数字
-SUBPROCESS_TIMEOUT_OPENCLAW = 120
+SUBPROCESS_TIMEOUT_OPENCLAW = 300
 SUBPROCESS_TIMEOUT_DAILY    = 180
 HTTP_TIMEOUT_TOKEN           = 10
 HTTP_TIMEOUT_SEND            = 15
@@ -68,11 +68,20 @@ def _route_message(text: str) -> tuple[str, str]:
     return _call_router(text)
 
 
+def _clean_env() -> dict:
+    """返回清除了畸形代理变量的环境变量副本"""
+    env = os.environ.copy()
+    for k in ("http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"):
+        env.pop(k, None)
+    return env
+
+
 def _call_openclaw(code: str) -> tuple[str, str]:
     try:
         r = subprocess.run(
             [sys.executable, OPENCLAW_SCRIPT, code],
-            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_OPENCLAW, cwd=ASTOCK_DIR,
+            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_OPENCLAW,
+            cwd=ASTOCK_DIR, env=_clean_env(),
         )
         out = r.stdout.strip() or r.stderr.strip() or "无输出"
         return f"{code} 分析", out
@@ -86,7 +95,8 @@ def _call_daily() -> tuple[str, str]:
     try:
         r = subprocess.run(
             [sys.executable, DAILY_SCRIPT],
-            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_DAILY, cwd=ASTOCK_DIR,
+            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_DAILY,
+            cwd=ASTOCK_DIR, env=_clean_env(),
         )
         out = r.stdout.strip() or r.stderr.strip() or "日报生成完成"
         return "每日前瞻报告", out
@@ -96,13 +106,56 @@ def _call_daily() -> tuple[str, str]:
         return "每日前瞻报告", f"❌ 调用失败: {e}"
 
 
+_LALA_INTRO = (
+    "Lala。wuhan 的 A 股量化助手，INTJ。\n\n"
+    "职责：分析个股/市场、找你方案里的漏洞、推动决策落地。\n"
+    "原则：结论先行，数据说话，不确定标置信度，发现你错了直接说。\n\n"
+    "发股票代码（如 000001.SH）开始分析，或直接问问题。"
+)
+
+_IDENTITY_PATTERNS = re.compile(
+    r"^(你是谁|你叫什么|介绍(一下)?自己|你是什么|who are you|what are you)", re.IGNORECASE
+)
+
+
 def _call_router(question: str) -> tuple[str, str]:
+    # 身份问题直接返回，不走 LLM（防止模型暴露底层身份）
+    if _IDENTITY_PATTERNS.match(question.strip()):
+        return "Lala", _LALA_INTRO
+
     try:
-        from router import Router
-        answer = Router().answer(question)
-        return "智能问答", answer
+        from openclaw_os import OpenClawOS
+        os_instance = OpenClawOS()
+        result = os_instance.handle(question, context={"question": question})
+        routing = result.get("routing")
+        execution = result.get("execution", {})
+
+        zone = routing.zone.value if routing else "unknown"
+        role = routing.primary_role.name if routing else "unknown"
+        confidence = f"{routing.confidence:.0%}" if routing else "?"
+
+        exec_status = execution.get("status", "unknown")
+        if exec_status == "success":
+            answer = execution.get("result", "")
+            title = "Lala"
+        elif exec_status in ("no_skill", "multi_match"):
+            from router import Router
+            answer = Router().answer(question)
+            title = "Lala"
+        else:
+            reason = execution.get("reason", exec_status)
+            answer = f"执行受阻: {reason}"
+            title = "Lala"
+
+        answer = f"{answer}\n\n---\n*路由: {zone}/{role}  置信度: {confidence}*"
+        return title, answer
     except Exception as e:
-        return "智能问答", f"❌ 路由失败: {e}"
+        try:
+            from router import Router
+            answer = Router().answer(question)
+            return "Lala", answer
+        except Exception as e2:
+            return "Lala", f"❌ 路由失败: {e}"
 
 
 async def _get_token() -> str:
@@ -110,7 +163,7 @@ async def _get_token() -> str:
     now = time.time()
     if _token_cache["token"] and now < _token_cache["expires_at"] - 60:
         return _token_cache["token"]
-    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_TOKEN) as c:
+    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_TOKEN, trust_env=False) as c:
         r = await c.post(
             f"{FEISHU_API}/auth/v3/tenant_access_token/internal",
             json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET},
@@ -156,7 +209,7 @@ async def send_card(
         "content":    json.dumps(card, ensure_ascii=False),
     }
 
-    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_SEND) as c:
+    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_SEND, trust_env=False) as c:
         resp = await c.post(
             f"{FEISHU_API}/im/v1/messages?receive_id_type=chat_id",
             headers={"Authorization": f"Bearer {token}"},
@@ -235,6 +288,49 @@ async def feishu_events(request: Request, background_tasks: BackgroundTasks):
                 return JSONResponse({"code": 0, "msg": "ok"})
 
     return JSONResponse({"code": 0, "msg": "ok"})
+
+# ─────────────────────────────────────────
+# 同步推送（供非 async 上下文调用，如后台线程）
+# ─────────────────────────────────────────
+
+FEISHU_DEFAULT_CHAT_ID: str = os.environ.get("FEISHU_DEFAULT_CHAT_ID", "")
+
+try:
+    from config import FEISHU_DEFAULT_CHAT_ID as _cfg_chat  # type: ignore
+    if _cfg_chat:
+        FEISHU_DEFAULT_CHAT_ID = _cfg_chat
+except Exception:
+    pass
+
+
+def push_message_sync(
+    title: str,
+    content: str,
+    chat_id: str = "",
+    error: bool = False,
+) -> bool:
+    """
+    幂等同步推送飞书消息（在普通线程中调用，自行管理 event loop）。
+
+    Returns True on success, False on failure（不抛异常）。
+    """
+    _id = chat_id or FEISHU_DEFAULT_CHAT_ID
+    if not _id:
+        print("[Bot] push_message_sync: 未配置 chat_id，跳过推送", file=sys.stderr)
+        return False
+    try:
+        loop = asyncio.new_event_loop()
+        try:
+            loop.run_until_complete(
+                send_card(_id, title, content, elapsed=0.0, error=error)
+            )
+        finally:
+            loop.close()
+        return True
+    except Exception as e:
+        print(f"[Bot] push_message_sync 失败: {e}", file=sys.stderr)
+        return False
+
 
 if __name__ == "__main__":
     import uvicorn
