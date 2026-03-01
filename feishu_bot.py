@@ -26,6 +26,8 @@ OPENCLAW_SCRIPT = os.path.join(ASTOCK_DIR, "openclaw_wrapper.py")
 DAILY_SCRIPT    = os.path.join(ASTOCK_DIR, "daily_agent.py")
 _executor = ThreadPoolExecutor(max_workers=3)
 
+_token_cache: dict = {"token": "", "expires_at": 0.0}
+
 _seen_events: dict[str, float] = {}
 DEDUP_TTL = 60  # 秒
 
@@ -89,11 +91,65 @@ def _call_router(question: str) -> tuple[str, str]:
         return "智能问答", f"❌ 路由失败: {e}"
 
 
-async def send_card(chat_id: str, title: str, content: str, elapsed: float = 0.0, error: bool = False):
-    """Task 7 实现，当前仅打印"""
-    icon = "❌" if error else "🤖"
-    print(f"[Bot] {icon} {title} → {chat_id}  ({elapsed:.1f}s)")
-    print(f"[Bot] {content[:200]}")
+async def _get_token() -> str:
+    """获取 tenant_access_token（带 60s 提前刷新）"""
+    now = time.time()
+    if _token_cache["token"] and now < _token_cache["expires_at"] - 60:
+        return _token_cache["token"]
+    async with httpx.AsyncClient(timeout=10) as c:
+        r = await c.post(
+            f"{FEISHU_API}/auth/v3/tenant_access_token/internal",
+            json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET},
+        )
+    data = r.json()
+    _token_cache["token"]      = data.get("tenant_access_token", "")
+    _token_cache["expires_at"] = now + data.get("expire", 7200)
+    return _token_cache["token"]
+
+
+async def send_card(
+    chat_id: str, title: str, content: str,
+    elapsed: float = 0.0, error: bool = False,
+):
+    """构造并发送飞书交互卡片"""
+    token    = await _get_token()
+    template = "red" if error else "blue"
+    icon     = "❌" if error else "🤖"
+
+    if len(content) > 3000:
+        content = content[:2900] + "\n\n…（内容过长已截断）"
+
+    note = f"⏱ {elapsed:.1f}s  |  OpenClaw"
+
+    card = {
+        "header": {
+            "title":    {"tag": "plain_text", "content": f"{icon} OpenClaw — {title}"},
+            "template": template,
+        },
+        "elements": [
+            {"tag": "div", "text": {"tag": "lark_md", "content": content}},
+            {"tag": "hr"},
+            {"tag": "note", "elements": [{"tag": "plain_text", "content": note}]},
+        ],
+    }
+
+    payload = {
+        "receive_id": chat_id,
+        "msg_type":   "interactive",
+        "content":    json.dumps(card, ensure_ascii=False),
+    }
+
+    async with httpx.AsyncClient(timeout=15) as c:
+        resp = await c.post(
+            f"{FEISHU_API}/im/v1/messages?receive_id_type=chat_id",
+            headers={"Authorization": f"Bearer {token}"},
+            json=payload,
+        )
+    data = resp.json()
+    if data.get("code") != 0:
+        print(f"[Bot] 发送卡片失败 code={data.get('code')} msg={data.get('msg')}")
+    else:
+        print(f"[Bot] 卡片已发送 chat={chat_id} elapsed={elapsed:.1f}s")
 
 
 async def _handle_message(chat_id: str, text: str):
