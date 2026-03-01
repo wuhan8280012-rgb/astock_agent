@@ -41,6 +41,12 @@ async def feishu_events(request: Request, background_tasks: BackgroundTasks):
             return Response(status_code=403, content="invalid token")
         return JSONResponse({"challenge": challenge})
 
+    # ── Token 校验（事件推送，非 challenge）──
+    header      = payload.get("header", {})
+    event_token = header.get("token", "")
+    if FEISHU_VERIFICATION_TOKEN and event_token != FEISHU_VERIFICATION_TOKEN:
+        return Response(status_code=403, content="invalid token")
+
     return JSONResponse({"code": 0, "msg": "ok"})
 
 if __name__ == "__main__":
