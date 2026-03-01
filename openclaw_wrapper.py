@@ -735,8 +735,8 @@ def main():
         print("⚡ 并行采集 Phase1/2/3...", file=sys.stderr)
     t_data_start = time.time()
 
-    with ThreadPoolExecutor(max_workers=6) as pool:
-        # Phase 1 & 2
+    pool = ThreadPoolExecutor(max_workers=6)
+    try:
         f_mem   = pool.submit(phase1_memory_recall, pure)
         f_memu  = pool.submit(phase2_memu_retrieve, pure)
 
@@ -761,37 +761,44 @@ def main():
             [pure, "--json", "--no-llm", "--quarters", "4"],
             SKILL_TIMEOUTS["earnings"],
         )
-
         all_futures = [f_mem, f_memu, f_quote, f_market, f_news, f_earnings]
         done, not_done = wait(all_futures, timeout=DATA_BUDGET)
-        for f in not_done:
-            f.cancel()
+    finally:
+        # wait=False：主线程立即继续，RUNNING 的任务在后台跑完（各自有 timeout）
+        pool.shutdown(wait=False, cancel_futures=True)
 
     # ── 组装 bundle ──────────────────────────────────────
-    def _safe_result(f, default):
+    def _safe_result(f, default, error_list=None, label=""):
+        if f not in done:
+            if error_list is not None:
+                error_list.append(f"{label}: timeout")
+            return default
         try:
-            return f.result() if f in done else default
-        except Exception:
+            return f.result()
+        except Exception as e:
+            if error_list is not None:
+                error_list.append(f"{label}: {e}")
             return default
 
     _DEFAULT_P1 = {"status": "timeout", "trading_rules": [], "stock_memories": [], "error": "timeout"}
     _DEFAULT_P2 = {"status": "timeout", "preferences": [], "error": "timeout"}
 
-    context_bundle["phase1"] = _safe_result(f_mem,  _DEFAULT_P1)
-    context_bundle["phase2"] = _safe_result(f_memu, _DEFAULT_P2)
+    context_bundle["phase1"] = _safe_result(f_mem,  _DEFAULT_P1, label="memory")
+    context_bundle["phase2"] = _safe_result(f_memu, _DEFAULT_P2, label="memu")
 
-    _q = _safe_result(f_quote, None)
+    _q = _safe_result(f_quote, None, label="quote")
     # quote fallback：akshare
     if _q is None:
         _q = _run_skill(QUOTE_SCRIPT, [pure, "--json"], SKILL_TIMEOUTS["quote"])
 
+    p3_errors: list = []
     context_bundle["phase3"] = {
         "status":          "ok" if _q else "partial",
         "quote":           _q,
-        "market_overview": _safe_result(f_market,   None),
-        "news":            _safe_result(f_news,     None),
-        "earnings":        _safe_result(f_earnings, None),
-        "errors":          [],
+        "market_overview": _safe_result(f_market,   None, p3_errors, "market"),
+        "news":            _safe_result(f_news,     None, p3_errors, "news"),
+        "earnings":        _safe_result(f_earnings, None, p3_errors, "earnings"),
+        "errors":          p3_errors,
     }
 
     timings["data"] = round(time.time() - t_data_start, 2)
