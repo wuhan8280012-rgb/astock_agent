@@ -397,6 +397,177 @@ SKILL_TIMEOUTS    = {      # 各子进程独立 timeout（秒）
 }
 
 
+def _load_cache_prices(ts_code: str, days: int = 30) -> list:
+    """
+    从 DataHub Parquet 缓存读近 N 日价格记录（BACKTEST 模式，不触发 API）。
+    返回 PriceRecord 列表（空列表表示缓存未就绪）。
+    """
+    try:
+        from datetime import timedelta
+        from openclaw_os.data.datahub import DataHub, DataMode, BacktestAPIViolation
+        hub = DataHub(
+            cache_dir=os.path.join(ASTOCK_DIR, "data", "parquet"),
+            mode=DataMode.BACKTEST,
+        )
+        end   = datetime.now().strftime("%Y%m%d")
+        start = (datetime.now() - timedelta(days=days + 10)).strftime("%Y%m%d")
+        try:
+            records = hub.get_price(ts_code, start, end)
+            return records[-days:] if len(records) > days else records
+        except BacktestAPIViolation:
+            return []
+    except Exception:
+        return []
+
+
+def extract_local_features(bundle: dict, ts_code: str = "") -> dict:
+    """
+    从 Phase3 结果 + DataHub 缓存计算本地特征，不调 LLM，不新增 API。
+
+    返回字段：
+        price, pct_chg, vs_ma20, dist_ma20_pct,
+        vol_ratio, market_score, earnings_grade,
+        limit_flag, atr, volatility_level
+    """
+    feat: dict = {
+        "price":           None,
+        "pct_chg":         None,
+        "vs_ma20":         None,   # "above" / "below" / "flat"
+        "dist_ma20_pct":   None,   # (price - MA20) / MA20 * 100，保留1位小数
+        "vol_ratio":       None,   # vol_5d / vol_20d
+        "market_score":    None,
+        "earnings_grade":  None,
+        "limit_flag":      None,   # "up" / "down" / None
+        "atr":             None,   # 14日 ATR（元）
+        "volatility_level": None,  # "低波" / "中波" / "高波"
+    }
+
+    p3 = bundle.get("phase3", {})
+
+    # ── 行情基础字段 ──
+    quote = p3.get("quote") or {}
+    feat["price"]   = quote.get("latest_price")
+    feat["pct_chg"] = quote.get("pct_change") or quote.get("pct_chg")
+
+    # 涨跌停标记
+    pct = feat["pct_chg"] or 0
+    if pct >= 9.5:
+        feat["limit_flag"] = "up"
+    elif pct <= -9.5:
+        feat["limit_flag"] = "down"
+
+    # ── 市场分 ──
+    mo = p3.get("market_overview") or {}
+    breadth = mo.get("breadth") or {}
+    feat["market_score"] = mo.get("env_score") or breadth.get("score")
+
+    # ── 财报评级 ──
+    earnings = p3.get("earnings") or {}
+    feat["earnings_grade"] = earnings.get("grade")
+
+    # ── ATR / MA20 / vol_ratio 来自 DataHub 缓存 ──
+    if ts_code:
+        full_code = ts_code
+        # 尝试补后缀
+        if "." not in full_code:
+            if full_code.startswith(("6", "9")):
+                full_code = f"{full_code}.SH"
+            else:
+                full_code = f"{full_code}.SZ"
+
+        records = _load_cache_prices(full_code, days=30)
+
+        if len(records) >= 5:
+            closes  = [r.close  for r in records]
+            highs   = [r.high   for r in records]
+            lows    = [r.low    for r in records]
+            volumes = [r.volume for r in records]
+
+            # MA20
+            if len(closes) >= 20:
+                ma20 = sum(closes[-20:]) / 20
+                price_now = feat["price"] or closes[-1]
+                feat["dist_ma20_pct"] = round((price_now - ma20) / ma20 * 100, 1)
+                feat["vs_ma20"] = (
+                    "above" if feat["dist_ma20_pct"] > 0.5
+                    else "below" if feat["dist_ma20_pct"] < -0.5
+                    else "flat"
+                )
+
+            # ATR（14日）
+            tr_list = []
+            for i in range(1, min(15, len(records))):
+                c, p_ = records[-i], records[-i - 1]
+                tr = max(c.high - c.low, abs(c.high - p_.close), abs(c.low - p_.close))
+                tr_list.append(tr)
+            if tr_list:
+                feat["atr"] = round(sum(tr_list) / len(tr_list), 2)
+                price_ref = feat["price"] or closes[-1]
+                atr_pct = feat["atr"] / price_ref * 100 if price_ref else 0
+                feat["volatility_level"] = (
+                    "高波" if atr_pct > 3
+                    else "中波" if atr_pct > 1.5
+                    else "低波"
+                )
+
+            # vol_ratio（5d/20d）
+            if len(volumes) >= 20:
+                v5  = sum(volumes[-5:])  / 5
+                v20 = sum(volumes[-20:]) / 20
+                feat["vol_ratio"] = round(v5 / v20, 2) if v20 else None
+
+    return feat
+
+
+def format_quick_report(features: dict, stock_code: str) -> str:
+    """
+    从本地特征生成 5 行快报，不调 LLM。
+    格式：数字优先，结论先行（与 SYSTEM_PROMPT 风格一致）。
+    """
+    ts = datetime.now().strftime("%H:%M")
+    lines = [f"⚡ {stock_code} 快报（{ts}，详细版稍后推飞书）\n"]
+
+    # 1. 市场
+    score = features.get("market_score")
+    score_str = f"{score}/100" if score is not None else "N/A"
+    lines.append(f"市场  {score_str}")
+
+    # 2. 价位
+    price   = features.get("price", "N/A")
+    pct     = features.get("pct_chg")
+    pct_str = f"{'+'if pct and pct>0 else ''}{pct:.1f}%" if pct is not None else "N/A"
+    vs      = features.get("vs_ma20", "N/A")
+    dist    = features.get("dist_ma20_pct")
+    dist_str = f"MA20 {'上方' if vs=='above' else '下方' if vs=='below' else '附近'} {abs(dist):.1f}%" if dist is not None else ""
+    limit   = features.get("limit_flag")
+    limit_str = " 【涨停】" if limit == "up" else " 【跌停】" if limit == "down" else ""
+    lines.append(f"价位  {price} ({pct_str}){limit_str} · {dist_str}")
+
+    # 3. 量价 + 波动
+    vr  = features.get("vol_ratio")
+    atr = features.get("atr")
+    vol_level = features.get("volatility_level", "")
+    vr_str  = f"量比 {vr}x {'放量' if vr and vr>1.2 else '缩量' if vr and vr<0.8 else '平量'}" if vr else "量比 N/A"
+    atr_str = f"· ATR {atr} ({vol_level})" if atr else ""
+    lines.append(f"量价  {vr_str} {atr_str}")
+
+    # 4. 财报
+    grade = features.get("earnings_grade", "N/A")
+    lines.append(f"财报  {grade}级")
+
+    # 5. 操作建议（纯规则，无 LLM）
+    score_val = score or 0
+    if score_val < 60:
+        advice = "环境 <60，禁止开仓，仅观察"
+    elif score_val < 75:
+        advice = "环境 60-75，半仓参与；" + ("涨停勿追" if limit == "up" else "注意量价背离" if vr and vr < 0.8 else "关注MA20支撑")
+    else:
+        advice = "环境 ≥75，可操作；" + ("注意追高风险" if limit == "up" else f"止损参考 MA20")
+
+    lines.append(f"结论  {advice}")
+    return "\n".join(lines)
+
+
 def phase4_llm_synthesis(context_bundle: dict, stock_code: str) -> str:
     """用 LLM 综合分析所有阶段数据"""
     from llm_client import get_llm
