@@ -459,7 +459,8 @@ def extract_local_features(bundle: dict, ts_code: str = "") -> dict:
     # ── 市场分 ──
     mo = p3.get("market_overview") or {}
     breadth = mo.get("breadth") or {}
-    feat["market_score"] = mo.get("env_score") or breadth.get("score")
+    _env = mo.get("env_score")
+    feat["market_score"] = _env if _env is not None else breadth.get("score")
 
     # ── 财报评级 ──
     earnings = p3.get("earnings") or {}
@@ -472,6 +473,8 @@ def extract_local_features(bundle: dict, ts_code: str = "") -> dict:
         if "." not in full_code:
             if full_code.startswith(("6", "9")):
                 full_code = f"{full_code}.SH"
+            elif full_code.startswith("8"):
+                full_code = f"{full_code}.BJ"
             else:
                 full_code = f"{full_code}.SZ"
 
@@ -479,8 +482,6 @@ def extract_local_features(bundle: dict, ts_code: str = "") -> dict:
 
         if len(records) >= 5:
             closes  = [r.close  for r in records]
-            highs   = [r.high   for r in records]
-            lows    = [r.low    for r in records]
             volumes = [r.volume for r in records]
 
             # MA20
@@ -533,7 +534,7 @@ def format_quick_report(features: dict, stock_code: str) -> str:
     lines.append(f"市场  {score_str}")
 
     # 2. 价位
-    price   = features.get("price", "N/A")
+    price   = features.get("price") if features.get("price") is not None else "N/A"
     pct     = features.get("pct_chg")
     pct_str = f"{'+'if pct and pct>0 else ''}{pct:.1f}%" if pct is not None else "N/A"
     vs      = features.get("vs_ma20", "N/A")
@@ -541,7 +542,8 @@ def format_quick_report(features: dict, stock_code: str) -> str:
     dist_str = f"MA20 {'上方' if vs=='above' else '下方' if vs=='below' else '附近'} {abs(dist):.1f}%" if dist is not None else ""
     limit   = features.get("limit_flag")
     limit_str = " 【涨停】" if limit == "up" else " 【跌停】" if limit == "down" else ""
-    lines.append(f"价位  {price} ({pct_str}){limit_str} · {dist_str}")
+    sep = f" · {dist_str}" if dist_str else ""
+    lines.append(f"价位  {price} ({pct_str}){limit_str}{sep}")
 
     # 3. 量价 + 波动
     vr  = features.get("vol_ratio")
@@ -552,8 +554,8 @@ def format_quick_report(features: dict, stock_code: str) -> str:
     lines.append(f"量价  {vr_str} {atr_str}")
 
     # 4. 财报
-    grade = features.get("earnings_grade", "N/A")
-    lines.append(f"财报  {grade}级")
+    grade = features.get("earnings_grade") or "N/A"
+    lines.append(f"财报  {grade}级" if grade != "N/A" else "财报  N/A")
 
     # 5. 操作建议（纯规则，无 LLM）
     score_val = score or 0
