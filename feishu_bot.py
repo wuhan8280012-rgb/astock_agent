@@ -293,13 +293,13 @@ async def feishu_events(request: Request, background_tasks: BackgroundTasks):
 # 同步推送（供非 async 上下文调用，如后台线程）
 # ─────────────────────────────────────────
 
-FEISHU_DEFAULT_CHAT_ID: str = os.environ.get("FEISHU_DEFAULT_CHAT_ID", "")
+_FEISHU_DEFAULT_CHAT_ID: str = os.environ.get("FEISHU_DEFAULT_CHAT_ID", "")
 
 try:
     from config import FEISHU_DEFAULT_CHAT_ID as _cfg_chat  # type: ignore
     if _cfg_chat:
-        FEISHU_DEFAULT_CHAT_ID = _cfg_chat
-except Exception:
+        _FEISHU_DEFAULT_CHAT_ID = _cfg_chat
+except (ImportError, AttributeError):
     pass
 
 
@@ -310,11 +310,11 @@ def push_message_sync(
     error: bool = False,
 ) -> bool:
     """
-    幂等同步推送飞书消息（在普通线程中调用，自行管理 event loop）。
+    同步阻塞推送飞书消息（在普通线程中调用，自行管理 event loop）。
 
     Returns True on success, False on failure（不抛异常）。
     """
-    _id = chat_id or FEISHU_DEFAULT_CHAT_ID
+    _id = chat_id or _FEISHU_DEFAULT_CHAT_ID
     if not _id:
         print("[Bot] push_message_sync: 未配置 chat_id，跳过推送", file=sys.stderr)
         return False
@@ -327,8 +327,18 @@ def push_message_sync(
         finally:
             loop.close()
         return True
+    except RuntimeError as e:
+        # 通常是在已有运行中的 event loop 内调用（如 Jupyter / FastAPI 上下文）
+        print(
+            f"[Bot] push_message_sync RuntimeError（可能存在运行中的 event loop，"
+            f"请改用 await send_card(...)）: {e}",
+            file=sys.stderr,
+        )
+        return False
     except Exception as e:
+        import traceback
         print(f"[Bot] push_message_sync 失败: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         return False
 
 
