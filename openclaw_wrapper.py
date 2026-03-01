@@ -658,11 +658,14 @@ def phase4_llm_synthesis(context_bundle: dict, stock_code: str) -> str:
 def _phase4_with_timeout(bundle: dict, stock_code: str) -> str:
     """
     Phase4 LLM 调用，带 LLM_HARD_TIMEOUT 硬超时。
-    超时抛 concurrent.futures.TimeoutError（即 FuturesTimeoutError）。
+    超时立即抛 FuturesTimeoutError，不等待 LLM 线程完成。
     """
-    with ThreadPoolExecutor(max_workers=1) as p:
-        f = p.submit(phase4_llm_synthesis, bundle, stock_code)
+    p = ThreadPoolExecutor(max_workers=1)
+    f = p.submit(phase4_llm_synthesis, bundle, stock_code)
+    try:
         return f.result(timeout=LLM_HARD_TIMEOUT)
+    finally:
+        p.shutdown(wait=False, cancel_futures=False)
 
 
 # ═══════════════════════════════════════════
@@ -1034,8 +1037,8 @@ def main():
             )
             _t.start()
 
-    # 保存 leaf + Obsidian 同步（仅在有 LLM 分析结果时）
-    if analysis and not analysis.startswith("LLM 分析失败"):
+    # 保存 leaf + Obsidian 同步（仅在有 LLM 分析结果时，且非降级快报）
+    if analysis and not analysis.startswith("LLM 分析失败") and not llm_degraded:
         if not is_quiet:
             print("🍃 保存分析结果到记忆树 + Obsidian...", file=sys.stderr)
         t0 = time.time()
