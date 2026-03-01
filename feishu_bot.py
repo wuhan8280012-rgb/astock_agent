@@ -133,7 +133,7 @@ async def send_card(
     template = "red" if error else "blue"
     icon     = "❌" if error else "🤖"
 
-    if len(content) > 3000:
+    if len(content) > CARD_CONTENT_TRUNCATE_AT:
         content = content[:CARD_CONTENT_TRUNCATE_AT] + "\n\n…（内容过长已截断）"
 
     note = f"⏱ {elapsed:.1f}s  |  OpenClaw"
