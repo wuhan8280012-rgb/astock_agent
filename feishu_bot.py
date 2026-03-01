@@ -3,8 +3,9 @@
 feishu_bot.py — 飞书 Bot × OpenClaw 双向集成
 端口 8765  |  POST /feishu/events  |  GET /healthz
 """
-import os, sys, json, re, time, asyncio
+import os, sys, json, re, time, asyncio, subprocess
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, BackgroundTasks
 from fastapi.responses import JSONResponse, Response
 import httpx
@@ -21,6 +22,13 @@ except ImportError:
 
 PORT = 8765
 FEISHU_API = "https://open.feishu.cn/open-apis"
+
+# 命名常量，替代魔法数字
+SUBPROCESS_TIMEOUT_OPENCLAW = 120
+SUBPROCESS_TIMEOUT_DAILY    = 180
+HTTP_TIMEOUT_TOKEN           = 10
+HTTP_TIMEOUT_SEND            = 15
+CARD_CONTENT_TRUNCATE_AT     = 2900
 
 OPENCLAW_SCRIPT = os.path.join(ASTOCK_DIR, "openclaw_wrapper.py")
 DAILY_SCRIPT    = os.path.join(ASTOCK_DIR, "daily_agent.py")
@@ -41,7 +49,15 @@ def _is_duplicate(event_id: str) -> bool:
     _seen_events[event_id] = now
     return False
 
-app = FastAPI(title="OpenClaw Feishu Bot")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    _executor.shutdown(wait=False, cancel_futures=True)
+    print("[Bot] executor 已关闭")
+
+
+app = FastAPI(title="OpenClaw Feishu Bot", lifespan=lifespan)
 
 def _route_message(text: str) -> tuple[str, str]:
     """返回 (title, reply_text)"""
@@ -53,31 +69,29 @@ def _route_message(text: str) -> tuple[str, str]:
 
 
 def _call_openclaw(code: str) -> tuple[str, str]:
-    import subprocess
     try:
         r = subprocess.run(
             [sys.executable, OPENCLAW_SCRIPT, code],
-            capture_output=True, text=True, timeout=120, cwd=ASTOCK_DIR,
+            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_OPENCLAW, cwd=ASTOCK_DIR,
         )
         out = r.stdout.strip() or r.stderr.strip() or "无输出"
         return f"{code} 分析", out
     except subprocess.TimeoutExpired:
-        return f"{code} 分析", "❌ 分析超时（>120s）"
+        return f"{code} 分析", f"❌ 分析超时（>{SUBPROCESS_TIMEOUT_OPENCLAW}s）"
     except Exception as e:
         return f"{code} 分析", f"❌ 调用失败: {e}"
 
 
 def _call_daily() -> tuple[str, str]:
-    import subprocess
     try:
         r = subprocess.run(
             [sys.executable, DAILY_SCRIPT],
-            capture_output=True, text=True, timeout=180, cwd=ASTOCK_DIR,
+            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_DAILY, cwd=ASTOCK_DIR,
         )
         out = r.stdout.strip() or "日报生成完成"
-        return "每日前瞻报告", out[:3000]
+        return "每日前瞻报告", out
     except subprocess.TimeoutExpired:
-        return "每日前瞻报告", "❌ 生成超时（>180s）"
+        return "每日前瞻报告", f"❌ 生成超时（>{SUBPROCESS_TIMEOUT_DAILY}s）"
     except Exception as e:
         return "每日前瞻报告", f"❌ 调用失败: {e}"
 
@@ -96,15 +110,18 @@ async def _get_token() -> str:
     now = time.time()
     if _token_cache["token"] and now < _token_cache["expires_at"] - 60:
         return _token_cache["token"]
-    async with httpx.AsyncClient(timeout=10) as c:
+    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_TOKEN) as c:
         r = await c.post(
             f"{FEISHU_API}/auth/v3/tenant_access_token/internal",
             json={"app_id": FEISHU_APP_ID, "app_secret": FEISHU_APP_SECRET},
         )
     data = r.json()
-    _token_cache["token"]      = data.get("tenant_access_token", "")
+    token = data.get("tenant_access_token", "")
+    if not token:
+        raise RuntimeError(f"飞书 token 为空，响应: {data}")
+    _token_cache["token"]      = token
     _token_cache["expires_at"] = now + data.get("expire", 7200)
-    return _token_cache["token"]
+    return token
 
 
 async def send_card(
@@ -117,7 +134,7 @@ async def send_card(
     icon     = "❌" if error else "🤖"
 
     if len(content) > 3000:
-        content = content[:2900] + "\n\n…（内容过长已截断）"
+        content = content[:CARD_CONTENT_TRUNCATE_AT] + "\n\n…（内容过长已截断）"
 
     note = f"⏱ {elapsed:.1f}s  |  OpenClaw"
 
@@ -139,7 +156,7 @@ async def send_card(
         "content":    json.dumps(card, ensure_ascii=False),
     }
 
-    async with httpx.AsyncClient(timeout=15) as c:
+    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT_SEND) as c:
         resp = await c.post(
             f"{FEISHU_API}/im/v1/messages?receive_id_type=chat_id",
             headers={"Authorization": f"Bearer {token}"},
@@ -153,15 +170,21 @@ async def send_card(
 
 
 async def _handle_message(chat_id: str, text: str):
-    t0   = time.time()
-    loop = asyncio.get_event_loop()
+    t0 = time.time()
+    loop = asyncio.get_running_loop()
+    title, reply, error_flag = "错误", "内部异常", True
     try:
         title, reply = await loop.run_in_executor(_executor, _route_message, text)
-        elapsed = time.time() - t0
-        await send_card(chat_id, title, reply, elapsed)
+        error_flag = False
     except Exception as e:
-        elapsed = time.time() - t0
-        await send_card(chat_id, "错误", str(e), elapsed, error=True)
+        print(f"[Bot] _route_message 异常: {e}")
+        reply = f"处理请求时发生错误: {e}"
+
+    elapsed = time.time() - t0
+    try:
+        await send_card(chat_id, title, reply, elapsed, error=error_flag)
+    except Exception as e:
+        print(f"[Bot] send_card 最终失败，无法通知用户: {e}")
 
 @app.get("/healthz")
 async def healthz():
@@ -169,8 +192,11 @@ async def healthz():
 
 @app.post("/feishu/events")
 async def feishu_events(request: Request, background_tasks: BackgroundTasks):
-    body    = await request.body()
-    payload = json.loads(body)
+    body = await request.body()
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError:
+        return JSONResponse({"code": 0, "msg": "invalid json"})
 
     # ── Challenge 校验（飞书配置事件订阅 URL 时触发一次）──
     if payload.get("type") == "url_verification":
