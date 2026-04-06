@@ -95,6 +95,8 @@ def make_range_mean_reversion_backtest(
     rsi_oversold: float = 35.0,
     rsi_overbought: float = 65.0,
     vol_weight: float = 0.40,
+    bb_rsi_blend_bb: float = 0.6,
+    bb_rsi_blend_rsi: float = 0.4,
 ):
     """Build a Backtest subclass that uses mean-reversion scoring in RANGE.
 
@@ -207,7 +209,10 @@ def make_range_mean_reversion_backtest(
                 if np.isnan(mid) or mid == 0:
                     continue
                 # Normalised distance: negative = below lower band (oversold)
-                bb_position = (closes[-1] - mid) / (mid - lower) if (mid - lower) > 0 else 0.0
+                band_width = mid - lower
+                if band_width < 1e-12:
+                    continue  # zero volatility → skip stock
+                bb_position = (closes[-1] - mid) / band_width
                 # We want stocks that are *below* mid → low bb_position
                 # Invert so that more-oversold = higher score
                 bb_score = -bb_position
@@ -216,13 +221,19 @@ def make_range_mean_reversion_backtest(
                 rsi = self._rsi(closes, rsi_period)
                 if np.isnan(rsi):
                     continue
+                rsi = float(np.clip(rsi, 0.0, 100.0))
                 # Prefer RSI < oversold threshold; penalise overbought
                 if rsi > rsi_overbought:
                     continue  # skip overbought stocks entirely
-                rsi_score = (rsi_oversold - rsi) / rsi_oversold  # positive when RSI < threshold
+                # Positive when RSI < threshold; rsi_oversold is always > 0 (constructor default 35)
+                rsi_score = (rsi_oversold - rsi) / max(rsi_oversold, 1e-9)
 
                 # 20-day volatility (lower = better)
-                rets20 = np.diff(closes[-21:]) / closes[-21:-1] if len(closes) >= 21 else np.array([])
+                if len(closes) >= 21:
+                    prev_closes = closes[-21:-1]
+                    rets20 = np.diff(closes[-21:]) / prev_closes
+                else:
+                    rets20 = np.array([])
                 vol20 = float(np.std(rets20)) if len(rets20) > 0 else 0.0
                 vol_component = -vol20
 
@@ -244,7 +255,7 @@ def make_range_mean_reversion_backtest(
             v_weight = vol_weight
 
             # Combine bb and rsi into a single mean-reversion score
-            df["mr"] = 0.6 * df["bb"] + 0.4 * df["rsi"]
+            df["mr"] = bb_rsi_blend_bb * df["bb"] + bb_rsi_blend_rsi * df["rsi"]
 
             total_w = mr_weight + v_weight
             df["mr_rank"] = df["mr"].rank(ascending=False)
