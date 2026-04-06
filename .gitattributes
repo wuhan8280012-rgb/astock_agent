@@ -1,0 +1,1 @@
+data_exports/tushare_20210329_20260327_csi1000_5y_pit/csi1000_market_bundle_5y_pit.csv.gz filter=lfs diff=lfs merge=lfs -text
