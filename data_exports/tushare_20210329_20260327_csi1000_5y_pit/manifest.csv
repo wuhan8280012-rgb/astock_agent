@@ -1,0 +1,15 @@
+key,value
+latest_trade_date,20260327
+start_date,20210329
+end_date,20260327
+trade_days_daily,1211
+trade_days_index_daily,1211
+pit_mode,true
+constituent_source,monthly_pit_snapshots
+constituent_count_unique,1905
+constituent_count_per_snapshot,1000
+backtest_effective_start,20220411
+backtest_effective_end,20260327
+output_file,csi1000_market_bundle_5y_pit.csv
+compressed_file,csi1000_market_bundle_5y_pit.csv.gz
+note,PIT 样本：使用逐月历史成分股快照而非当前成分股静态回溯。覆盖 1905 只历史成分股。

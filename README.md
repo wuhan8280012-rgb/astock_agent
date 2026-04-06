@@ -47,6 +47,7 @@
 ### 当前独立最优策略
 - [f_strategy](/Users/wuhan/project/stock_agent/new/strategies/f_strategy)：当前独立研究里表现最好的中证1000中期轮动策略。
 - 当前主版本是：`F + strength_transition_coef >= -0.1`
+- **⚠️ PIT 回测显示该策略不成立**（年化 4.10%、夏普 0.15、最大回撤 -40.96%），静态样本结果存在严重幸存者偏差。
 - 趋势过滤默认指数：`000001.SH` 上证指数
 - 默认运行入口：
   [/Users/wuhan/project/stock_agent/new/strategies/f_strategy/run_backtest.py](/Users/wuhan/project/stock_agent/new/strategies/f_strategy/run_backtest.py)
@@ -171,21 +172,43 @@ python3 scripts/run_evolution_test.py
 - [weekly_performance.json](/Users/wuhan/project/stock_agent/new/data/weekly_performance.json)
 
 F 主策略回测：
-- [strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json)
+- [strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json)（静态样本，存在幸存者偏差）
+- [strategy_f_csi1000_5y_pit_pit_transition_coef_ge_neg_0_1.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_csi1000_5y_pit_pit_transition_coef_ge_neg_0_1.json)（⚠️ PIT 样本，策略不成立）
 - [strategy_f_trend_index_benchmark_compare.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_trend_index_benchmark_compare.json)
 - [strategy_f_transition_gate_threshold_sweep_csi1000_5y.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_transition_gate_threshold_sweep_csi1000_5y.json)
 - [strategy_f_official_regime_analysis_csi1000_5y.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_official_regime_analysis_csi1000_5y.json)
 
 ## 7. 研究结论状态
 
-目前已经确认的方向：
-- 独立策略线里，当前最优版本是 `F + strength_transition_coef >= -0.1`。
-- 这条 `F` 主版本在中证1000 `5y` 上：
+### ⚠️ PIT 回测结论（2026-04 更新）
+
+**静态样本（幸存者偏差）vs PIT 样本（历史成分股快照）对比：**
+
+| 指标 | 静态样本 | PIT 样本 |
+|------|----------|----------|
+| 总收益 | +269.41% | +16.57% |
+| 年化 | +40.87% | +4.10% |
+| 夏普 | 1.34 | 0.15 |
+| 最大回撤 | -22.90% | -40.96% |
+| 交易次数 | 679 | 714 |
+
+**结论：幸存者偏差对原回测影响非常大。PIT 口径下，当前 F 主策略年化仅 4.10%、夏普 0.15、最大回撤 -40.96%，不具备实盘可行性。**
+
+PIT 样本覆盖 1905 只历史成分股、1211 个交易日，回测有效区间 2022-04-11 至 2026-03-27。
+
+- PIT 结果文件：[strategy_f_csi1000_5y_pit_pit_transition_coef_ge_neg_0_1.json](backtest/strategy_f_csi1000_5y_pit_pit_transition_coef_ge_neg_0_1.json)
+- PIT 数据 manifest：[data_exports/tushare_20210329_20260327_csi1000_5y_pit/manifest.csv](data_exports/tushare_20210329_20260327_csi1000_5y_pit/manifest.csv)
+
+### 历史记录（静态样本，仅供参考）
+
+- 独立策略线里，静态样本最优版本是 `F + strength_transition_coef >= -0.1`。
+- 这条 `F` 主版本在中证1000 `5y` 静态样本上：
   - 趋势过滤指数：`000001.SH` 上证指数
   - 总收益 `+269.41%`
   - 年化 `+40.87%`
   - 夏普 `1.34`
   - 最大回撤 `-22.90%`
+- 该结果存在严重的幸存者偏差，PIT 口径下不成立。
 - 当前 `new/` 已清理为以 `F` 为中心的研究目录，不再保留其他策略线的结果文件。
 
 ## 8. 配置与安全
