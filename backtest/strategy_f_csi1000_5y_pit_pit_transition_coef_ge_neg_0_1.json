@@ -1,0 +1,42 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y_pit/csi1000_market_bundle_5y_pit.csv",
+  "result": {
+    "mode": "full",
+    "full": {
+      "name": "F_三因子+趋势过滤",
+      "execution_mode": "same_close",
+      "total_return_pct": -3.49,
+      "annual_return_pct": -5.62,
+      "annual_vol_pct": 29.8,
+      "sharpe": -0.19,
+      "calmar": -0.26,
+      "max_drawdown_pct": -21.32,
+      "max_dd_date": "20260323",
+      "total_trades": 161,
+      "rebalance_count": 8,
+      "final_value": 965054.63,
+      "benchmark_return_pct": 8.19,
+      "excess_return_pct": -11.68,
+      "yearly_returns": {
+        "2025": 7.47,
+        "2026": -9.5
+      },
+      "trading_days": 155,
+      "trend_filter_index_code": "000001.SH",
+      "pit_constituents": {
+        "enabled": true,
+        "index_code": "000852.SH",
+        "snapshot_count": 21,
+        "unique_codes": 1306,
+        "constituent_count_max": 1000,
+        "earliest_snapshot_date": "20240628",
+        "latest_snapshot_date": "20260227",
+        "fallback_to_earliest_days": 0,
+        "cache_path": "/Users/wuhan/project/stock_agent/new/data/pit_constituents/index_weight_000852_SH.csv",
+        "bundle_unique_codes": 1876,
+        "survivorship_bias_note": "PIT 成分股过滤已启用，但当前 bundle 仅包含样本内 1000 只股票。历史退样/退市股票若不在 bundle 中，幸存者偏差仍未完全消除。"
+      }
+    },
+    "elapsed_sec": 5.6
+  }
+}
