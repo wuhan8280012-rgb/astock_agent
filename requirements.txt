@@ -1,0 +1,12 @@
+tushare
+anthropic[bedrock]
+boto3
+apscheduler
+pandas
+numpy
+pydantic
+loguru
+python-dotenv
+pytest
+httpx
+openai

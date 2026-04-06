@@ -1,0 +1,318 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "result": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 0.33,
+    "annual_return_pct": 2.84,
+    "annual_vol_pct": 25.9,
+    "sharpe": 0.11,
+    "max_drawdown_pct": -7.3,
+    "max_dd_date": "20260323",
+    "total_trades": 37,
+    "rebalance_count": 2,
+    "final_value": 1003342.38,
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": 3.37,
+    "window_start_date": "20260206",
+    "window_end_date": "20260327",
+    "trade_log": [
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "002985.SZ",
+        "shares": 1800,
+        "price": 43.4868
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "605599.SH",
+        "shares": 2900,
+        "price": 27.2744
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "605118.SH",
+        "shares": 1800,
+        "price": 43.7072
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "300401.SZ",
+        "shares": 4300,
+        "price": 18.2564
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "000672.SZ",
+        "shares": 5400,
+        "price": 14.6793
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "688548.SH",
+        "shares": 3700,
+        "price": 21.3025
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "301205.SZ",
+        "shares": 400,
+        "price": 197.6445
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "001337.SZ",
+        "shares": 1600,
+        "price": 48.7373
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "600963.SH",
+        "shares": 13700,
+        "price": 5.8216
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "301526.SZ",
+        "shares": 8100,
+        "price": 9.7695
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "002488.SZ",
+        "shares": 5800,
+        "price": 13.547
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "301031.SZ",
+        "shares": 500,
+        "price": 142.9854
+      },
+      {
+        "date": "20260211",
+        "side": "BUY",
+        "reason": "CONFIRM_3D_NO_BREAK_5",
+        "ts_code": "603103.SH",
+        "shares": 1500,
+        "price": 36.4427
+      },
+      {
+        "date": "20260225",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603103.SH",
+        "shares": 1500,
+        "price": 28.2135
+      },
+      {
+        "date": "20260305",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "300401.SZ",
+        "shares": 4300,
+        "price": 15.3792
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "002985.SZ",
+        "shares": 1800,
+        "price": 39.0018
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605599.SH",
+        "shares": 2900,
+        "price": 23.942
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605118.SH",
+        "shares": 1800,
+        "price": 42.0657
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "000672.SZ",
+        "shares": 5400,
+        "price": 13.8023
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301205.SZ",
+        "shares": 400,
+        "price": 231.3663
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "001337.SZ",
+        "shares": 1600,
+        "price": 53.6325
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "600963.SH",
+        "shares": 13700,
+        "price": 5.4591
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301526.SZ",
+        "shares": 8100,
+        "price": 12.1157
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "002488.SZ",
+        "shares": 5800,
+        "price": 12.2055
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301031.SZ",
+        "shares": 500,
+        "price": 139.2709
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "301658.SZ",
+        "shares": 1600,
+        "price": 47.4748
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "002531.SZ",
+        "shares": 6600,
+        "price": 11.8136
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "688717.SH",
+        "shares": 500,
+        "price": 133.8772
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "001339.SZ",
+        "shares": 1100,
+        "price": 68.657
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "603588.SH",
+        "shares": 5200,
+        "price": 14.8296
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "601096.SH",
+        "shares": 12500,
+        "price": 6.2425
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "688150.SH",
+        "shares": 1900,
+        "price": 39.2784
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "301500.SZ",
+        "shares": 3500,
+        "price": 21.9238
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "000048.SZ",
+        "shares": 4000,
+        "price": 19.3987
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "600726.SH",
+        "shares": 18400,
+        "price": 4.2585
+      },
+      {
+        "date": "20260317",
+        "side": "BUY",
+        "reason": "CONFIRM_NEXT_DAY_TOP",
+        "ts_code": "600075.SH",
+        "shares": 11000,
+        "price": 7.0641
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "301500.SZ",
+        "shares": 3500,
+        "price": 18.5528
+      }
+    ],
+    "pending_left": []
+  }
+}

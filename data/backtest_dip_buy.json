@@ -1,0 +1,118 @@
+{
+  "backtest_period": "20250206~20260324",
+  "trading_days": 275,
+  "A_开盘买入": {
+    "total_return": 0.4699721558261998,
+    "annual_return": 0.42336401845177773,
+    "annual_vol": 0.3190795462440251,
+    "sharpe": 1.248478704263662,
+    "max_drawdown": -0.2420831073898077,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5474452554744526,
+    "total_trades": 840,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1469972.1558261998,
+    "fill_stats": {
+      "filled_at_limit": 0,
+      "filled_at_market": 0,
+      "total": 425
+    }
+  },
+  "B_收盘限价": {
+    "total_return": -0.14628133896559914,
+    "annual_return": -0.13491385394008026,
+    "annual_vol": 0.3017476445195485,
+    "sharpe": -0.5299589138291363,
+    "max_drawdown": -0.3708449410786711,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.4744525547445255,
+    "total_trades": 819,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 853718.6610344008,
+    "fill_stats": {
+      "filled_at_limit": 414,
+      "filled_at_market": 0,
+      "total": 414
+    }
+  },
+  "C_回撤1%": {
+    "total_return": -0.03137154587078639,
+    "annual_return": -0.028785892537745994,
+    "annual_vol": 0.304173981788234,
+    "sharpe": -0.1768260790141865,
+    "max_drawdown": -0.33393836983625874,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5218978102189781,
+    "total_trades": 832,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 968628.4541292136,
+    "fill_stats": {
+      "filled_at_limit": 410,
+      "filled_at_market": 11,
+      "total": 421
+    }
+  },
+  "D_回撤2%": {
+    "total_return": 0.14143471692275766,
+    "annual_return": 0.12887557978634057,
+    "annual_vol": 0.3061447763518344,
+    "sharpe": 0.3393021465993018,
+    "max_drawdown": -0.3243512674747497,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5437956204379562,
+    "total_trades": 830,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1141434.7169227577,
+    "fill_stats": {
+      "filled_at_limit": 396,
+      "filled_at_market": 26,
+      "total": 420
+    }
+  },
+  "E_回撤3%": {
+    "total_return": 0.24292374369784953,
+    "annual_return": 0.2205216605313982,
+    "annual_vol": 0.30138808834929526,
+    "sharpe": 0.648737186669426,
+    "max_drawdown": -0.28215750489270336,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5437956204379562,
+    "total_trades": 832,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1242923.7436978496,
+    "fill_stats": {
+      "filled_at_limit": 376,
+      "filled_at_market": 46,
+      "total": 420
+    }
+  },
+  "F_VWAP买入": {
+    "total_return": -0.13607043637419936,
+    "annual_return": -0.12543708652773655,
+    "annual_vol": 0.3031199364937889,
+    "sharpe": -0.4962955860569702,
+    "max_drawdown": -0.35990244594845283,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.48175182481751827,
+    "total_trades": 820,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 863929.5636258007,
+    "fill_stats": {
+      "filled_at_limit": 0,
+      "filled_at_market": 0,
+      "total": 415
+    }
+  }
+}

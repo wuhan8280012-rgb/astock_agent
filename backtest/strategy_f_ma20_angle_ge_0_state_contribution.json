@@ -1,0 +1,33 @@
+{
+  "total_return_pct": -23.52,
+  "annual_return_pct": -6.79,
+  "trading_days": 961,
+  "total_trades": 601,
+  "rebalance_count": 49,
+  "states": {
+    "BULL": {
+      "days": 458,
+      "day_ratio_pct": 47.66,
+      "compounded_return_pct": 25.73,
+      "additive_return_contribution_pct": 32.21,
+      "avg_equity_pct": 89.69,
+      "avg_daily_return_pct": 0.07
+    },
+    "RANGE": {
+      "days": 226,
+      "day_ratio_pct": 23.52,
+      "compounded_return_pct": -32.4,
+      "additive_return_contribution_pct": -37.06,
+      "avg_equity_pct": 54.58,
+      "avg_daily_return_pct": -0.164
+    },
+    "BEAR": {
+      "days": 277,
+      "day_ratio_pct": 28.82,
+      "compounded_return_pct": -10.02,
+      "additive_return_contribution_pct": -10.33,
+      "avg_equity_pct": 11.28,
+      "avg_daily_return_pct": -0.037
+    }
+  }
+}

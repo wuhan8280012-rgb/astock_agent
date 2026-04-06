@@ -1,0 +1,268 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "trend_filter_index_code": "000001.SH",
+  "strategy": "F + strength_transition_coef >= -0.1",
+  "note": "Only RANGE scoring logic changes; BULL/BEAR remain on the current official F baseline.",
+  "experiments": [
+    {
+      "experiment": "baseline",
+      "result": {
+        "total_return_pct": 269.41,
+        "annual_return_pct": 40.87,
+        "annual_vol_pct": 30.53,
+        "sharpe": 1.34,
+        "calmar": 1.78,
+        "max_drawdown_pct": -22.9,
+        "max_dd_date": "20240827",
+        "total_trades": 679,
+        "rebalance_count": 49,
+        "final_value": 3694089.61,
+        "benchmark_return_pct": 23.57,
+        "excess_return_pct": 245.84,
+        "yearly_returns": {
+          "2022": 4.84,
+          "2023": 24.72,
+          "2024": 53.85,
+          "2025": 68.84,
+          "2026": 2.47
+        },
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 538,
+          "total_return_pct": 357.76,
+          "annual_return_pct": 103.91,
+          "avg_position_pct": 91.57
+        },
+        "RANGE": {
+          "days": 261,
+          "total_return_pct": -21.19,
+          "annual_return_pct": -20.54,
+          "avg_position_pct": 50.98
+        },
+        "BEAR": {
+          "days": 162,
+          "total_return_pct": 2.4,
+          "annual_return_pct": 3.75,
+          "avg_position_pct": 15.4
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 103.91,
+        "RANGE": -20.54,
+        "BEAR": 3.75
+      },
+      "elapsed_sec": 31.26,
+      "description": "Current main F baseline"
+    },
+    {
+      "experiment": "range_vol_defensive",
+      "result": {
+        "total_return_pct": 122.03,
+        "annual_return_pct": 23.26,
+        "annual_vol_pct": 29.33,
+        "sharpe": 0.79,
+        "calmar": 0.76,
+        "max_drawdown_pct": -30.69,
+        "max_dd_date": "20240920",
+        "total_trades": 707,
+        "rebalance_count": 49,
+        "final_value": 2220323.28,
+        "benchmark_return_pct": 23.57,
+        "excess_return_pct": 98.46,
+        "yearly_returns": {
+          "2022": -16.14,
+          "2023": 13.6,
+          "2024": 27.06,
+          "2025": 68.27,
+          "2026": 2.77
+        },
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 538,
+          "total_return_pct": 311.68,
+          "annual_return_pct": 94.03,
+          "avg_position_pct": 91.46
+        },
+        "RANGE": {
+          "days": 261,
+          "total_return_pct": -39.2,
+          "annual_return_pct": -38.15,
+          "avg_position_pct": 50.29
+        },
+        "BEAR": {
+          "days": 162,
+          "total_return_pct": -11.29,
+          "annual_return_pct": -17.0,
+          "avg_position_pct": 12.06
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 94.03,
+        "RANGE": -38.15,
+        "BEAR": -17.0
+      },
+      "elapsed_sec": 32.97,
+      "description": "RANGE: 60d momentum + stronger low-vol, no size"
+    },
+    {
+      "experiment": "range_skip_short",
+      "result": {
+        "total_return_pct": 169.7,
+        "annual_return_pct": 29.71,
+        "annual_vol_pct": 29.94,
+        "sharpe": 0.99,
+        "calmar": 1.04,
+        "max_drawdown_pct": -28.49,
+        "max_dd_date": "20240911",
+        "total_trades": 713,
+        "rebalance_count": 49,
+        "final_value": 2696958.52,
+        "benchmark_return_pct": 23.57,
+        "excess_return_pct": 146.12,
+        "yearly_returns": {
+          "2022": -10.59,
+          "2023": 17.99,
+          "2024": 38.75,
+          "2025": 69.4,
+          "2026": 2.55
+        },
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 538,
+          "total_return_pct": 347.31,
+          "annual_return_pct": 101.72,
+          "avg_position_pct": 91.51
+        },
+        "RANGE": {
+          "days": 261,
+          "total_return_pct": -38.51,
+          "annual_return_pct": -37.47,
+          "avg_position_pct": 50.37
+        },
+        "BEAR": {
+          "days": 162,
+          "total_return_pct": -1.94,
+          "annual_return_pct": -3.01,
+          "avg_position_pct": 13.09
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 101.72,
+        "RANGE": -37.47,
+        "BEAR": -3.01
+      },
+      "elapsed_sec": 37.24,
+      "description": "RANGE: 60d minus 20d hot money + low-vol"
+    },
+    {
+      "experiment": "range_reversal_lowvol",
+      "result": {
+        "total_return_pct": 133.72,
+        "annual_return_pct": 24.93,
+        "annual_vol_pct": 29.23,
+        "sharpe": 0.85,
+        "calmar": 0.7,
+        "max_drawdown_pct": -35.55,
+        "max_dd_date": "20240913",
+        "total_trades": 741,
+        "rebalance_count": 49,
+        "final_value": 2337223.72,
+        "benchmark_return_pct": 23.57,
+        "excess_return_pct": 110.15,
+        "yearly_returns": {
+          "2022": -11.64,
+          "2023": 11.55,
+          "2024": 30.14,
+          "2025": 67.52,
+          "2026": 2.59
+        },
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 538,
+          "total_return_pct": 338.96,
+          "annual_return_pct": 99.95,
+          "avg_position_pct": 91.48
+        },
+        "RANGE": {
+          "days": 261,
+          "total_return_pct": -41.4,
+          "annual_return_pct": -40.31,
+          "avg_position_pct": 50.27
+        },
+        "BEAR": {
+          "days": 162,
+          "total_return_pct": -9.14,
+          "annual_return_pct": -13.85,
+          "avg_position_pct": 11.37
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 99.95,
+        "RANGE": -40.31,
+        "BEAR": -13.85
+      },
+      "elapsed_sec": 31.78,
+      "description": "RANGE: 20d reversal + low-vol"
+    },
+    {
+      "experiment": "range_dual_momentum",
+      "result": {
+        "total_return_pct": 151.05,
+        "annual_return_pct": 27.3,
+        "annual_vol_pct": 29.58,
+        "sharpe": 0.92,
+        "calmar": 0.9,
+        "max_drawdown_pct": -30.36,
+        "max_dd_date": "20240923",
+        "total_trades": 713,
+        "rebalance_count": 49,
+        "final_value": 2510452.32,
+        "benchmark_return_pct": 23.57,
+        "excess_return_pct": 127.47,
+        "yearly_returns": {
+          "2022": -7.04,
+          "2023": 15.98,
+          "2024": 25.76,
+          "2025": 70.1,
+          "2026": 2.68
+        },
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 538,
+          "total_return_pct": 317.73,
+          "annual_return_pct": 95.36,
+          "avg_position_pct": 91.5
+        },
+        "RANGE": {
+          "days": 261,
+          "total_return_pct": -36.44,
+          "annual_return_pct": -35.44,
+          "avg_position_pct": 49.79
+        },
+        "BEAR": {
+          "days": 162,
+          "total_return_pct": -5.44,
+          "annual_return_pct": -8.34,
+          "avg_position_pct": 12.96
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 95.36,
+        "RANGE": -35.44,
+        "BEAR": -8.34
+      },
+      "elapsed_sec": 31.57,
+      "description": "RANGE: 20/60 composite momentum + low-vol"
+    }
+  ]
+}

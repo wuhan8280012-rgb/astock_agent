@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wuhan.stock-agent-monitor</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/python3</string>
+        <string>/Users/wuhan/project/stock_agent/new/signal/run_daily_signal.py</string>
+        <string>--monitor</string>
+        <string>--monitor-interval</string>
+        <string>5</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/wuhan/project/stock_agent/new</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/wuhan/project/stock_agent/new/logs/monitor.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/wuhan/project/stock_agent/new/logs/monitor.stderr.log</string>
+</dict>
+</plist>

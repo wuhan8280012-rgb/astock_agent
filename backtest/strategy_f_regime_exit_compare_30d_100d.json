@@ -1,0 +1,123 @@
+{
+  "recent_30d": {
+    "baseline": {
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -6.69,
+      "annual_return_pct": -44.12,
+      "annual_vol_pct": 27.89,
+      "sharpe": -1.58,
+      "calmar": -3.29,
+      "max_drawdown_pct": -13.43,
+      "max_dd_date": "20260327",
+      "total_trades": 38,
+      "rebalance_count": 2,
+      "final_value": 933058.32,
+      "benchmark_return_pct": -3.04,
+      "excess_return_pct": -3.66,
+      "yearly_returns": {
+        "2026": -6.48
+      },
+      "trading_days": 30
+    },
+    "weak_state_take_profit_20_half_25_full": {
+      "total_return_pct": -4.89,
+      "annual_return_pct": -34.36,
+      "annual_vol_pct": 27.86,
+      "sharpe": -1.23,
+      "max_drawdown_pct": -12.71,
+      "benchmark_return_pct": -3.04,
+      "excess_return_pct": -1.85,
+      "trade_count": 40,
+      "rebalance_count": 2,
+      "start_date": "20260206",
+      "end_date": "20260327"
+    },
+    "weak_state_stop_loss_10pct": {
+      "total_return_pct": -8.62,
+      "annual_return_pct": -53.08,
+      "annual_vol_pct": 27.49,
+      "sharpe": -1.93,
+      "max_drawdown_pct": -15.21,
+      "benchmark_return_pct": -3.04,
+      "excess_return_pct": -5.58,
+      "trade_count": 44,
+      "rebalance_count": 2,
+      "start_date": "20260206",
+      "end_date": "20260327"
+    },
+    "weak_state_tp_and_stop10": {
+      "total_return_pct": -6.81,
+      "annual_return_pct": -44.7,
+      "annual_vol_pct": 27.38,
+      "sharpe": -1.63,
+      "max_drawdown_pct": -13.54,
+      "benchmark_return_pct": -3.04,
+      "excess_return_pct": -3.77,
+      "trade_count": 46,
+      "rebalance_count": 2,
+      "start_date": "20260206",
+      "end_date": "20260327"
+    }
+  },
+  "recent_100d": {
+    "baseline": {
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": 10.51,
+      "annual_return_pct": 28.64,
+      "annual_vol_pct": 29.2,
+      "sharpe": 0.98,
+      "calmar": 2.24,
+      "max_drawdown_pct": -12.81,
+      "max_dd_date": "20260323",
+      "total_trades": 100,
+      "rebalance_count": 5,
+      "final_value": 1105109.25,
+      "benchmark_return_pct": -5.17,
+      "excess_return_pct": 15.68,
+      "yearly_returns": {
+        "2025": 4.79,
+        "2026": 3.94
+      },
+      "trading_days": 100
+    },
+    "weak_state_take_profit_20_half_25_full": {
+      "total_return_pct": 10.98,
+      "annual_return_pct": 30.01,
+      "annual_vol_pct": 29.2,
+      "sharpe": 1.03,
+      "max_drawdown_pct": -12.85,
+      "benchmark_return_pct": -5.17,
+      "excess_return_pct": 16.14,
+      "trade_count": 102,
+      "rebalance_count": 5,
+      "start_date": "20251029",
+      "end_date": "20260327"
+    },
+    "weak_state_stop_loss_10pct": {
+      "total_return_pct": 9.35,
+      "annual_return_pct": 25.27,
+      "annual_vol_pct": 29.13,
+      "sharpe": 0.87,
+      "max_drawdown_pct": -13.0,
+      "benchmark_return_pct": -5.17,
+      "excess_return_pct": 14.52,
+      "trade_count": 102,
+      "rebalance_count": 5,
+      "start_date": "20251029",
+      "end_date": "20260327"
+    },
+    "weak_state_tp_and_stop10": {
+      "total_return_pct": 9.82,
+      "annual_return_pct": 26.62,
+      "annual_vol_pct": 29.13,
+      "sharpe": 0.91,
+      "max_drawdown_pct": -12.9,
+      "benchmark_return_pct": -5.17,
+      "excess_return_pct": 14.98,
+      "trade_count": 104,
+      "rebalance_count": 5,
+      "start_date": "20251029",
+      "end_date": "20260327"
+    }
+  }
+}

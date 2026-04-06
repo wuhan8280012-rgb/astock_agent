@@ -1,0 +1,30 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_hs300_5y/hs300_market_bundle_5y.csv",
+  "result": {
+    "name": "F + ma20_angle_deg >= 0 (HS300 latest static constituents)",
+    "universe": "HS300 latest static constituents as of 20260302",
+    "survivorship_bias_note": "Uses latest HS300 constituents over full 5y window; historical membership changes not modeled.",
+    "total_return_pct": 47.9,
+    "annual_return_pct": 10.81,
+    "annual_vol_pct": 26.68,
+    "sharpe": 0.41,
+    "max_drawdown_pct": -33.17,
+    "max_dd_date": "20250408",
+    "total_trades": 539,
+    "rebalance_count": 49,
+    "final_value": 1478984.43,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 38.08,
+    "yearly_returns": {
+      "2022": -5.12,
+      "2023": 46.07,
+      "2024": -0.22,
+      "2025": 9.74,
+      "2026": -0.48
+    },
+    "trading_days": 961,
+    "start_date": "20220411",
+    "end_date": "20260327",
+    "constituents": 300
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "analysis": "v2.0策略在CSI1000宇宙中取得+2.21%收益和0.94夏普，表现稳定但alpha偏低。止损26次(占总交易59%)说明短期动量信号噪音大，频繁止损-8%侵蚀了收益。当前回望权重过度偏重5日短周期(50%)，在震荡市中容易被短期反转套住。流动性10%权重和1.3x缓冲带已验证有效，但仓位集中度(10只)在1000股宇宙中偏低，分散不足。CSI300基准-3.22%说明市场整体偏弱，策略正超额但幅度可提升。",
+  "market_regime": "oscillating_weak",
+  "key_issues": [
+    "止损触发率过高(59%的交易为止损)，短期动量信号噪音大",
+    "5日动量权重50%在震荡市导致频繁假信号",
+    "仅持10只股票在1000股宇宙中分散不足",
+    "调仓间隔5天偏短，增加交易成本和滑点",
+    "-8%止损在弱市中几乎必触发，但放宽又会增大回撤"
+  ],
+  "opportunities": [
+    "增加中周期动量权重(10/20日)减少噪音",
+    "扩大持仓至12-15只提升分散度",
+    "延长调仓间隔至7天减少换手",
+    "提高波动率惩罚过滤高波动陷阱",
+    "降低单只权重上限配合持仓扩容"
+  ],
+  "proposals": [
+    {
+      "name": "中周期偏重+扩仓",
+      "rationale": "将动量权重从短期(5d=50%)转向中期(10d=40%,20d=30%)，减少短期噪音。同时持仓扩至12只提升分散度。震荡市中10-20日趋势比5日更可靠。",
+      "parameter_changes": {
+        "lookback_weights": [0.2, 0.4, 0.4],
+        "top_n": 12,
+        "max_single_weight": 0.12
+      },
+      "expected_impact": "止损率降低15-20%，夏普提升0.2-0.5",
+      "confidence": 0.75,
+      "risk_level": "medium"
+    },
+    {
+      "name": "放缓调仓+高波惩罚",
+      "rationale": "调仓间隔从5天延长到7天(完整一周)减少不必要换手。波动率惩罚从0.5提高到0.8更激进过滤高波动标的，避免被套。",
+      "parameter_changes": {
+        "rebalance_interval_days": 7,
+        "volatility_penalty": 0.8
+      },
+      "expected_impact": "换手降低20%，交易成本减少，但可能错过快速动量",
+      "confidence": 0.65,
+      "risk_level": "low"
+    },
+    {
+      "name": "止损微调+大缓冲",
+      "rationale": "止损从-8%略放宽至-10%减少误触发(当前91%触发率)。缓冲带从1.3x扩大到1.5x更大容忍度，已在缓冲带内的持仓更不易被淘汰。",
+      "parameter_changes": {
+        "stop_loss_pct": -0.10,
+        "hold_buffer_ratio": 1.5
+      },
+      "expected_impact": "止损次数减少30%，但单次止损损失可能增大",
+      "confidence": 0.55,
+      "risk_level": "medium"
+    },
+    {
+      "name": "纯中长期动量",
+      "rationale": "完全去掉5日短期噪音，仅用10日和20日动量(各50%)。这是最激进的去噪方案。配合流动性权重提高至15%，优选成交活跃标的。",
+      "parameter_changes": {
+        "lookback_days": [10, 20],
+        "lookback_weights": [0.5, 0.5],
+        "liquidity_weight": 0.15
+      },
+      "expected_impact": "大幅降低换手和止损，但可能错过短线急涨行情",
+      "confidence": 0.50,
+      "risk_level": "high"
+    },
+    {
+      "name": "保守防御型",
+      "rationale": "在弱市环境下降低总仓位上限至65%，增加现金缓冲。同时扩仓至15只并降低单只上限至10%，极致分散。",
+      "parameter_changes": {
+        "max_total_position": 0.65,
+        "top_n": 15,
+        "max_single_weight": 0.10
+      },
+      "expected_impact": "回撤压缩1-2%，但牛市来临时收益受限",
+      "confidence": 0.60,
+      "risk_level": "low"
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "positions": [
+    {
+      "ts_code": "603057.SH",
+      "buy_date": "20260316",
+      "buy_price": 29.7093,
+      "shares": 2700,
+      "sell_date": "20260323",
+      "sell_price": 23.7125,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -20.18,
+      "status": "closed"
+    },
+    {
+      "ts_code": "301500.SZ",
+      "buy_date": "20260316",
+      "buy_price": 23.056,
+      "shares": 3600,
+      "sell_date": "20260323",
+      "sell_price": 18.5528,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -19.53,
+      "status": "closed"
+    },
+    {
+      "ts_code": "603588.SH",
+      "buy_date": "20260316",
+      "buy_price": 16.0019,
+      "shares": 5100,
+      "sell_date": "20260323",
+      "sell_price": 13.0638,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -18.36,
+      "status": "closed"
+    },
+    {
+      "ts_code": "300401.SZ",
+      "buy_date": "20260206",
+      "buy_price": 19.1883,
+      "shares": 4100,
+      "sell_date": "20260304",
+      "sell_price": 15.7185,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -18.08,
+      "status": "closed"
+    },
+    {
+      "ts_code": "603103.SH",
+      "buy_date": "20260206",
+      "buy_price": 33.4668,
+      "shares": 2300,
+      "sell_date": "20260225",
+      "sell_price": 28.2135,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -15.7,
+      "status": "closed"
+    },
+    {
+      "ts_code": "605599.SH",
+      "buy_date": "20260206",
+      "buy_price": 28.1161,
+      "shares": 2800,
+      "sell_date": "20260304",
+      "sell_price": 23.7524,
+      "exit_reason": "STOP_LOSS",
+      "return_pct": -15.52,
+      "status": "closed"
+    },
+    {
+      "ts_code": "002985.SZ",
+      "buy_date": "20260206",
+      "buy_price": 44.3084,
+      "shares": 1800,
+      "sell_date": "20260316",
+      "sell_price": 39.0018,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": -11.98,
+      "status": "closed"
+    },
+    {
+      "ts_code": "605376.SH",
+      "buy_date": "20260206",
+      "buy_price": 100.0898,
+      "shares": 500,
+      "sell_date": "20260316",
+      "sell_price": 91.1473,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": -8.93,
+      "status": "closed"
+    },
+    {
+      "ts_code": "600963.SH",
+      "buy_date": "20260206",
+      "buy_price": 5.9018,
+      "shares": 13500,
+      "sell_date": "20260316",
+      "sell_price": 5.4591,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": -7.5,
+      "status": "closed"
+    },
+    {
+      "ts_code": "000672.SZ",
+      "buy_date": "20260206",
+      "buy_price": 14.7895,
+      "shares": 5400,
+      "sell_date": "20260316",
+      "sell_price": 13.8023,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": -6.68,
+      "status": "closed"
+    },
+    {
+      "ts_code": "605118.SH",
+      "buy_date": "20260206",
+      "buy_price": 42.5449,
+      "shares": 1800,
+      "sell_date": "20260316",
+      "sell_price": 42.0657,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": -1.13,
+      "status": "closed"
+    },
+    {
+      "ts_code": "001337.SZ",
+      "buy_date": "20260206",
+      "buy_price": 46.4828,
+      "shares": 1700,
+      "sell_date": "20260316",
+      "sell_price": 53.6325,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": 15.38,
+      "status": "closed"
+    },
+    {
+      "ts_code": "301205.SZ",
+      "buy_date": "20260206",
+      "buy_price": 190.5403,
+      "shares": 400,
+      "sell_date": "20260316",
+      "sell_price": 231.3663,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": 21.43,
+      "status": "closed"
+    },
+    {
+      "ts_code": "301526.SZ",
+      "buy_date": "20260206",
+      "buy_price": 9.0481,
+      "shares": 8800,
+      "sell_date": "20260316",
+      "sell_price": 12.1157,
+      "exit_reason": "OUT_OF_BUFFER",
+      "return_pct": 33.9,
+      "status": "closed"
+    },
+    {
+      "ts_code": "688548.SH",
+      "buy_date": "20260206",
+      "buy_price": 20.7614,
+      "shares": 3800,
+      "sell_date": null,
+      "sell_price": 20.72,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "688717.SH",
+      "buy_date": "20260206",
+      "buy_price": 95.2601,
+      "shares": 800,
+      "sell_date": null,
+      "sell_price": 95.07,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "301658.SZ",
+      "buy_date": "20260316",
+      "buy_price": 49.7393,
+      "shares": 1600,
+      "sell_date": null,
+      "sell_price": 49.64,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "002531.SZ",
+      "buy_date": "20260316",
+      "buy_price": 12.2144,
+      "shares": 6800,
+      "sell_date": null,
+      "sell_price": 12.19,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "001339.SZ",
+      "buy_date": "20260316",
+      "buy_price": 71.7031,
+      "shares": 1100,
+      "sell_date": null,
+      "sell_price": 71.56,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "601096.SH",
+      "buy_date": "20260316",
+      "buy_price": 6.4028,
+      "shares": 12900,
+      "sell_date": null,
+      "sell_price": 6.39,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "600746.SH",
+      "buy_date": "20260316",
+      "buy_price": 9.1783,
+      "shares": 9000,
+      "sell_date": null,
+      "sell_price": 9.16,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "688150.SH",
+      "buy_date": "20260316",
+      "buy_price": 39.3485,
+      "shares": 2100,
+      "sell_date": null,
+      "sell_price": 39.27,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "688523.SH",
+      "buy_date": "20260316",
+      "buy_price": 64.4286,
+      "shares": 1200,
+      "sell_date": null,
+      "sell_price": 64.3,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    },
+    {
+      "ts_code": "002541.SZ",
+      "buy_date": "20260316",
+      "buy_price": 23.0961,
+      "shares": 900,
+      "sell_date": null,
+      "sell_price": 23.05,
+      "exit_reason": "OPEN",
+      "return_pct": -0.2,
+      "status": "open"
+    }
+  ]
+}

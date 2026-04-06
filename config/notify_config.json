@@ -1,0 +1,21 @@
+{
+  "email_enabled": false,
+  "smtp_host": "smtp.qq.com",
+  "smtp_port": 465,
+  "smtp_user": "你的QQ邮箱@qq.com",
+  "smtp_password": "QQ邮箱授权码(非登录密码)",
+  "email_to": ["你的接收邮箱@xxx.com"],
+
+  "dingtalk_enabled": false,
+  "dingtalk_webhook": "https://oapi.dingtalk.com/robot/send?access_token=你的token",
+  "dingtalk_secret": "",
+
+  "wecom_enabled": false,
+  "wecom_webhook": "",
+
+  "serverchan_enabled": false,
+  "serverchan_key": "你的Server酱key",
+
+  "bark_enabled": false,
+  "bark_url": "https://api.day.app/你的key/"
+}

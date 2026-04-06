@@ -1,0 +1,124 @@
+{
+  "results": [
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": 0,
+      "total_return_pct": 213.57,
+      "annual_return_pct": 34.94,
+      "sharpe": 1.2,
+      "max_drawdown_pct": -23.8,
+      "excess_return_pct": 203.75,
+      "elapsed_sec": 29.6
+    },
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": -20,
+      "total_return_pct": 158.59,
+      "annual_return_pct": 28.29,
+      "sharpe": 1.03,
+      "max_drawdown_pct": -23.83,
+      "excess_return_pct": 148.78,
+      "elapsed_sec": 30.9
+    },
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": 10,
+      "total_return_pct": 142.88,
+      "annual_return_pct": 26.2,
+      "sharpe": 0.89,
+      "max_drawdown_pct": -28.17,
+      "excess_return_pct": 133.07,
+      "elapsed_sec": 28.6
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": 0,
+      "total_return_pct": 117.34,
+      "annual_return_pct": 22.58,
+      "sharpe": 0.82,
+      "max_drawdown_pct": -32.33,
+      "excess_return_pct": 107.52,
+      "elapsed_sec": 30.1
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": -20,
+      "total_return_pct": 109.9,
+      "annual_return_pct": 21.46,
+      "sharpe": 0.81,
+      "max_drawdown_pct": -29.66,
+      "excess_return_pct": 100.08,
+      "elapsed_sec": 30.7
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": 10,
+      "total_return_pct": 107.06,
+      "annual_return_pct": 21.03,
+      "sharpe": 0.74,
+      "max_drawdown_pct": -34.11,
+      "excess_return_pct": 97.24,
+      "elapsed_sec": 29.8
+    },
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": 20,
+      "total_return_pct": 92.86,
+      "annual_return_pct": 18.8,
+      "sharpe": 0.64,
+      "max_drawdown_pct": -28.43,
+      "excess_return_pct": 83.05,
+      "elapsed_sec": 27.1
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": 30,
+      "total_return_pct": 81.44,
+      "annual_return_pct": 16.91,
+      "sharpe": 0.55,
+      "max_drawdown_pct": -35.34,
+      "excess_return_pct": 71.63,
+      "elapsed_sec": 28.8
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": 20,
+      "total_return_pct": 70.01,
+      "annual_return_pct": 14.93,
+      "sharpe": 0.52,
+      "max_drawdown_pct": -38.98,
+      "excess_return_pct": 60.2,
+      "elapsed_sec": 29.5
+    },
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": 30,
+      "total_return_pct": 39.2,
+      "annual_return_pct": 9.06,
+      "sharpe": 0.31,
+      "max_drawdown_pct": -37.49,
+      "excess_return_pct": 29.38,
+      "elapsed_sec": 25.9
+    },
+    {
+      "angle_col": "ma20_angle_deg",
+      "min_angle": 40,
+      "total_return_pct": -29.6,
+      "annual_return_pct": -8.79,
+      "sharpe": -0.31,
+      "max_drawdown_pct": -41.9,
+      "excess_return_pct": -39.42,
+      "elapsed_sec": 26.2
+    },
+    {
+      "angle_col": "ma10_angle_deg",
+      "min_angle": 40,
+      "total_return_pct": -30.19,
+      "annual_return_pct": -8.99,
+      "sharpe": -0.33,
+      "max_drawdown_pct": -55.29,
+      "excess_return_pct": -40.01,
+      "elapsed_sec": 27.8
+    }
+  ]
+}

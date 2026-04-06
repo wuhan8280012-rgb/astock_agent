@@ -1,0 +1,242 @@
+[
+  {
+    "scan_time": "2026-03-24T02:46:23.485424",
+    "highest_level": "CRISIS",
+    "alerts": [
+      {
+        "timestamp": "2026-03-24 02:28:03",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-03-28T00:23:31.250276",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-03-28 00:16:05",
+        "level": "BLACKSWAN",
+        "category": "核威胁",
+        "headline": "None",
+        "matched_pattern": "核威胁",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-03-28 00:06:43",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-03-27 23:59:37",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-03-28T10:37:49.897891",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-03-28 09:36:54",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-03-28 10:22:32",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-03-29T03:20:47.062759",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-03-29 02:34:17",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-03-29 02:40:00",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-03-29T12:51:01.372639",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-03-29 12:42:12",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-03-31T04:10:12.458594",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-03-31 03:44:05",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-03-31 04:08:27",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      },
+      {
+        "timestamp": "2026-03-31 03:45:45",
+        "level": "CRISIS",
+        "category": "国际制裁升级",
+        "headline": "None",
+        "matched_pattern": "国际制裁升级",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-04-01T07:42:29.498816",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-04-01 07:34:39",
+        "level": "BLACKSWAN",
+        "category": "核威胁",
+        "headline": "None",
+        "matched_pattern": "核威胁",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-04-01 07:25:37",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-04-01 07:10:12",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-04-03T13:04:06.978220",
+    "highest_level": "CRISIS",
+    "alerts": [
+      {
+        "timestamp": "2026-04-03 12:38:36",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      },
+      {
+        "timestamp": "2026-04-03 12:20:48",
+        "level": "CRISIS",
+        "category": "国际制裁升级",
+        "headline": "None",
+        "matched_pattern": "国际制裁升级",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-04-04T11:38:42.562719",
+    "highest_level": "CRISIS",
+    "alerts": [
+      {
+        "timestamp": "2026-04-04 10:54:33",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  },
+  {
+    "scan_time": "2026-04-06T11:40:38.701692",
+    "highest_level": "BLACKSWAN",
+    "alerts": [
+      {
+        "timestamp": "2026-04-06 11:04:11",
+        "level": "BLACKSWAN",
+        "category": "地缘军事冲突",
+        "headline": "None",
+        "matched_pattern": "地缘军事冲突",
+        "source": "tushare/sina",
+        "action": "立即清仓! 全部卖出, 保留现金, 等待事态明朗"
+      },
+      {
+        "timestamp": "2026-04-06 11:20:10",
+        "level": "CRISIS",
+        "category": "地缘冲突",
+        "headline": "None",
+        "matched_pattern": "地缘冲突",
+        "source": "tushare/sina",
+        "action": "暂停所有主动交易, 仅保留止损, 考虑减仓至30%"
+      }
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "variant": "F + ma20_angle_deg >= 0 + top_n=10",
+  "result": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 144.2,
+    "annual_return_pct": 26.38,
+    "annual_vol_pct": 24.77,
+    "sharpe": 1.07,
+    "calmar": 1.16,
+    "max_drawdown_pct": -22.69,
+    "max_dd_date": "20230823",
+    "total_trades": 508,
+    "rebalance_count": 49,
+    "final_value": 2442043.56,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 134.39,
+    "yearly_returns": {
+      "2022": 0.28,
+      "2023": 11.36,
+      "2024": 41.22,
+      "2025": 53.39,
+      "2026": -3.43
+    },
+    "trading_days": 961
+  }
+}

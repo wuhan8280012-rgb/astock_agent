@@ -1,0 +1,67 @@
+{
+  "index_ts_code": "000852.SH",
+  "result": {
+    "5y": {
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": 100.8,
+      "annual_return_pct": 20.06,
+      "annual_vol_pct": 25.14,
+      "sharpe": 0.8,
+      "calmar": 0.82,
+      "max_drawdown_pct": -24.59,
+      "max_dd_date": "20221223",
+      "total_trades": 533,
+      "rebalance_count": 49,
+      "final_value": 2008009.5,
+      "benchmark_return_pct": 22.41,
+      "excess_return_pct": 78.39,
+      "yearly_returns": {
+        "2022": -5.93,
+        "2023": 16.79,
+        "2024": -0.61,
+        "2025": 68.48,
+        "2026": 2.66
+      },
+      "trading_days": 961
+    },
+    "100d": {
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": 10.51,
+      "annual_return_pct": 28.64,
+      "annual_vol_pct": 29.2,
+      "sharpe": 0.98,
+      "calmar": 2.24,
+      "max_drawdown_pct": -12.81,
+      "max_dd_date": "20260323",
+      "total_trades": 100,
+      "rebalance_count": 5,
+      "final_value": 1105109.25,
+      "benchmark_return_pct": 2.34,
+      "excess_return_pct": 8.17,
+      "yearly_returns": {
+        "2025": 4.79,
+        "2026": 3.94
+      },
+      "trading_days": 100
+    },
+    "30d": {
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -6.69,
+      "annual_return_pct": -44.12,
+      "annual_vol_pct": 27.89,
+      "sharpe": -1.58,
+      "calmar": -3.29,
+      "max_drawdown_pct": -13.43,
+      "max_dd_date": "20260327",
+      "total_trades": 38,
+      "rebalance_count": 2,
+      "final_value": 933058.32,
+      "benchmark_return_pct": -3.79,
+      "excess_return_pct": -2.9,
+      "yearly_returns": {
+        "2026": -6.48
+      },
+      "trading_days": 30
+    }
+  }
+}

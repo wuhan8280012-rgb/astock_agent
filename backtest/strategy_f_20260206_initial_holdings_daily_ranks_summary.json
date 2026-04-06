@@ -1,0 +1,145 @@
+{
+  "002985.SZ": {
+    "name": "北摩高科",
+    "first_day_rank": 1,
+    "last_day_rank": null,
+    "best_rank": 1,
+    "worst_rank": 49,
+    "avg_rank": 14.21,
+    "days_in_top15": 9,
+    "days_in_buffer": 10,
+    "observations": 14
+  },
+  "605599.SH": {
+    "name": "菜百股份",
+    "first_day_rank": 2,
+    "last_day_rank": null,
+    "best_rank": 2,
+    "worst_rank": 57,
+    "avg_rank": 23.17,
+    "days_in_top15": 8,
+    "days_in_buffer": 11,
+    "observations": 18
+  },
+  "605118.SH": {
+    "name": "力鼎光电",
+    "first_day_rank": 3,
+    "last_day_rank": 24,
+    "best_rank": 2,
+    "worst_rank": 25,
+    "avg_rank": 7.75,
+    "days_in_top15": 18,
+    "days_in_buffer": 18,
+    "observations": 20
+  },
+  "300401.SZ": {
+    "name": "花园生物",
+    "first_day_rank": 4,
+    "last_day_rank": null,
+    "best_rank": 4,
+    "worst_rank": 156,
+    "avg_rank": 57.0,
+    "days_in_top15": 2,
+    "days_in_buffer": 3,
+    "observations": 7
+  },
+  "000672.SZ": {
+    "name": "上峰水泥",
+    "first_day_rank": 5,
+    "last_day_rank": null,
+    "best_rank": 2,
+    "worst_rank": 93,
+    "avg_rank": 32.4,
+    "days_in_top15": 8,
+    "days_in_buffer": 8,
+    "observations": 15
+  },
+  "688548.SH": {
+    "name": "广钢气体",
+    "first_day_rank": 6,
+    "last_day_rank": 17,
+    "best_rank": 4,
+    "worst_rank": 23,
+    "avg_rank": 8.52,
+    "days_in_top15": 19,
+    "days_in_buffer": 20,
+    "observations": 21
+  },
+  "301205.SZ": {
+    "name": "联特科技",
+    "first_day_rank": 7,
+    "last_day_rank": 65,
+    "best_rank": 5,
+    "worst_rank": 65,
+    "avg_rank": 25.83,
+    "days_in_top15": 5,
+    "days_in_buffer": 6,
+    "observations": 12
+  },
+  "001337.SZ": {
+    "name": "四川黄金",
+    "first_day_rank": 8,
+    "last_day_rank": 51,
+    "best_rank": 6,
+    "worst_rank": 51,
+    "avg_rank": 21.14,
+    "days_in_top15": 9,
+    "days_in_buffer": 10,
+    "observations": 14
+  },
+  "600963.SH": {
+    "name": "岳阳林纸",
+    "first_day_rank": 9,
+    "last_day_rank": null,
+    "best_rank": 4,
+    "worst_rank": 38,
+    "avg_rank": 16.35,
+    "days_in_top15": 8,
+    "days_in_buffer": 14,
+    "observations": 17
+  },
+  "603103.SH": {
+    "name": "横店影视",
+    "first_day_rank": 10,
+    "last_day_rank": null,
+    "best_rank": 10,
+    "worst_rank": 97,
+    "avg_rank": 55.23,
+    "days_in_top15": 1,
+    "days_in_buffer": 4,
+    "observations": 13
+  },
+  "688717.SH": {
+    "name": "艾罗能源",
+    "first_day_rank": 11,
+    "last_day_rank": 4,
+    "best_rank": 1,
+    "worst_rank": 22,
+    "avg_rank": 5.56,
+    "days_in_top15": 17,
+    "days_in_buffer": 18,
+    "observations": 18
+  },
+  "301526.SZ": {
+    "name": "国际复材",
+    "first_day_rank": 12,
+    "last_day_rank": 80,
+    "best_rank": 8,
+    "worst_rank": 101,
+    "avg_rank": 29.68,
+    "days_in_top15": 9,
+    "days_in_buffer": 12,
+    "observations": 19
+  },
+  "605376.SH": {
+    "name": "博迁新材",
+    "first_day_rank": 13,
+    "last_day_rank": null,
+    "best_rank": 9,
+    "worst_rank": 42,
+    "avg_rank": 18.17,
+    "days_in_top15": 8,
+    "days_in_buffer": 14,
+    "observations": 18
+  }
+}

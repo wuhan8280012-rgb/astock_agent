@@ -1,0 +1,119 @@
+[
+  {
+    "week_end": "20260220",
+    "portfolio_value": 1050000,
+    "weekly_return": 2.5,
+    "weekly_sharpe": 1.8,
+    "max_drawdown": -1.0,
+    "market_regime": "RUN",
+    "trade_count": 3
+  },
+  {
+    "week_end": "20260227",
+    "portfolio_value": 1070000,
+    "weekly_return": 1.9,
+    "weekly_sharpe": 1.5,
+    "max_drawdown": -0.8,
+    "market_regime": "RUN",
+    "trade_count": 2
+  },
+  {
+    "week_end": "20260306",
+    "portfolio_value": 1040000,
+    "weekly_return": -2.8,
+    "weekly_sharpe": 0.6,
+    "max_drawdown": -3.2,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 4
+  },
+  {
+    "week_end": "20260313",
+    "portfolio_value": 1010000,
+    "weekly_return": -2.9,
+    "weekly_sharpe": 0.3,
+    "max_drawdown": -5.6,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 5
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 960000,
+    "weekly_return": -5.0,
+    "weekly_sharpe": -0.4,
+    "max_drawdown": -8.6,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 6
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 4.17,
+    "weekly_sharpe": -5.44,
+    "max_drawdown": -10.28,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 0
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": -2.94,
+    "max_drawdown": -7.69,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 0
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": -1.69,
+    "max_drawdown": -4.95,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 0
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": -0.4,
+    "max_drawdown": 0.0,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 0
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": 3.61,
+    "max_drawdown": 0.0,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 0
+  },
+  {
+    "week_end": "20260320",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": 0.0,
+    "max_drawdown": 0.0,
+    "market_regime": "DEFENSIVE",
+    "trade_count": 4
+  },
+  {
+    "week_end": "20260327",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": 0.0,
+    "max_drawdown": 0.0,
+    "market_regime": "RUN",
+    "trade_count": 6
+  },
+  {
+    "week_end": "20260327",
+    "portfolio_value": 1000000.0,
+    "weekly_return": 0.0,
+    "weekly_sharpe": 0.0,
+    "max_drawdown": 0.0,
+    "market_regime": "RUN",
+    "trade_count": 6
+  }
+]

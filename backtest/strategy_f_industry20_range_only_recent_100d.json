@@ -1,0 +1,20 @@
+{
+  "window_start_date": "20251029",
+  "window_end_date": "20260327",
+  "trend_filter_index_code": "000001.SH",
+  "baseline": {
+    "total_return_pct": 10.51,
+    "annual_return_pct": 28.64,
+    "sharpe": 0.98,
+    "max_drawdown_pct": -12.81,
+    "excess_return_pct": 13.07
+  },
+  "range_only_industry20_gt_market": {
+    "total_return_pct": 10.51,
+    "annual_return_pct": 28.64,
+    "sharpe": 0.98,
+    "max_drawdown_pct": -12.81,
+    "excess_return_pct": 13.07
+  },
+  "note": "Only in RANGE require SW industry 20d return > index 20d return; BULL/BEAR unchanged."
+}

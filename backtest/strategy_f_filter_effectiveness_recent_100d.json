@@ -1,0 +1,52 @@
+{
+  "window_start_date": "20251029",
+  "window_end_date": "20260327",
+  "trend_filter_index_code": "000001.SH",
+  "results": [
+    {
+      "name": "baseline",
+      "total_return_pct": 10.51,
+      "annual_return_pct": 28.64,
+      "sharpe": 0.98,
+      "max_drawdown_pct": -12.81,
+      "excess_return_pct": 13.07,
+      "total_trades": 100
+    },
+    {
+      "name": "rs60_top20pct",
+      "total_return_pct": -9.74,
+      "annual_return_pct": -22.76,
+      "sharpe": -0.66,
+      "max_drawdown_pct": -21.78,
+      "excess_return_pct": -7.19,
+      "total_trades": 105,
+      "delta_total_return_pct": -20.25,
+      "delta_sharpe": -1.64,
+      "delta_max_drawdown_pct": -8.97
+    },
+    {
+      "name": "industry_20_60_gt_market",
+      "total_return_pct": 18.97,
+      "annual_return_pct": 54.9,
+      "sharpe": 1.68,
+      "max_drawdown_pct": -11.18,
+      "excess_return_pct": 21.52,
+      "total_trades": 115,
+      "delta_total_return_pct": 8.46,
+      "delta_sharpe": 0.7,
+      "delta_max_drawdown_pct": 1.63
+    },
+    {
+      "name": "rs60_top20pct_and_industry_20_60_gt_market",
+      "total_return_pct": 6.63,
+      "annual_return_pct": 17.56,
+      "sharpe": 0.5,
+      "max_drawdown_pct": -14.96,
+      "excess_return_pct": 9.18,
+      "total_trades": 102,
+      "delta_total_return_pct": -3.88,
+      "delta_sharpe": -0.48,
+      "delta_max_drawdown_pct": -2.15
+    }
+  ]
+}

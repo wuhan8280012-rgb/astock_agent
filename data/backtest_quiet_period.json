@@ -1,0 +1,60 @@
+{
+  "backtest_period": "20250206~20260324",
+  "trading_days": 275,
+  "A_no_quiet": {
+    "total_return": 0.4629224945648036,
+    "annual_return": 0.4171075362765706,
+    "annual_vol": 0.3740220021013243,
+    "sharpe": 1.0483541986130185,
+    "max_drawdown": -0.3251768091194098,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5291970802919708,
+    "total_trades": 427,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1462922.4945648036
+  },
+  "B_with_quiet": {
+    "total_return": 0.19171046476070353,
+    "annual_return": 0.1743569118467685,
+    "annual_vol": 0.3875661693363541,
+    "sharpe": 0.38537138600750065,
+    "max_drawdown": -0.3251768091194098,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5255474452554745,
+    "total_trades": 423,
+    "rebalance_count": 57,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1191710.4647607035
+  },
+  "C_quiet_bypass": {
+    "total_return": 0.19171046476070353,
+    "annual_return": 0.1743569118467685,
+    "annual_vol": 0.3875661693363541,
+    "sharpe": 0.38537138600750065,
+    "max_drawdown": -0.3251768091194098,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5255474452554745,
+    "total_trades": 423,
+    "rebalance_count": 57,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1191710.4647607035
+  },
+  "benchmark_return": 0.1644337037529151,
+  "quiet_days_B": [
+    "20260119",
+    "20260120",
+    "20260319",
+    "20260320"
+  ],
+  "quiet_days_C": [
+    "20260119",
+    "20260120",
+    "20260319",
+    "20260320"
+  ],
+  "bypassed_days_C": []
+}

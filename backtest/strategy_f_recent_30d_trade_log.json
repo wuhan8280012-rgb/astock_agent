@@ -1,0 +1,609 @@
+{
+  "trade_log": [
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "002985.SZ",
+      "shares": 1800,
+      "price": 44.3084,
+      "gross": 79755.19,
+      "net": 79779.12
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "605599.SH",
+      "shares": 2800,
+      "price": 28.1161,
+      "gross": 78725.14,
+      "net": 78748.75
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "605118.SH",
+      "shares": 1800,
+      "price": 42.5449,
+      "gross": 76580.86,
+      "net": 76603.83
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "300401.SZ",
+      "shares": 4100,
+      "price": 19.1883,
+      "gross": 78672.03,
+      "net": 78695.63
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "000672.SZ",
+      "shares": 5400,
+      "price": 14.7895,
+      "gross": 79863.41,
+      "net": 79887.37
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "688548.SH",
+      "shares": 3800,
+      "price": 20.7614,
+      "gross": 78893.47,
+      "net": 78917.14
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "301205.SZ",
+      "shares": 400,
+      "price": 190.5403,
+      "gross": 76216.13,
+      "net": 76238.99
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "001337.SZ",
+      "shares": 1700,
+      "price": 46.4828,
+      "gross": 79020.73,
+      "net": 79044.43
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "600963.SH",
+      "shares": 13500,
+      "price": 5.9018,
+      "gross": 79674.03,
+      "net": 79697.93
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "603103.SH",
+      "shares": 2300,
+      "price": 33.4668,
+      "gross": 76973.64,
+      "net": 76996.73
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "688717.SH",
+      "shares": 800,
+      "price": 95.2601,
+      "gross": 76208.11,
+      "net": 76230.97
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "301526.SZ",
+      "shares": 8800,
+      "price": 9.0481,
+      "gross": 79622.93,
+      "net": 79646.81
+    },
+    {
+      "date": "20260206",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "605376.SH",
+      "shares": 500,
+      "price": 100.0898,
+      "gross": 50044.89,
+      "net": 50059.9
+    },
+    {
+      "date": "20260225",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "603103.SH",
+      "shares": 2300,
+      "price": 28.2135,
+      "gross": 64890.96,
+      "net": 64806.6,
+      "pnl_pct_vs_cost": -15.7
+    },
+    {
+      "date": "20260304",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "605599.SH",
+      "shares": 2800,
+      "price": 23.7524,
+      "gross": 66506.72,
+      "net": 66420.26,
+      "pnl_pct_vs_cost": -15.52
+    },
+    {
+      "date": "20260304",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "300401.SZ",
+      "shares": 4100,
+      "price": 15.7185,
+      "gross": 64445.85,
+      "net": 64362.07,
+      "pnl_pct_vs_cost": -18.08
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "002985.SZ",
+      "shares": 1800,
+      "price": 39.0018,
+      "gross": 70203.31,
+      "net": 70112.05,
+      "pnl_pct_vs_cost": -11.98
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "605118.SH",
+      "shares": 1800,
+      "price": 42.0657,
+      "gross": 75718.26,
+      "net": 75619.83,
+      "pnl_pct_vs_cost": -1.13
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "000672.SZ",
+      "shares": 5400,
+      "price": 13.8023,
+      "gross": 74532.64,
+      "net": 74435.74,
+      "pnl_pct_vs_cost": -6.67
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "301205.SZ",
+      "shares": 400,
+      "price": 231.3663,
+      "gross": 92546.54,
+      "net": 92426.23,
+      "pnl_pct_vs_cost": 21.43
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "001337.SZ",
+      "shares": 1700,
+      "price": 53.6325,
+      "gross": 91175.28,
+      "net": 91056.76,
+      "pnl_pct_vs_cost": 15.38
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "600963.SH",
+      "shares": 13500,
+      "price": 5.4591,
+      "gross": 73697.31,
+      "net": 73601.5,
+      "pnl_pct_vs_cost": -7.5
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "301526.SZ",
+      "shares": 8800,
+      "price": 12.1157,
+      "gross": 106618.34,
+      "net": 106479.73,
+      "pnl_pct_vs_cost": 33.9
+    },
+    {
+      "date": "20260316",
+      "side": "SELL",
+      "reason": "OUT_OF_BUFFER",
+      "ts_code": "605376.SH",
+      "shares": 500,
+      "price": 91.1473,
+      "gross": 45573.67,
+      "net": 45514.42,
+      "pnl_pct_vs_cost": -8.93
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "301658.SZ",
+      "shares": 1600,
+      "price": 49.7393,
+      "gross": 79582.85,
+      "net": 79606.72
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "002531.SZ",
+      "shares": 6800,
+      "price": 12.2144,
+      "gross": 83057.78,
+      "net": 83082.7
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "603057.SH",
+      "shares": 2700,
+      "price": 29.7093,
+      "gross": 80215.11,
+      "net": 80239.17
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "001339.SZ",
+      "shares": 1100,
+      "price": 71.7031,
+      "gross": 78873.43,
+      "net": 78897.09
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "603588.SH",
+      "shares": 5100,
+      "price": 16.0019,
+      "gross": 81609.89,
+      "net": 81634.38
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "601096.SH",
+      "shares": 12900,
+      "price": 6.4028,
+      "gross": 82595.86,
+      "net": 82620.64
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "600746.SH",
+      "shares": 9000,
+      "price": 9.1783,
+      "gross": 82604.88,
+      "net": 82629.66
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "688150.SH",
+      "shares": 2100,
+      "price": 39.3485,
+      "gross": 82631.93,
+      "net": 82656.72
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "301500.SZ",
+      "shares": 3600,
+      "price": 23.056,
+      "gross": 83001.67,
+      "net": 83026.57
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "688523.SH",
+      "shares": 1200,
+      "price": 64.4286,
+      "gross": 77314.32,
+      "net": 77337.51
+    },
+    {
+      "date": "20260316",
+      "side": "BUY",
+      "reason": "TARGET_IN",
+      "ts_code": "002541.SZ",
+      "shares": 900,
+      "price": 23.0961,
+      "gross": 20786.49,
+      "net": 20792.73
+    },
+    {
+      "date": "20260323",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "603057.SH",
+      "shares": 2700,
+      "price": 23.7125,
+      "gross": 64023.7,
+      "net": 63940.47,
+      "pnl_pct_vs_cost": -20.18
+    },
+    {
+      "date": "20260323",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "603588.SH",
+      "shares": 5100,
+      "price": 13.0638,
+      "gross": 66625.48,
+      "net": 66538.87,
+      "pnl_pct_vs_cost": -18.36
+    },
+    {
+      "date": "20260323",
+      "side": "SELL",
+      "reason": "STOP_LOSS",
+      "ts_code": "301500.SZ",
+      "shares": 3600,
+      "price": 18.5528,
+      "gross": 66790.15,
+      "net": 66703.32,
+      "pnl_pct_vs_cost": -19.53
+    }
+  ],
+  "rebalance_log": [
+    {
+      "date": "20260206",
+      "trend_state": "BULL",
+      "max_position_pct": 1.0,
+      "top15": [
+        "002985.SZ",
+        "605599.SH",
+        "605118.SH",
+        "300401.SZ",
+        "000672.SZ",
+        "688548.SH",
+        "301205.SZ",
+        "001337.SZ",
+        "600963.SH",
+        "603103.SH",
+        "688717.SH",
+        "301526.SZ",
+        "605376.SH",
+        "002488.SZ",
+        "301031.SZ"
+      ],
+      "buffer_count": 22,
+      "sold": [],
+      "bought": [
+        "002985.SZ",
+        "605599.SH",
+        "605118.SH",
+        "300401.SZ",
+        "000672.SZ",
+        "688548.SH",
+        "301205.SZ",
+        "001337.SZ",
+        "600963.SH",
+        "603103.SH",
+        "688717.SH",
+        "301526.SZ",
+        "605376.SH"
+      ],
+      "positions_after": [
+        "000672.SZ",
+        "001337.SZ",
+        "002985.SZ",
+        "300401.SZ",
+        "301205.SZ",
+        "301526.SZ",
+        "600963.SH",
+        "603103.SH",
+        "605118.SH",
+        "605376.SH",
+        "605599.SH",
+        "688548.SH",
+        "688717.SH"
+      ]
+    },
+    {
+      "date": "20260316",
+      "trend_state": "BULL",
+      "max_position_pct": 1.0,
+      "top15": [
+        "301658.SZ",
+        "002531.SZ",
+        "603057.SH",
+        "688717.SH",
+        "001339.SZ",
+        "603588.SH",
+        "601096.SH",
+        "600746.SH",
+        "688150.SH",
+        "301500.SZ",
+        "688523.SH",
+        "002541.SZ",
+        "000048.SZ",
+        "600726.SH",
+        "600075.SH"
+      ],
+      "buffer_count": 22,
+      "sold": [
+        "002985.SZ",
+        "605118.SH",
+        "000672.SZ",
+        "301205.SZ",
+        "001337.SZ",
+        "600963.SH",
+        "301526.SZ",
+        "605376.SH"
+      ],
+      "bought": [
+        "301658.SZ",
+        "002531.SZ",
+        "603057.SH",
+        "001339.SZ",
+        "603588.SH",
+        "601096.SH",
+        "600746.SH",
+        "688150.SH",
+        "301500.SZ",
+        "688523.SH",
+        "002541.SZ"
+      ],
+      "positions_after": [
+        "001339.SZ",
+        "002531.SZ",
+        "002541.SZ",
+        "301500.SZ",
+        "301658.SZ",
+        "600746.SH",
+        "601096.SH",
+        "603057.SH",
+        "603588.SH",
+        "688150.SH",
+        "688523.SH",
+        "688548.SH",
+        "688717.SH"
+      ]
+    }
+  ],
+  "final_positions": {
+    "688548.SH": {
+      "shares": 3800,
+      "cost_price": 20.76144,
+      "entry_date": "20260206",
+      "current_price": 20.72
+    },
+    "688717.SH": {
+      "shares": 800,
+      "cost_price": 95.26013999999999,
+      "entry_date": "20260206",
+      "current_price": 95.07
+    },
+    "301658.SZ": {
+      "shares": 1600,
+      "cost_price": 49.73928,
+      "entry_date": "20260316",
+      "current_price": 49.64
+    },
+    "002531.SZ": {
+      "shares": 6800,
+      "cost_price": 12.21438,
+      "entry_date": "20260316",
+      "current_price": 12.19
+    },
+    "001339.SZ": {
+      "shares": 1100,
+      "cost_price": 71.70312,
+      "entry_date": "20260316",
+      "current_price": 71.56
+    },
+    "601096.SH": {
+      "shares": 12900,
+      "cost_price": 6.40278,
+      "entry_date": "20260316",
+      "current_price": 6.39
+    },
+    "600746.SH": {
+      "shares": 9000,
+      "cost_price": 9.17832,
+      "entry_date": "20260316",
+      "current_price": 9.16
+    },
+    "688150.SH": {
+      "shares": 2100,
+      "cost_price": 39.34854,
+      "entry_date": "20260316",
+      "current_price": 39.27
+    },
+    "688523.SH": {
+      "shares": 1200,
+      "cost_price": 64.4286,
+      "entry_date": "20260316",
+      "current_price": 64.3
+    },
+    "002541.SZ": {
+      "shares": 900,
+      "cost_price": 23.0961,
+      "entry_date": "20260316",
+      "current_price": 23.05
+    }
+  },
+  "nav_tail": [
+    {
+      "date": "20260323",
+      "nav": 941385.3179052,
+      "cash": 198946.3179052,
+      "position_value": 742439.0
+    },
+    {
+      "date": "20260324",
+      "nav": 946228.3179052,
+      "cash": 198946.3179052,
+      "position_value": 747282.0
+    },
+    {
+      "date": "20260325",
+      "nav": 953074.3179052,
+      "cash": 198946.3179052,
+      "position_value": 754128.0
+    },
+    {
+      "date": "20260326",
+      "nav": 933500.3179052,
+      "cash": 198946.3179052,
+      "position_value": 734554.0
+    },
+    {
+      "date": "20260327",
+      "nav": 933058.3179052,
+      "cash": 198946.3179052,
+      "position_value": 734112.0
+    }
+  ]
+}

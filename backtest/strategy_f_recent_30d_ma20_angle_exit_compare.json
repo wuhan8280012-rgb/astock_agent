@@ -1,0 +1,35 @@
+{
+  "baseline_stop_loss_15pct": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": -6.69,
+    "annual_return_pct": -44.12,
+    "annual_vol_pct": 27.89,
+    "sharpe": -1.58,
+    "calmar": -3.29,
+    "max_drawdown_pct": -13.43,
+    "max_dd_date": "20260327",
+    "total_trades": 38,
+    "rebalance_count": 2,
+    "final_value": 933058.32,
+    "benchmark_return_pct": -3.74,
+    "excess_return_pct": -2.96,
+    "yearly_returns": {
+      "2026": -6.48
+    },
+    "trading_days": 30
+  },
+  "ma20_angle_lt_0_exit": {
+    "total_return_pct": -4.41,
+    "annual_return_pct": -31.52,
+    "annual_vol_pct": 24.11,
+    "sharpe": -1.31,
+    "max_drawdown_pct": -11.23,
+    "benchmark_return_pct": -3.74,
+    "excess_return_pct": -0.67,
+    "trade_count": 42,
+    "rebalance_count": 2,
+    "start_date": "20260206",
+    "end_date": "20260327",
+    "trend_filter_index_code": "000001.SH"
+  }
+}

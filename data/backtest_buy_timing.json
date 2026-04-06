@@ -1,0 +1,46 @@
+{
+  "backtest_period": "20250206~20260324",
+  "trading_days": 275,
+  "A_周一开盘买": {
+    "total_return": 0.16748398868599912,
+    "annual_return": 0.15246119154862248,
+    "annual_vol": 0.3036937036725271,
+    "sharpe": 0.4197031087811549,
+    "max_drawdown": -0.29938073386318803,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5145985401459854,
+    "total_trades": 826,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1167483.988685999
+  },
+  "B_周五收盘买": {
+    "total_return": 0.04742691955839984,
+    "annual_return": 0.04337555049631936,
+    "annual_vol": 0.3274918839640952,
+    "sharpe": 0.05610994163853531,
+    "max_drawdown": -0.2763380427425204,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.48175182481751827,
+    "total_trades": 828,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1047426.9195583998
+  },
+  "C_周五VWAP买": {
+    "total_return": 0.0030695002164011775,
+    "annual_return": 0.0028124177289778896,
+    "annual_vol": 0.33474677238595424,
+    "sharpe": -0.06628169141968727,
+    "max_drawdown": -0.286474273933038,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.48175182481751827,
+    "total_trades": 828,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1003069.5002164012
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "note": "按市场状态切片。状态定义：BULL=指数>MA200，RANGE=0.95*MA200<指数<=MA200，BEAR=指数<=0.95*MA200。",
+  "thresholds": [
+    -5,
+    0,
+    5,
+    10,
+    15
+  ],
+  "regimes": {
+    "BULL": {
+      "results": {
+        "0": {
+          "start_date": "20230113",
+          "end_date": "20260327",
+          "trading_days": 458,
+          "total_return_pct": -11.75,
+          "annual_return_pct": -6.65,
+          "annual_vol_pct": 33.9,
+          "sharpe": -0.2,
+          "max_drawdown_pct": -29.71,
+          "benchmark_return_pct": 10.51,
+          "excess_return_pct": -22.26,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "start_date": "20230113",
+          "end_date": "20260327",
+          "trading_days": 458,
+          "total_return_pct": -22.99,
+          "annual_return_pct": -13.39,
+          "annual_vol_pct": 35.13,
+          "sharpe": -0.38,
+          "max_drawdown_pct": -37.91,
+          "benchmark_return_pct": 10.51,
+          "excess_return_pct": -33.5,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "start_date": "20230113",
+          "end_date": "20260327",
+          "trading_days": 458,
+          "total_return_pct": -32.06,
+          "annual_return_pct": -19.16,
+          "annual_vol_pct": 35.57,
+          "sharpe": -0.54,
+          "max_drawdown_pct": -43.27,
+          "benchmark_return_pct": 10.51,
+          "excess_return_pct": -42.57,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "start_date": "20230113",
+          "end_date": "20260327",
+          "trading_days": 458,
+          "total_return_pct": -22.67,
+          "annual_return_pct": -13.19,
+          "annual_vol_pct": 37.29,
+          "sharpe": -0.35,
+          "max_drawdown_pct": -45.64,
+          "benchmark_return_pct": 10.51,
+          "excess_return_pct": -33.17,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "start_date": "20230113",
+          "end_date": "20260327",
+          "trading_days": 458,
+          "total_return_pct": -18.31,
+          "annual_return_pct": -10.53,
+          "annual_vol_pct": 33.51,
+          "sharpe": -0.31,
+          "max_drawdown_pct": -35.94,
+          "benchmark_return_pct": 10.51,
+          "excess_return_pct": -28.82,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    },
+    "RANGE": {
+      "results": {
+        "0": {
+          "start_date": "20220624",
+          "end_date": "20260323",
+          "trading_days": 226,
+          "total_return_pct": -24.72,
+          "annual_return_pct": -27.14,
+          "annual_vol_pct": 19.73,
+          "sharpe": -1.38,
+          "max_drawdown_pct": -29.41,
+          "benchmark_return_pct": 0.53,
+          "excess_return_pct": -25.25,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "start_date": "20220624",
+          "end_date": "20260323",
+          "trading_days": 226,
+          "total_return_pct": -34.38,
+          "annual_return_pct": -37.49,
+          "annual_vol_pct": 21.46,
+          "sharpe": -1.75,
+          "max_drawdown_pct": -34.38,
+          "benchmark_return_pct": 0.53,
+          "excess_return_pct": -34.91,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "start_date": "20220624",
+          "end_date": "20260323",
+          "trading_days": 226,
+          "total_return_pct": -39.49,
+          "annual_return_pct": -42.89,
+          "annual_vol_pct": 25.39,
+          "sharpe": -1.69,
+          "max_drawdown_pct": -39.49,
+          "benchmark_return_pct": 0.53,
+          "excess_return_pct": -40.02,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "start_date": "20220624",
+          "end_date": "20260323",
+          "trading_days": 226,
+          "total_return_pct": -31.11,
+          "annual_return_pct": -34,
+          "annual_vol_pct": 29.99,
+          "sharpe": -1.13,
+          "max_drawdown_pct": -35.52,
+          "benchmark_return_pct": 0.53,
+          "excess_return_pct": -31.64,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "start_date": "20220624",
+          "end_date": "20260323",
+          "trading_days": 226,
+          "total_return_pct": -29.91,
+          "annual_return_pct": -32.72,
+          "annual_vol_pct": 18.96,
+          "sharpe": -1.73,
+          "max_drawdown_pct": -29.91,
+          "benchmark_return_pct": 0.53,
+          "excess_return_pct": -30.44,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    },
+    "BEAR": {
+      "results": {
+        "0": {
+          "start_date": "20220411",
+          "end_date": "20240923",
+          "trading_days": 277,
+          "total_return_pct": -27.07,
+          "annual_return_pct": -24.96,
+          "annual_vol_pct": 20.66,
+          "sharpe": -1.21,
+          "max_drawdown_pct": -28.22,
+          "benchmark_return_pct": -21.64,
+          "excess_return_pct": -5.43,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "start_date": "20220411",
+          "end_date": "20240923",
+          "trading_days": 277,
+          "total_return_pct": -29.29,
+          "annual_return_pct": -27.04,
+          "annual_vol_pct": 21.66,
+          "sharpe": -1.25,
+          "max_drawdown_pct": -30.87,
+          "benchmark_return_pct": -21.64,
+          "excess_return_pct": -7.65,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "start_date": "20220411",
+          "end_date": "20240923",
+          "trading_days": 277,
+          "total_return_pct": -27.28,
+          "annual_return_pct": -25.16,
+          "annual_vol_pct": 22.64,
+          "sharpe": -1.11,
+          "max_drawdown_pct": -29.03,
+          "benchmark_return_pct": -21.64,
+          "excess_return_pct": -5.64,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "start_date": "20220411",
+          "end_date": "20240923",
+          "trading_days": 277,
+          "total_return_pct": -13.88,
+          "annual_return_pct": -12.71,
+          "annual_vol_pct": 14.16,
+          "sharpe": -0.9,
+          "max_drawdown_pct": -16.2,
+          "benchmark_return_pct": -21.64,
+          "excess_return_pct": 7.76,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "start_date": "20220411",
+          "end_date": "20240923",
+          "trading_days": 277,
+          "total_return_pct": -26.52,
+          "annual_return_pct": -24.45,
+          "annual_vol_pct": 19.92,
+          "sharpe": -1.23,
+          "max_drawdown_pct": -28,
+          "benchmark_return_pct": -21.64,
+          "excess_return_pct": -4.88,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    }
+  },
+  "summary": {
+    "BULL": {
+      "threshold": 0,
+      "start_date": "20230113",
+      "end_date": "20260327",
+      "trading_days": 458,
+      "total_return_pct": -11.75,
+      "annual_return_pct": -6.65,
+      "annual_vol_pct": 33.9,
+      "sharpe": -0.2,
+      "max_drawdown_pct": -29.71,
+      "benchmark_return_pct": 10.51,
+      "excess_return_pct": -22.26,
+      "total_trades_full_run": 601,
+      "rebalance_count_full_run": 49
+    },
+    "RANGE": {
+      "threshold": 0,
+      "start_date": "20220624",
+      "end_date": "20260323",
+      "trading_days": 226,
+      "total_return_pct": -24.72,
+      "annual_return_pct": -27.14,
+      "annual_vol_pct": 19.73,
+      "sharpe": -1.38,
+      "max_drawdown_pct": -29.41,
+      "benchmark_return_pct": 0.53,
+      "excess_return_pct": -25.25,
+      "total_trades_full_run": 601,
+      "rebalance_count_full_run": 49
+    },
+    "BEAR": {
+      "threshold": 15,
+      "start_date": "20220411",
+      "end_date": "20240923",
+      "trading_days": 277,
+      "total_return_pct": -13.88,
+      "annual_return_pct": -12.71,
+      "annual_vol_pct": 14.16,
+      "sharpe": -0.9,
+      "max_drawdown_pct": -16.2,
+      "benchmark_return_pct": -21.64,
+      "excess_return_pct": 7.76,
+      "total_trades_full_run": 675,
+      "rebalance_count_full_run": 49
+    }
+  }
+}

@@ -1,0 +1,845 @@
+{
+  "baseline": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": -6.69,
+    "annual_return_pct": -44.12,
+    "annual_vol_pct": 27.89,
+    "sharpe": -1.58,
+    "calmar": -3.29,
+    "max_drawdown_pct": -13.43,
+    "max_dd_date": "20260327",
+    "total_trades": 38,
+    "rebalance_count": 2,
+    "final_value": 933058.32,
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": -3.66,
+    "yearly_returns": {
+      "2026": -6.48
+    },
+    "trading_days": 30
+  },
+  "rule_A": {
+    "total_return_pct": -5.41,
+    "annual_return_pct": -37.35,
+    "sharpe": -1.4,
+    "max_drawdown_pct": -12.45,
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": -2.38,
+    "total_trades": 40,
+    "rebalance_count": 2,
+    "trade_log": [
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002985.SZ",
+        "rank": 1,
+        "entry_rank": 1,
+        "days_held": 0,
+        "price": 44.3084
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605599.SH",
+        "rank": 2,
+        "entry_rank": 2,
+        "days_held": 0,
+        "price": 28.1161
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605118.SH",
+        "rank": 3,
+        "entry_rank": 3,
+        "days_held": 0,
+        "price": 42.5449
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "300401.SZ",
+        "rank": 4,
+        "entry_rank": 4,
+        "days_held": 0,
+        "price": 19.1883
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "000672.SZ",
+        "rank": 5,
+        "entry_rank": 5,
+        "days_held": 0,
+        "price": 14.7895
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688548.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 0,
+        "price": 20.7614
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301205.SZ",
+        "rank": 7,
+        "entry_rank": 7,
+        "days_held": 0,
+        "price": 190.5403
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "001337.SZ",
+        "rank": 8,
+        "entry_rank": 8,
+        "days_held": 0,
+        "price": 46.4828
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "600963.SH",
+        "rank": 9,
+        "entry_rank": 9,
+        "days_held": 0,
+        "price": 5.9018
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603103.SH",
+        "rank": 10,
+        "entry_rank": 10,
+        "days_held": 0,
+        "price": 33.4668
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688717.SH",
+        "rank": 11,
+        "entry_rank": 11,
+        "days_held": 0,
+        "price": 95.2601
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301526.SZ",
+        "rank": 12,
+        "entry_rank": 12,
+        "days_held": 0,
+        "price": 9.0481
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605376.SH",
+        "rank": 13,
+        "entry_rank": 13,
+        "days_held": 0,
+        "price": 100.0898
+      },
+      {
+        "date": "20260212",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "300401.SZ",
+        "rank": 66,
+        "entry_rank": 4,
+        "days_held": 4,
+        "price": 17.465
+      },
+      {
+        "date": "20260225",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603103.SH",
+        "rank": 36,
+        "entry_rank": 10,
+        "days_held": 7,
+        "price": 28.2135
+      },
+      {
+        "date": "20260304",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "605599.SH",
+        "rank": 46,
+        "entry_rank": 2,
+        "days_held": 12,
+        "price": 23.7524
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "002985.SZ",
+        "rank": null,
+        "entry_rank": 1,
+        "days_held": 20,
+        "price": 39.0018
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605118.SH",
+        "rank": 24,
+        "entry_rank": 3,
+        "days_held": 20,
+        "price": 42.0657
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "000672.SZ",
+        "rank": null,
+        "entry_rank": 5,
+        "days_held": 20,
+        "price": 13.8023
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301205.SZ",
+        "rank": 65,
+        "entry_rank": 7,
+        "days_held": 20,
+        "price": 231.3663
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "001337.SZ",
+        "rank": 51,
+        "entry_rank": 8,
+        "days_held": 20,
+        "price": 53.6325
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "600963.SH",
+        "rank": null,
+        "entry_rank": 9,
+        "days_held": 20,
+        "price": 5.4591
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301526.SZ",
+        "rank": 80,
+        "entry_rank": 12,
+        "days_held": 20,
+        "price": 12.1157
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605376.SH",
+        "rank": null,
+        "entry_rank": 13,
+        "days_held": 20,
+        "price": 91.1473
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301658.SZ",
+        "rank": 1,
+        "entry_rank": 1,
+        "days_held": 0,
+        "price": 49.7393
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002531.SZ",
+        "rank": 2,
+        "entry_rank": 2,
+        "days_held": 0,
+        "price": 12.2144
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603057.SH",
+        "rank": 3,
+        "entry_rank": 3,
+        "days_held": 0,
+        "price": 29.7093
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "001339.SZ",
+        "rank": 5,
+        "entry_rank": 5,
+        "days_held": 0,
+        "price": 71.7031
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603588.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 0,
+        "price": 16.0019
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "601096.SH",
+        "rank": 7,
+        "entry_rank": 7,
+        "days_held": 0,
+        "price": 6.4028
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "600746.SH",
+        "rank": 8,
+        "entry_rank": 8,
+        "days_held": 0,
+        "price": 9.1783
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688150.SH",
+        "rank": 9,
+        "entry_rank": 9,
+        "days_held": 0,
+        "price": 39.3485
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301500.SZ",
+        "rank": 10,
+        "entry_rank": 10,
+        "days_held": 0,
+        "price": 23.056
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688523.SH",
+        "rank": 11,
+        "entry_rank": 11,
+        "days_held": 0,
+        "price": 64.4286
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002541.SZ",
+        "rank": 12,
+        "entry_rank": 12,
+        "days_held": 0,
+        "price": 23.0961
+      },
+      {
+        "date": "20260319",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "600746.SH",
+        "rank": 39,
+        "entry_rank": 8,
+        "days_held": 3,
+        "price": 8.5229
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "301500.SZ",
+        "rank": 43,
+        "entry_rank": 10,
+        "days_held": 4,
+        "price": 19.96
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "001339.SZ",
+        "rank": 36,
+        "entry_rank": 5,
+        "days_held": 5,
+        "price": 61.7562
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603057.SH",
+        "rank": null,
+        "entry_rank": 3,
+        "days_held": 5,
+        "price": 23.7125
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603588.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 5,
+        "price": 13.0638
+      }
+    ]
+  },
+  "rule_B": {
+    "total_return_pct": -4.76,
+    "annual_return_pct": -33.59,
+    "sharpe": -1.26,
+    "max_drawdown_pct": -11.99,
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": -1.72,
+    "total_trades": 40,
+    "rebalance_count": 2,
+    "trade_log": [
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002985.SZ",
+        "rank": 1,
+        "entry_rank": 1,
+        "days_held": 0,
+        "price": 44.3084
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605599.SH",
+        "rank": 2,
+        "entry_rank": 2,
+        "days_held": 0,
+        "price": 28.1161
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605118.SH",
+        "rank": 3,
+        "entry_rank": 3,
+        "days_held": 0,
+        "price": 42.5449
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "300401.SZ",
+        "rank": 4,
+        "entry_rank": 4,
+        "days_held": 0,
+        "price": 19.1883
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "000672.SZ",
+        "rank": 5,
+        "entry_rank": 5,
+        "days_held": 0,
+        "price": 14.7895
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688548.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 0,
+        "price": 20.7614
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301205.SZ",
+        "rank": 7,
+        "entry_rank": 7,
+        "days_held": 0,
+        "price": 190.5403
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "001337.SZ",
+        "rank": 8,
+        "entry_rank": 8,
+        "days_held": 0,
+        "price": 46.4828
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "600963.SH",
+        "rank": 9,
+        "entry_rank": 9,
+        "days_held": 0,
+        "price": 5.9018
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603103.SH",
+        "rank": 10,
+        "entry_rank": 10,
+        "days_held": 0,
+        "price": 33.4668
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688717.SH",
+        "rank": 11,
+        "entry_rank": 11,
+        "days_held": 0,
+        "price": 95.2601
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301526.SZ",
+        "rank": 12,
+        "entry_rank": 12,
+        "days_held": 0,
+        "price": 9.0481
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "605376.SH",
+        "rank": 13,
+        "entry_rank": 13,
+        "days_held": 0,
+        "price": 100.0898
+      },
+      {
+        "date": "20260212",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "300401.SZ",
+        "rank": 66,
+        "entry_rank": 4,
+        "days_held": 4,
+        "price": 17.465
+      },
+      {
+        "date": "20260225",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603103.SH",
+        "rank": 36,
+        "entry_rank": 10,
+        "days_held": 7,
+        "price": 28.2135
+      },
+      {
+        "date": "20260302",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_MATURE",
+        "ts_code": "000672.SZ",
+        "rank": 93,
+        "entry_rank": 5,
+        "days_held": 10,
+        "price": 14.3612
+      },
+      {
+        "date": "20260304",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "605599.SH",
+        "rank": 46,
+        "entry_rank": 2,
+        "days_held": 12,
+        "price": 23.7524
+      },
+      {
+        "date": "20260312",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_MATURE",
+        "ts_code": "001337.SZ",
+        "rank": 51,
+        "entry_rank": 8,
+        "days_held": 18,
+        "price": 55.7383
+      },
+      {
+        "date": "20260312",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_MATURE",
+        "ts_code": "301526.SZ",
+        "rank": 78,
+        "entry_rank": 12,
+        "days_held": 18,
+        "price": 12.1956
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "002985.SZ",
+        "rank": null,
+        "entry_rank": 1,
+        "days_held": 20,
+        "price": 39.0018
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605118.SH",
+        "rank": 24,
+        "entry_rank": 3,
+        "days_held": 20,
+        "price": 42.0657
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "301205.SZ",
+        "rank": 65,
+        "entry_rank": 7,
+        "days_held": 20,
+        "price": 231.3663
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "600963.SH",
+        "rank": null,
+        "entry_rank": 9,
+        "days_held": 20,
+        "price": 5.4591
+      },
+      {
+        "date": "20260316",
+        "side": "SELL",
+        "reason": "OUT_OF_BUFFER",
+        "ts_code": "605376.SH",
+        "rank": null,
+        "entry_rank": 13,
+        "days_held": 20,
+        "price": 91.1473
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301658.SZ",
+        "rank": 1,
+        "entry_rank": 1,
+        "days_held": 0,
+        "price": 49.7393
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002531.SZ",
+        "rank": 2,
+        "entry_rank": 2,
+        "days_held": 0,
+        "price": 12.2144
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603057.SH",
+        "rank": 3,
+        "entry_rank": 3,
+        "days_held": 0,
+        "price": 29.7093
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "001339.SZ",
+        "rank": 5,
+        "entry_rank": 5,
+        "days_held": 0,
+        "price": 71.7031
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "603588.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 0,
+        "price": 16.0019
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "601096.SH",
+        "rank": 7,
+        "entry_rank": 7,
+        "days_held": 0,
+        "price": 6.4028
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "600746.SH",
+        "rank": 8,
+        "entry_rank": 8,
+        "days_held": 0,
+        "price": 9.1783
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688150.SH",
+        "rank": 9,
+        "entry_rank": 9,
+        "days_held": 0,
+        "price": 39.3485
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "301500.SZ",
+        "rank": 10,
+        "entry_rank": 10,
+        "days_held": 0,
+        "price": 23.056
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "688523.SH",
+        "rank": 11,
+        "entry_rank": 11,
+        "days_held": 0,
+        "price": 64.4286
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "TARGET_IN",
+        "ts_code": "002541.SZ",
+        "rank": 12,
+        "entry_rank": 12,
+        "days_held": 0,
+        "price": 23.0961
+      },
+      {
+        "date": "20260319",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "600746.SH",
+        "rank": 39,
+        "entry_rank": 8,
+        "days_held": 3,
+        "price": 8.5229
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "301500.SZ",
+        "rank": 43,
+        "entry_rank": 10,
+        "days_held": 4,
+        "price": 19.96
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "RANK_COLLAPSE_EARLY",
+        "ts_code": "001339.SZ",
+        "rank": 36,
+        "entry_rank": 5,
+        "days_held": 5,
+        "price": 61.7562
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603057.SH",
+        "rank": null,
+        "entry_rank": 3,
+        "days_held": 5,
+        "price": 23.7125
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603588.SH",
+        "rank": 6,
+        "entry_rank": 6,
+        "days_held": 5,
+        "price": 13.0638
+      }
+    ]
+  }
+}

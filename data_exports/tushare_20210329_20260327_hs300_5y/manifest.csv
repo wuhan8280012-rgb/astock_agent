@@ -1,0 +1,12 @@
+file,rows
+hs300_market_bundle_5y.csv,1070209
+daily_rows,355455
+daily_basic_rows,355455
+adj_factor_rows,355963
+index_daily_rows,1211
+stock_basic_rows,300
+trade_cal_rows,1825
+hs300_latest_weight_date,20260302
+hs300_constituent_count,300
+start_date,20210329
+end_date,20260327

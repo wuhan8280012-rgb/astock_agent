@@ -1,0 +1,172 @@
+[
+  {
+    "experiment": "baseline_ma20_angle_ge_0",
+    "rule": "固定 F + MA20角度 >= 0",
+    "total_return_pct": 213.57,
+    "annual_return_pct": 34.94,
+    "annual_vol_pct": 29.13,
+    "sharpe": 1.2,
+    "max_drawdown_pct": -23.8,
+    "max_dd_date": "20230823",
+    "total_trades": 614,
+    "rebalance_count": 49,
+    "final_value": 3135679.87,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 203.75,
+    "trading_days": 961,
+    "regime_stats": {
+      "TREND": {
+        "days": 458,
+        "avg_daily_return_pct": 0.304,
+        "win_rate_pct": 52.2
+      },
+      "RANGE": {
+        "days": 226,
+        "avg_daily_return_pct": -0.07,
+        "win_rate_pct": 41.2
+      },
+      "WEAK": {
+        "days": 277,
+        "avg_daily_return_pct": 0.025,
+        "win_rate_pct": 25.4
+      }
+    },
+    "elapsed_sec": 10.1
+  },
+  {
+    "experiment": "expA_light_switch",
+    "rule": "TREND 1.0/0.2/0.2; RANGE 0.7/0.5/0.1; WEAK 0.4/0.8/0.0",
+    "total_return_pct": 146.13,
+    "annual_return_pct": 26.64,
+    "annual_vol_pct": 28.54,
+    "sharpe": 0.93,
+    "max_drawdown_pct": -26.44,
+    "max_dd_date": "20240918",
+    "total_trades": 616,
+    "rebalance_count": 49,
+    "final_value": 2461300.56,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 136.31,
+    "trading_days": 961,
+    "regime_stats": {
+      "TREND": {
+        "days": 458,
+        "avg_daily_return_pct": 0.279,
+        "win_rate_pct": 52.2
+      },
+      "RANGE": {
+        "days": 226,
+        "avg_daily_return_pct": -0.063,
+        "win_rate_pct": 42.9
+      },
+      "WEAK": {
+        "days": 277,
+        "avg_daily_return_pct": -0.029,
+        "win_rate_pct": 13.4
+      }
+    },
+    "elapsed_sec": 10.2
+  },
+  {
+    "experiment": "expB_defensive",
+    "rule": "TREND 1.0/0.2/0.2; RANGE 0.6/0.6/0.05; WEAK 0.2/1.0/0.0",
+    "total_return_pct": 130.39,
+    "annual_return_pct": 24.46,
+    "annual_vol_pct": 28.43,
+    "sharpe": 0.86,
+    "max_drawdown_pct": -29.52,
+    "max_dd_date": "20240918",
+    "total_trades": 627,
+    "rebalance_count": 49,
+    "final_value": 2303886.74,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 120.57,
+    "trading_days": 961,
+    "regime_stats": {
+      "TREND": {
+        "days": 458,
+        "avg_daily_return_pct": 0.273,
+        "win_rate_pct": 51.7
+      },
+      "RANGE": {
+        "days": 226,
+        "avg_daily_return_pct": -0.066,
+        "win_rate_pct": 44.2
+      },
+      "WEAK": {
+        "days": 277,
+        "avg_daily_return_pct": -0.041,
+        "win_rate_pct": 12.3
+      }
+    },
+    "elapsed_sec": 10.3
+  },
+  {
+    "experiment": "expC_range_vol_up",
+    "rule": "TREND 1.0/0.25/0.2; RANGE 0.5/0.7/0.1; WEAK 0.4/0.8/0.0",
+    "total_return_pct": 170.89,
+    "annual_return_pct": 29.86,
+    "annual_vol_pct": 27.77,
+    "sharpe": 1.08,
+    "max_drawdown_pct": -25.96,
+    "max_dd_date": "20240918",
+    "total_trades": 639,
+    "rebalance_count": 49,
+    "final_value": 2708861.97,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 161.07,
+    "trading_days": 961,
+    "regime_stats": {
+      "TREND": {
+        "days": 458,
+        "avg_daily_return_pct": 0.281,
+        "win_rate_pct": 50.7
+      },
+      "RANGE": {
+        "days": 226,
+        "avg_daily_return_pct": -0.036,
+        "win_rate_pct": 44.2
+      },
+      "WEAK": {
+        "days": 277,
+        "avg_daily_return_pct": -0.023,
+        "win_rate_pct": 14.5
+      }
+    },
+    "elapsed_sec": 10.8
+  },
+  {
+    "experiment": "expD_remove_size_offtrend",
+    "rule": "TREND 1.0/0.25/0.2; RANGE 0.8/0.4/0.0; WEAK 0.5/0.8/0.0",
+    "total_return_pct": 129.37,
+    "annual_return_pct": 24.32,
+    "annual_vol_pct": 27.83,
+    "sharpe": 0.87,
+    "max_drawdown_pct": -33.68,
+    "max_dd_date": "20240918",
+    "total_trades": 629,
+    "rebalance_count": 49,
+    "final_value": 2293736.47,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 119.56,
+    "trading_days": 961,
+    "regime_stats": {
+      "TREND": {
+        "days": 458,
+        "avg_daily_return_pct": 0.281,
+        "win_rate_pct": 51.1
+      },
+      "RANGE": {
+        "days": 226,
+        "avg_daily_return_pct": -0.105,
+        "win_rate_pct": 41.6
+      },
+      "WEAK": {
+        "days": 277,
+        "avg_daily_return_pct": -0.027,
+        "win_rate_pct": 13
+      }
+    },
+    "elapsed_sec": 10.7
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "window_start_date": "20251029",
+  "window_end_date": "20260327",
+  "trend_filter_index_code": "000001.SH",
+  "results": [
+    {
+      "name": "baseline",
+      "total_return_pct": 10.51,
+      "annual_return_pct": 28.64,
+      "sharpe": 0.98,
+      "max_drawdown_pct": -12.81,
+      "excess_return_pct": 13.07,
+      "total_trades": 100
+    },
+    {
+      "name": "industry_20_gt_market",
+      "total_return_pct": 11.62,
+      "annual_return_pct": 31.91,
+      "sharpe": 1.03,
+      "max_drawdown_pct": -12.45,
+      "excess_return_pct": 14.17,
+      "total_trades": 111,
+      "delta_total_return_pct": 1.11,
+      "delta_sharpe": 0.05,
+      "delta_max_drawdown_pct": 0.36
+    },
+    {
+      "name": "industry_60_gt_market",
+      "total_return_pct": 8.74,
+      "annual_return_pct": 23.52,
+      "sharpe": 0.67,
+      "max_drawdown_pct": -15.65,
+      "excess_return_pct": 11.3,
+      "total_trades": 119,
+      "delta_total_return_pct": -1.77,
+      "delta_sharpe": -0.31,
+      "delta_max_drawdown_pct": -2.84
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "window_start_date": "20220411",
+  "window_end_date": "20260327",
+  "trend_filter_index_code": "000001.SH",
+  "results": [
+    {
+      "name": "baseline",
+      "total_return_pct": 269.41,
+      "annual_return_pct": 40.87,
+      "sharpe": 1.34,
+      "max_drawdown_pct": -22.9,
+      "excess_return_pct": 245.84,
+      "total_trades": 679
+    },
+    {
+      "name": "industry_20_gt_market",
+      "total_return_pct": 17.64,
+      "annual_return_pct": 4.35,
+      "sharpe": 0.15,
+      "max_drawdown_pct": -42.88,
+      "excess_return_pct": -5.93,
+      "total_trades": 745,
+      "delta_total_return_pct": -251.77,
+      "delta_sharpe": -1.19,
+      "delta_max_drawdown_pct": -19.98
+    }
+  ]
+}

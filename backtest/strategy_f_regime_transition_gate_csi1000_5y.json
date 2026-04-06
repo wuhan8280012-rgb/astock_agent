@@ -1,0 +1,77 @@
+[
+  {
+    "experiment": "baseline_ma20_ge_0",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 213.57,
+    "annual_return_pct": 34.94,
+    "annual_vol_pct": 29.14,
+    "sharpe": 1.2,
+    "calmar": 1.47,
+    "max_drawdown_pct": -23.8,
+    "max_dd_date": "20230823",
+    "total_trades": 614,
+    "rebalance_count": 49,
+    "final_value": 3135679.87,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 203.75,
+    "yearly_returns": {
+      "2022": 0.28,
+      "2023": 15.99,
+      "2024": 50.98,
+      "2025": 69.2,
+      "2026": -0.55
+    },
+    "trading_days": 961,
+    "elapsed_sec": 26.6
+  },
+  {
+    "experiment": "global_coef_ge_-0.1",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 237.47,
+    "annual_return_pct": 37.57,
+    "annual_vol_pct": 29.28,
+    "sharpe": 1.28,
+    "calmar": 1.62,
+    "max_drawdown_pct": -23.14,
+    "max_dd_date": "20240827",
+    "total_trades": 621,
+    "rebalance_count": 49,
+    "final_value": 3374675.1,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 227.65,
+    "yearly_returns": {
+      "2022": 0.27,
+      "2023": 23.37,
+      "2024": 49.31,
+      "2025": 68.86,
+      "2026": 2.34
+    },
+    "trading_days": 961,
+    "elapsed_sec": 33.3
+  },
+  {
+    "experiment": "regime_coef_bull_range_-0.1_bear_0.1",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 228.53,
+    "annual_return_pct": 36.6,
+    "annual_vol_pct": 29.33,
+    "sharpe": 1.25,
+    "calmar": 1.58,
+    "max_drawdown_pct": -23.23,
+    "max_dd_date": "20240827",
+    "total_trades": 619,
+    "rebalance_count": 49,
+    "final_value": 3285294.44,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 218.71,
+    "yearly_returns": {
+      "2022": 0.27,
+      "2023": 20.03,
+      "2024": 49.18,
+      "2025": 68.73,
+      "2026": 2.56
+    },
+    "trading_days": 961,
+    "elapsed_sec": 33.8
+  }
+]

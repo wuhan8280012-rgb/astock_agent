@@ -1,0 +1,30 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Secrets
+config/.env
+config/.env.local
+config/.env.*.local
+
+# Runtime state
+logs/
+data/signals/
+data/portfolio_state.json
+data/f_strategy_portfolio_state.json
+db/investment.db
+db/investment.db-wal
+db/investment.db-shm
+db/investment_backup_pre_papertrade.db
+db/.fuse_hidden*
+
+# Large generated datasets not suitable for plain GitHub pushes
+backtest/cache/
+data/csi1000_market_bundle*.csv
+data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv
+data_exports/tushare_20210329_20260327_hs300_5y/hs300_market_bundle_5y.csv

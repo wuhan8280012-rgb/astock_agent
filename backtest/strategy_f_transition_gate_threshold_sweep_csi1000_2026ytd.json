@@ -1,0 +1,116 @@
+{
+  "start_date": "20260105",
+  "end_date": "20260327",
+  "results": [
+    {
+      "experiment": "baseline_ma20_ge_0",
+      "threshold": null,
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -10.2,
+      "annual_return_pct": -39.47,
+      "annual_vol_pct": 25.75,
+      "sharpe": -1.53,
+      "calmar": -2.2,
+      "max_drawdown_pct": -17.94,
+      "max_dd_date": "20260323",
+      "total_trades": 66,
+      "rebalance_count": 3,
+      "final_value": 898020.61,
+      "benchmark_return_pct": -4.56,
+      "excess_return_pct": -5.64,
+      "yearly_returns": {
+        "2026": -9.99
+      },
+      "trading_days": 54,
+      "elapsed_sec": 1.9
+    },
+    {
+      "experiment": "transition_gate_threshold",
+      "threshold": -0.1,
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -10.01,
+      "annual_return_pct": -38.87,
+      "annual_vol_pct": 25.89,
+      "sharpe": -1.5,
+      "calmar": -2.16,
+      "max_drawdown_pct": -18.0,
+      "max_dd_date": "20260323",
+      "total_trades": 66,
+      "rebalance_count": 3,
+      "final_value": 899892.71,
+      "benchmark_return_pct": -4.56,
+      "excess_return_pct": -5.45,
+      "yearly_returns": {
+        "2026": -9.8
+      },
+      "trading_days": 54,
+      "elapsed_sec": 2.3
+    },
+    {
+      "experiment": "transition_gate_threshold",
+      "threshold": 0.0,
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -7.2,
+      "annual_return_pct": -29.44,
+      "annual_vol_pct": 25.92,
+      "sharpe": -1.14,
+      "calmar": -1.69,
+      "max_drawdown_pct": -17.47,
+      "max_dd_date": "20260323",
+      "total_trades": 64,
+      "rebalance_count": 3,
+      "final_value": 928005.73,
+      "benchmark_return_pct": -4.56,
+      "excess_return_pct": -2.64,
+      "yearly_returns": {
+        "2026": -6.99
+      },
+      "trading_days": 54,
+      "elapsed_sec": 2.3
+    },
+    {
+      "experiment": "transition_gate_threshold",
+      "threshold": 0.1,
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -5.48,
+      "annual_return_pct": -23.11,
+      "annual_vol_pct": 26.76,
+      "sharpe": -0.86,
+      "calmar": -1.42,
+      "max_drawdown_pct": -16.32,
+      "max_dd_date": "20260326",
+      "total_trades": 59,
+      "rebalance_count": 3,
+      "final_value": 945234.21,
+      "benchmark_return_pct": -4.56,
+      "excess_return_pct": -0.92,
+      "yearly_returns": {
+        "2026": -5.26
+      },
+      "trading_days": 54,
+      "elapsed_sec": 2.3
+    },
+    {
+      "experiment": "transition_gate_threshold",
+      "threshold": 0.2,
+      "name": "F_三因子+趋势过滤",
+      "total_return_pct": -6.0,
+      "annual_return_pct": -25.08,
+      "annual_vol_pct": 26.29,
+      "sharpe": -0.95,
+      "calmar": -1.58,
+      "max_drawdown_pct": -15.84,
+      "max_dd_date": "20260326",
+      "total_trades": 59,
+      "rebalance_count": 3,
+      "final_value": 940000.92,
+      "benchmark_return_pct": -4.56,
+      "excess_return_pct": -1.44,
+      "yearly_returns": {
+        "2026": -5.78
+      },
+      "trading_days": 54,
+      "elapsed_sec": 2.5
+    }
+  ]
+}

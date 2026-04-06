@@ -1,0 +1,175 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "strategy": "F + ma20_angle_deg >= 0",
+  "variants": [
+    {
+      "trend_reduce_pct": 0.5,
+      "label": "range_50pct",
+      "result": {
+        "total_return_pct": 213.57,
+        "annual_return_pct": 34.94,
+        "annual_vol_pct": 29.14,
+        "sharpe": 1.2,
+        "calmar": 1.47,
+        "max_drawdown_pct": -23.8,
+        "max_dd_date": "20230823",
+        "total_trades": 614,
+        "rebalance_count": 49,
+        "final_value": 3135679.87,
+        "benchmark_return_pct": 9.82,
+        "excess_return_pct": 203.75,
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 458,
+          "pct_days": 47.66,
+          "total_return_pct": 255.15,
+          "annual_return_pct": 100.84,
+          "annual_vol_pct": 37.31,
+          "sharpe": 2.7,
+          "avg_position_pct": 91.16,
+          "log_return_contribution_pct": 110.9
+        },
+        "RANGE": {
+          "days": 226,
+          "pct_days": 23.52,
+          "total_return_pct": -16.96,
+          "annual_return_pct": -18.71,
+          "annual_vol_pct": 24.25,
+          "sharpe": -0.77,
+          "avg_position_pct": 54.28,
+          "log_return_contribution_pct": -16.26
+        },
+        "BEAR": {
+          "days": 277,
+          "pct_days": 28.82,
+          "total_return_pct": 6.32,
+          "annual_return_pct": 5.73,
+          "annual_vol_pct": 11.93,
+          "sharpe": 0.48,
+          "avg_position_pct": 17.1,
+          "log_return_contribution_pct": 5.36
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 100.84,
+        "RANGE": -18.71,
+        "BEAR": 5.73
+      }
+    },
+    {
+      "trend_reduce_pct": 0.25,
+      "label": "range_25pct",
+      "result": {
+        "total_return_pct": 176.72,
+        "annual_return_pct": 30.59,
+        "annual_vol_pct": 27.78,
+        "sharpe": 1.1,
+        "calmar": 1.33,
+        "max_drawdown_pct": -22.95,
+        "max_dd_date": "20240805",
+        "total_trades": 557,
+        "rebalance_count": 49,
+        "final_value": 2767223.69,
+        "benchmark_return_pct": 9.82,
+        "excess_return_pct": 166.91,
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 458,
+          "pct_days": 47.66,
+          "total_return_pct": 220.75,
+          "annual_return_pct": 89.89,
+          "annual_vol_pct": 36.58,
+          "sharpe": 2.46,
+          "avg_position_pct": 89.99,
+          "log_return_contribution_pct": 114.5
+        },
+        "RANGE": {
+          "days": 226,
+          "pct_days": 23.52,
+          "total_return_pct": -17.03,
+          "annual_return_pct": -18.79,
+          "annual_vol_pct": 21.47,
+          "sharpe": -0.88,
+          "avg_position_pct": 38.4,
+          "log_return_contribution_pct": -18.34
+        },
+        "BEAR": {
+          "days": 277,
+          "pct_days": 28.82,
+          "total_return_pct": 3.98,
+          "annual_return_pct": 3.62,
+          "annual_vol_pct": 8.32,
+          "sharpe": 0.44,
+          "avg_position_pct": 10.36,
+          "log_return_contribution_pct": 3.84
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 89.89,
+        "RANGE": -18.79,
+        "BEAR": 3.62
+      }
+    },
+    {
+      "trend_reduce_pct": 0.0,
+      "label": "range_0pct",
+      "result": {
+        "total_return_pct": 163.04,
+        "annual_return_pct": 28.87,
+        "annual_vol_pct": 27.29,
+        "sharpe": 1.06,
+        "calmar": 1.28,
+        "max_drawdown_pct": -22.62,
+        "max_dd_date": "20250408",
+        "total_trades": 503,
+        "rebalance_count": 49,
+        "final_value": 2630382.64,
+        "benchmark_return_pct": 9.82,
+        "excess_return_pct": 153.22,
+        "trading_days": 961
+      },
+      "regime_summary": {
+        "BULL": {
+          "days": 458,
+          "pct_days": 47.66,
+          "total_return_pct": 208.25,
+          "annual_return_pct": 85.78,
+          "annual_vol_pct": 36.6,
+          "sharpe": 2.34,
+          "avg_position_pct": 89.13,
+          "log_return_contribution_pct": 116.4
+        },
+        "RANGE": {
+          "days": 226,
+          "pct_days": 23.52,
+          "total_return_pct": -16.02,
+          "annual_return_pct": -17.69,
+          "annual_vol_pct": 20.05,
+          "sharpe": -0.88,
+          "avg_position_pct": 26.37,
+          "log_return_contribution_pct": -18.05
+        },
+        "BEAR": {
+          "days": 277,
+          "pct_days": 28.82,
+          "total_return_pct": 1.61,
+          "annual_return_pct": 1.46,
+          "annual_vol_pct": 4.72,
+          "sharpe": 0.31,
+          "avg_position_pct": 3.82,
+          "log_return_contribution_pct": 1.65
+        }
+      },
+      "regime_annual_matrix": {
+        "BULL": 85.78,
+        "RANGE": -17.69,
+        "BEAR": 1.46
+      }
+    }
+  ],
+  "note": "Official F backtester, only trend_reduce_pct changed."
+}

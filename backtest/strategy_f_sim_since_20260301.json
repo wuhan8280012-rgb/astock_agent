@@ -1,0 +1,275 @@
+{
+  "start_date": "20260302",
+  "latest_trade_date": "20260327",
+  "cash": 573074.02,
+  "portfolio_value": 888630.02,
+  "positions": {
+    "603588.SH": {
+      "shares": 6000,
+      "cost_price": 13.2164,
+      "entry_date": "20260302",
+      "peak_price": 15.97,
+      "current_price": 14.6,
+      "name": "高能环境"
+    },
+    "688717.SH": {
+      "shares": 700,
+      "cost_price": 111.222,
+      "entry_date": "20260302",
+      "peak_price": 145.6,
+      "current_price": 121.64,
+      "name": "艾罗能源"
+    },
+    "301377.SZ": {
+      "shares": 400,
+      "cost_price": 192.4441,
+      "entry_date": "20260302",
+      "peak_price": 194.87,
+      "current_price": 181.52,
+      "name": "鼎泰高科"
+    },
+    "605118.SH": {
+      "shares": 1800,
+      "cost_price": 43.9477,
+      "entry_date": "20260302",
+      "peak_price": 44.6,
+      "current_price": 39.0,
+      "name": "力鼎光电"
+    }
+  },
+  "trade_log": [
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "603588.SH",
+      "name": "高能环境",
+      "shares": 6000,
+      "price": 13.2164,
+      "reason": "TOP_RANK(rank=1)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "688717.SH",
+      "name": "艾罗能源",
+      "shares": 700,
+      "price": 111.222,
+      "reason": "TOP_RANK(rank=2)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "603057.SH",
+      "name": "紫燕食品",
+      "shares": 2400,
+      "price": 32.6652,
+      "reason": "TOP_RANK(rank=3)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "600963.SH",
+      "name": "岳阳林纸",
+      "shares": 12100,
+      "price": 6.5831,
+      "reason": "TOP_RANK(rank=4)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "688548.SH",
+      "name": "广钢气体",
+      "shares": 2900,
+      "price": 27.2243,
+      "reason": "TOP_RANK(rank=5)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "301377.SZ",
+      "name": "鼎泰高科",
+      "shares": 400,
+      "price": 192.4441,
+      "reason": "TOP_RANK(rank=6)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "002182.SZ",
+      "name": "宝武镁业",
+      "shares": 3400,
+      "price": 22.8957,
+      "reason": "TOP_RANK(rank=7)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "605118.SH",
+      "name": "力鼎光电",
+      "shares": 1800,
+      "price": 43.9477,
+      "reason": "TOP_RANK(rank=8)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "301526.SZ",
+      "name": "国际复材",
+      "shares": 5700,
+      "price": 13.9078,
+      "reason": "TOP_RANK(rank=9)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "301500.SZ",
+      "name": "飞南资源",
+      "shares": 3300,
+      "price": 23.557,
+      "reason": "TOP_RANK(rank=10)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "300855.SZ",
+      "name": "图南股份",
+      "shares": 1700,
+      "price": 45.5409,
+      "reason": "TOP_RANK(rank=11)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "600331.SH",
+      "name": "宏达股份",
+      "shares": 3600,
+      "price": 21.6833,
+      "reason": "TOP_RANK(rank=12)"
+    },
+    {
+      "date": "20260302",
+      "action": "BUY",
+      "ts_code": "002897.SZ",
+      "name": "意华股份",
+      "shares": 800,
+      "price": 69.3885,
+      "reason": "TOP_RANK(rank=13)"
+    },
+    {
+      "date": "20260309",
+      "action": "SELL",
+      "ts_code": "600331.SH",
+      "name": "宏达股份",
+      "shares": 3600,
+      "price": 18.2235,
+      "reason": "STOP_LOSS(-15.79%)"
+    },
+    {
+      "date": "20260313",
+      "action": "SELL",
+      "ts_code": "600963.SH",
+      "name": "岳阳林纸",
+      "shares": 12100,
+      "price": 5.5589,
+      "reason": "STOP_LOSS(-15.39%)"
+    },
+    {
+      "date": "20260313",
+      "action": "SELL",
+      "ts_code": "002182.SZ",
+      "name": "宝武镁业",
+      "shares": 3400,
+      "price": 19.2514,
+      "reason": "STOP_LOSS(-15.75%)"
+    },
+    {
+      "date": "20260317",
+      "action": "SELL",
+      "ts_code": "301526.SZ",
+      "name": "国际复材",
+      "shares": 5700,
+      "price": 11.3373,
+      "reason": "STOP_LOSS(-18.32%)"
+    },
+    {
+      "date": "20260317",
+      "action": "SELL",
+      "ts_code": "300855.SZ",
+      "name": "图南股份",
+      "shares": 1700,
+      "price": 38.3232,
+      "reason": "STOP_LOSS(-15.68%)"
+    },
+    {
+      "date": "20260319",
+      "action": "SELL",
+      "ts_code": "603057.SH",
+      "name": "紫燕食品",
+      "shares": 2400,
+      "price": 26.8362,
+      "reason": "STOP_LOSS(-17.68%)"
+    },
+    {
+      "date": "20260319",
+      "action": "SELL",
+      "ts_code": "301500.SZ",
+      "name": "飞南资源",
+      "shares": 3300,
+      "price": 19.6506,
+      "reason": "STOP_LOSS(-16.42%)"
+    },
+    {
+      "date": "20260324",
+      "action": "SELL",
+      "ts_code": "688548.SH",
+      "name": "广钢气体",
+      "shares": 2900,
+      "price": 22.8043,
+      "reason": "STOP_LOSS(-16.07%)"
+    },
+    {
+      "date": "20260326",
+      "action": "SELL",
+      "ts_code": "002897.SZ",
+      "name": "意华股份",
+      "shares": 800,
+      "price": 58.403,
+      "reason": "STOP_LOSS(-15.66%)"
+    }
+  ],
+  "holding_rank_report": [
+    {
+      "ts_code": "688717.SH",
+      "name": "艾罗能源",
+      "rank_today": 2,
+      "rank_prev": 2,
+      "delta": 0,
+      "delta_text": "较前一日持平"
+    },
+    {
+      "ts_code": "603588.SH",
+      "name": "高能环境",
+      "rank_today": 4,
+      "rank_prev": 4,
+      "delta": 0,
+      "delta_text": "较前一日持平"
+    },
+    {
+      "ts_code": "301377.SZ",
+      "name": "鼎泰高科",
+      "rank_today": 999,
+      "rank_prev": null,
+      "delta": null,
+      "delta_text": "前一日无排名"
+    },
+    {
+      "ts_code": "605118.SH",
+      "name": "力鼎光电",
+      "rank_today": 999,
+      "rank_prev": null,
+      "delta": null,
+      "delta_text": "前一日无排名"
+    }
+  ],
+  "wecom_message": "日期: `20260327`\n市场状态: `BULL`  仓位上限: `100%`\n\n持仓股排名变化:\n- `艾罗能源 688717.SH` 今日 `#2`，较前一日持平\n- `高能环境 603588.SH` 今日 `#4`，较前一日持平\n- `鼎泰高科 301377.SZ` 今日 `#999`，前一日无排名\n- `力鼎光电 605118.SH` 今日 `#999`，前一日无排名"
+}

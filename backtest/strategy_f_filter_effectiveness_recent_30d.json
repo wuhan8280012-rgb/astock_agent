@@ -1,0 +1,125 @@
+{
+  "note": "Quarterly growth/ROE filters use latest-available snapshots, not historical-as-of financials.",
+  "window_start_date": "20260206",
+  "window_end_date": "20260327",
+  "trend_filter_index_code": "000001.SH",
+  "results": [
+    {
+      "name": "baseline",
+      "total_return_pct": -6.69,
+      "annual_return_pct": -44.12,
+      "sharpe": -1.58,
+      "max_drawdown_pct": -13.43,
+      "excess_return_pct": -2.96,
+      "total_trades": 38
+    },
+    {
+      "name": "quarterly_revenue_yoy_gt_20",
+      "total_return_pct": -4.21,
+      "annual_return_pct": -30.31,
+      "sharpe": -0.74,
+      "max_drawdown_pct": -20.54,
+      "excess_return_pct": -0.47,
+      "total_trades": 31,
+      "delta_total_return_pct": 2.48,
+      "delta_sharpe": 0.84,
+      "delta_max_drawdown_pct": -7.11
+    },
+    {
+      "name": "quarterly_netprofit_yoy_gt_25",
+      "total_return_pct": -6.54,
+      "annual_return_pct": -43.36,
+      "sharpe": -1.11,
+      "max_drawdown_pct": -19.91,
+      "excess_return_pct": -2.81,
+      "total_trades": 34,
+      "delta_total_return_pct": 0.15,
+      "delta_sharpe": 0.47,
+      "delta_max_drawdown_pct": -6.48
+    },
+    {
+      "name": "two_year_netprofit_positive",
+      "total_return_pct": -6.84,
+      "annual_return_pct": -44.83,
+      "sharpe": -1.69,
+      "max_drawdown_pct": -13.11,
+      "excess_return_pct": -3.1,
+      "total_trades": 34,
+      "delta_total_return_pct": -0.15,
+      "delta_sharpe": -0.11,
+      "delta_max_drawdown_pct": 0.32
+    },
+    {
+      "name": "roe_gt_10",
+      "total_return_pct": -4.2,
+      "annual_return_pct": -30.25,
+      "sharpe": -1.01,
+      "max_drawdown_pct": -16.27,
+      "excess_return_pct": -0.46,
+      "total_trades": 29,
+      "delta_total_return_pct": 2.49,
+      "delta_sharpe": 0.57,
+      "delta_max_drawdown_pct": -2.84
+    },
+    {
+      "name": "rs60_top20pct",
+      "total_return_pct": 1.7,
+      "annual_return_pct": 15.22,
+      "sharpe": 0.43,
+      "max_drawdown_pct": -15.83,
+      "excess_return_pct": 5.44,
+      "total_trades": 35,
+      "delta_total_return_pct": 8.39,
+      "delta_sharpe": 2.01,
+      "delta_max_drawdown_pct": -2.4
+    },
+    {
+      "name": "industry_20_60_gt_market",
+      "total_return_pct": 8.01,
+      "annual_return_pct": 90.99,
+      "sharpe": 3.03,
+      "max_drawdown_pct": -9.2,
+      "excess_return_pct": 11.74,
+      "total_trades": 36,
+      "delta_total_return_pct": 14.7,
+      "delta_sharpe": 4.61,
+      "delta_max_drawdown_pct": 4.23
+    },
+    {
+      "name": "price_above_ma50_ma150",
+      "total_return_pct": -2.31,
+      "annual_return_pct": -17.8,
+      "sharpe": -0.59,
+      "max_drawdown_pct": -10.9,
+      "excess_return_pct": 1.43,
+      "total_trades": 38,
+      "delta_total_return_pct": 4.38,
+      "delta_sharpe": 0.99,
+      "delta_max_drawdown_pct": 2.53
+    },
+    {
+      "name": "within_15pct_of_52w_high",
+      "total_return_pct": -10.84,
+      "annual_return_pct": -61.85,
+      "sharpe": -2.19,
+      "max_drawdown_pct": -18.16,
+      "excess_return_pct": -7.1,
+      "total_trades": 36,
+      "delta_total_return_pct": -4.15,
+      "delta_sharpe": -0.61,
+      "delta_max_drawdown_pct": -4.73
+    },
+    {
+      "name": "consolidation_amp_15_35",
+      "total_return_pct": -4.12,
+      "annual_return_pct": -29.8,
+      "sharpe": -1.39,
+      "max_drawdown_pct": -10.2,
+      "excess_return_pct": -0.39,
+      "total_trades": 31,
+      "delta_total_return_pct": 2.57,
+      "delta_sharpe": 0.19,
+      "delta_max_drawdown_pct": 3.23
+    }
+  ]
+}

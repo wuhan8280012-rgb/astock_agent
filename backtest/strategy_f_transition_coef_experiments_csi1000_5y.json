@@ -1,0 +1,102 @@
+[
+  {
+    "experiment": "baseline_ma20_ge_0",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 213.57,
+    "annual_return_pct": 34.94,
+    "annual_vol_pct": 29.14,
+    "sharpe": 1.2,
+    "calmar": 1.47,
+    "max_drawdown_pct": -23.8,
+    "max_dd_date": "20230823",
+    "total_trades": 614,
+    "rebalance_count": 49,
+    "final_value": 3135679.87,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 203.75,
+    "yearly_returns": {
+      "2022": 0.28,
+      "2023": 15.99,
+      "2024": 50.98,
+      "2025": 69.2,
+      "2026": -0.55
+    },
+    "trading_days": 961,
+    "elapsed_sec": 28.2
+  },
+  {
+    "experiment": "transition_gate",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 207.67,
+    "annual_return_pct": 34.27,
+    "annual_vol_pct": 29.4,
+    "sharpe": 1.17,
+    "calmar": 1.5,
+    "max_drawdown_pct": -22.92,
+    "max_dd_date": "20250408",
+    "total_trades": 614,
+    "rebalance_count": 49,
+    "final_value": 3076676.17,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 197.85,
+    "yearly_returns": {
+      "2022": 0.28,
+      "2023": 17.08,
+      "2024": 47.45,
+      "2025": 67.06,
+      "2026": 0.31
+    },
+    "trading_days": 961,
+    "elapsed_sec": 36.0
+  },
+  {
+    "experiment": "transition_boost",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 65.7,
+    "annual_return_pct": 14.16,
+    "annual_vol_pct": 25.68,
+    "sharpe": 0.55,
+    "calmar": 0.45,
+    "max_drawdown_pct": -31.79,
+    "max_dd_date": "20240918",
+    "total_trades": 641,
+    "rebalance_count": 49,
+    "final_value": 1657003.71,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 55.88,
+    "yearly_returns": {
+      "2022": -0.05,
+      "2023": -3.76,
+      "2024": 12.42,
+      "2025": 49.16,
+      "2026": 0.48
+    },
+    "trading_days": 961,
+    "elapsed_sec": 36.0
+  },
+  {
+    "experiment": "transition_gate_boost",
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 31.28,
+    "annual_return_pct": 7.4,
+    "annual_vol_pct": 26.67,
+    "sharpe": 0.28,
+    "calmar": 0.23,
+    "max_drawdown_pct": -32.16,
+    "max_dd_date": "20240828",
+    "total_trades": 669,
+    "rebalance_count": 49,
+    "final_value": 1312757.38,
+    "benchmark_return_pct": 9.82,
+    "excess_return_pct": 21.46,
+    "yearly_returns": {
+      "2022": 1.84,
+      "2023": -9.17,
+      "2024": 11.38,
+      "2025": 20.55,
+      "2026": 1.07
+    },
+    "trading_days": 961,
+    "elapsed_sec": 35.5
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "version": "v1.2",
+  "created_at": "2026-03-08T23:30:00",
+  "description": "catalyst清零 + 阈值校准 + 撮合bug修复",
+  "weights": {
+    "sector": 0.275,
+    "capital": 0.275,
+    "catalyst": 0.0,
+    "structure": 0.225,
+    "liquidity": 0.225
+  },
+  "thresholds": {
+    "buy_signal_min_score": 80,
+    "sell_score_collapse": 45,
+    "rr_ratio_min": 2.0
+  },
+  "agent_params": {
+    "sector_agent": {
+      "etf_inflow_high": 500000000,
+      "etf_inflow_mid": 200000000,
+      "breadth_high": 0.7,
+      "breadth_mid": 0.5
+    },
+    "capital_agent": {
+      "margin_change_high": 0.08,
+      "margin_change_mid": 0.03,
+      "volume_surge_threshold": 1.8
+    },
+    "catalyst_agent": {
+      "verification_days": 3,
+      "daily_decay_unconfirmed": 0.12,
+      "daily_decay_confirmed": 0.08,
+      "remote_multiplier": 0.2
+    },
+    "structure_agent": {
+      "breakout_window_days": 60,
+      "volume_confirm_ratio": 2.0,
+      "ema_spread_min": 0.03
+    }
+  },
+  "tunable_bounds": {
+    "sector_agent.etf_inflow_high": [300000000, 800000000],
+    "capital_agent.margin_change_high": [0.05, 0.12],
+    "buy_signal_min_score": [70, 85]
+  }
+}

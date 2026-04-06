@@ -1,0 +1,80 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "results": {
+    "recent_30d": {
+      "window_start_date": "20260206",
+      "window_end_date": "20260327",
+      "baseline": {
+        "name": "F_三因子+趋势过滤",
+        "total_return_pct": -6.69,
+        "annual_return_pct": -44.12,
+        "annual_vol_pct": 27.89,
+        "sharpe": -1.58,
+        "calmar": -3.29,
+        "max_drawdown_pct": -13.43,
+        "max_dd_date": "20260327",
+        "total_trades": 38,
+        "rebalance_count": 2,
+        "final_value": 933058.32,
+        "benchmark_return_pct": -3.04,
+        "excess_return_pct": -3.66,
+        "yearly_returns": {
+          "2026": -6.48
+        },
+        "trading_days": 30
+      },
+      "confirmed_entry_plus_tight_review": {
+        "total_return_pct": 1.22,
+        "annual_return_pct": 10.7,
+        "annual_vol_pct": 13.65,
+        "sharpe": 0.78,
+        "max_drawdown_pct": -2.76,
+        "max_dd_date": "20260317",
+        "benchmark_return_pct": -3.04,
+        "excess_return_pct": 4.25,
+        "total_trades": 47,
+        "rebalance_count": 2,
+        "final_value": 1012176.43,
+        "trading_days": 30
+      }
+    },
+    "recent_100d": {
+      "window_start_date": "20251029",
+      "window_end_date": "20260327",
+      "baseline": {
+        "name": "F_三因子+趋势过滤",
+        "total_return_pct": 10.51,
+        "annual_return_pct": 28.64,
+        "annual_vol_pct": 29.2,
+        "sharpe": 0.98,
+        "calmar": 2.24,
+        "max_drawdown_pct": -12.81,
+        "max_dd_date": "20260323",
+        "total_trades": 100,
+        "rebalance_count": 5,
+        "final_value": 1105109.25,
+        "benchmark_return_pct": -5.17,
+        "excess_return_pct": 15.68,
+        "yearly_returns": {
+          "2025": 4.79,
+          "2026": 3.94
+        },
+        "trading_days": 100
+      },
+      "confirmed_entry_plus_tight_review": {
+        "total_return_pct": -3.62,
+        "annual_return_pct": -8.87,
+        "annual_vol_pct": 13.92,
+        "sharpe": -0.64,
+        "max_drawdown_pct": -12.6,
+        "max_dd_date": "20260323",
+        "benchmark_return_pct": -5.17,
+        "excess_return_pct": 1.55,
+        "total_trades": 125,
+        "rebalance_count": 5,
+        "final_value": 963819.96,
+        "trading_days": 100
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "F_三因子+趋势过滤",
+  "momentum_days": [60],
+  "momentum_weights": [1.0],
+  "subtract_short_momentum": false,
+  "short_momentum_days": 20,
+  "use_volatility_factor": true,
+  "volatility_days": 60,
+  "volatility_weight": 0.25,
+  "use_size_factor": true,
+  "size_weight": 0.2,
+  "top_n": 15,
+  "hold_buffer_ratio": 1.5,
+  "max_single_weight": 0.08,
+  "rebalance_interval": 20,
+  "stop_loss_pct": -0.15,
+  "use_halt": false,
+  "use_trend_filter": true,
+  "trend_filter_index_code": "000001.SH",
+  "trend_filter_index_name": "上证指数",
+  "trend_ma_days": 200,
+  "trend_reduce_pct": 0.5,
+  "commission": 0.0003,
+  "stamp_tax": 0.001,
+  "slippage": 0.002,
+  "min_amount_20d": 100000000.0,
+  "min_price": 3.0,
+  "min_list_days": 250,
+  "recommended_buy_constraint": {
+    "field": "strength_transition_coef",
+    "operator": ">=",
+    "value": -0.1,
+    "definition": "0.7*tanh(ma20_angle_deg_t/10) + 0.3*tanh((ma20_angle_deg_t-ma20_angle_deg_t_1)/5)"
+  },
+  "legacy_buy_constraint": {
+    "field": "ma20_angle_deg",
+    "operator": ">=",
+    "value": 0
+  }
+}

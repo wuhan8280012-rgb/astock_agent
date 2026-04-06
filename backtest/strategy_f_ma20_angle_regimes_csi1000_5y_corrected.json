@@ -1,0 +1,210 @@
+{
+  "note": "修正版：按完整回测的逐日收益归因到 BULL/RANGE/BEAR，而不是把非连续净值子序列直接当独立策略。",
+  "bug_found": "此前口径错误在于：把完整净值曲线按状态筛成非连续子序列，再用子序列首尾净值算总收益/年化。这会把被跳过状态期间发生的盈亏一起带入，导致状态年化失真。",
+  "thresholds": [
+    -5,
+    0,
+    5,
+    10,
+    15
+  ],
+  "regimes": {
+    "BULL": {
+      "results": {
+        "0": {
+          "trading_days": 458,
+          "total_return_pct": 25.73,
+          "annual_return_pct": 13.43,
+          "annual_vol_pct": 31.98,
+          "sharpe": 0.42,
+          "max_drawdown_pct": -22.24,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "trading_days": 458,
+          "total_return_pct": 15.69,
+          "annual_return_pct": 8.35,
+          "annual_vol_pct": 32.84,
+          "sharpe": 0.25,
+          "max_drawdown_pct": -30.14,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "trading_days": 458,
+          "total_return_pct": 0.98,
+          "annual_return_pct": 0.54,
+          "annual_vol_pct": 33.01,
+          "sharpe": 0.02,
+          "max_drawdown_pct": -35.36,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "trading_days": 458,
+          "total_return_pct": 6.07,
+          "annual_return_pct": 3.29,
+          "annual_vol_pct": 34.37,
+          "sharpe": 0.1,
+          "max_drawdown_pct": -37.03,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "trading_days": 458,
+          "total_return_pct": 14.41,
+          "annual_return_pct": 7.69,
+          "annual_vol_pct": 31.42,
+          "sharpe": 0.24,
+          "max_drawdown_pct": -27.98,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    },
+    "RANGE": {
+      "results": {
+        "0": {
+          "trading_days": 226,
+          "total_return_pct": -32.4,
+          "annual_return_pct": -35.37,
+          "annual_vol_pct": 21.12,
+          "sharpe": -1.68,
+          "max_drawdown_pct": -32.43,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "trading_days": 226,
+          "total_return_pct": -36.34,
+          "annual_return_pct": -39.57,
+          "annual_vol_pct": 21.93,
+          "sharpe": -1.8,
+          "max_drawdown_pct": -36.35,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "trading_days": 226,
+          "total_return_pct": -37.53,
+          "annual_return_pct": -40.82,
+          "annual_vol_pct": 22.17,
+          "sharpe": -1.84,
+          "max_drawdown_pct": -38.18,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "trading_days": 226,
+          "total_return_pct": -31.71,
+          "annual_return_pct": -34.65,
+          "annual_vol_pct": 24.54,
+          "sharpe": -1.41,
+          "max_drawdown_pct": -33.66,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "trading_days": 226,
+          "total_return_pct": -31,
+          "annual_return_pct": -33.88,
+          "annual_vol_pct": 20,
+          "sharpe": -1.69,
+          "max_drawdown_pct": -31.33,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    },
+    "BEAR": {
+      "results": {
+        "0": {
+          "trading_days": 276,
+          "total_return_pct": -10.02,
+          "annual_return_pct": -9.19,
+          "annual_vol_pct": 6.55,
+          "sharpe": -1.4,
+          "max_drawdown_pct": -12.76,
+          "total_trades_full_run": 601,
+          "rebalance_count_full_run": 49
+        },
+        "5": {
+          "trading_days": 276,
+          "total_return_pct": -9.46,
+          "annual_return_pct": -8.67,
+          "annual_vol_pct": 7.54,
+          "sharpe": -1.15,
+          "max_drawdown_pct": -12.63,
+          "total_trades_full_run": 629,
+          "rebalance_count_full_run": 49
+        },
+        "10": {
+          "trading_days": 276,
+          "total_return_pct": -3.49,
+          "annual_return_pct": -3.19,
+          "annual_vol_pct": 7.9,
+          "sharpe": -0.4,
+          "max_drawdown_pct": -9.03,
+          "total_trades_full_run": 657,
+          "rebalance_count_full_run": 49
+        },
+        "15": {
+          "trading_days": 276,
+          "total_return_pct": -4.37,
+          "annual_return_pct": -3.99,
+          "annual_vol_pct": 8.41,
+          "sharpe": -0.48,
+          "max_drawdown_pct": -8.56,
+          "total_trades_full_run": 675,
+          "rebalance_count_full_run": 49
+        },
+        "-5": {
+          "trading_days": 276,
+          "total_return_pct": -10.34,
+          "annual_return_pct": -9.48,
+          "annual_vol_pct": 6.51,
+          "sharpe": -1.46,
+          "max_drawdown_pct": -12.26,
+          "total_trades_full_run": 591,
+          "rebalance_count_full_run": 49
+        }
+      }
+    }
+  },
+  "summary": {
+    "BULL": {
+      "threshold": 0,
+      "trading_days": 458,
+      "total_return_pct": 25.73,
+      "annual_return_pct": 13.43,
+      "annual_vol_pct": 31.98,
+      "sharpe": 0.42,
+      "max_drawdown_pct": -22.24,
+      "total_trades_full_run": 601,
+      "rebalance_count_full_run": 49
+    },
+    "RANGE": {
+      "threshold": -5,
+      "trading_days": 226,
+      "total_return_pct": -31,
+      "annual_return_pct": -33.88,
+      "annual_vol_pct": 20,
+      "sharpe": -1.69,
+      "max_drawdown_pct": -31.33,
+      "total_trades_full_run": 591,
+      "rebalance_count_full_run": 49
+    },
+    "BEAR": {
+      "threshold": 10,
+      "trading_days": 276,
+      "total_return_pct": -3.49,
+      "annual_return_pct": -3.19,
+      "annual_vol_pct": 7.9,
+      "sharpe": -0.4,
+      "max_drawdown_pct": -9.03,
+      "total_trades_full_run": 657,
+      "rebalance_count_full_run": 49
+    }
+  }
+}

@@ -1,0 +1,543 @@
+{
+  "window_start_date": "20260206",
+  "window_end_date": "20260327",
+  "baseline": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": -6.69,
+    "annual_return_pct": -44.12,
+    "annual_vol_pct": 27.89,
+    "sharpe": -1.58,
+    "calmar": -3.29,
+    "max_drawdown_pct": -13.43,
+    "max_dd_date": "20260327",
+    "total_trades": 38,
+    "rebalance_count": 2,
+    "final_value": 933058.32,
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": -3.66,
+    "yearly_returns": {
+      "2026": -6.48
+    },
+    "trading_days": 30
+  },
+  "tight_sell_reinvest_winners": {
+    "total_return_pct": -1.44,
+    "annual_return_pct": -11.44,
+    "annual_vol_pct": 20.87,
+    "sharpe": -0.55,
+    "max_drawdown_pct": -8.85,
+    "max_dd_date": "20260323",
+    "benchmark_return_pct": -3.04,
+    "excess_return_pct": 1.6,
+    "total_trades": 56,
+    "rebalance_count": 2,
+    "final_value": 985639.95,
+    "trading_days": 30,
+    "trade_log": [
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "002985.SZ",
+        "shares": 1800,
+        "price": 44.3084,
+        "entry_rank": 1
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "605599.SH",
+        "shares": 2800,
+        "price": 28.1161,
+        "entry_rank": 2
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "605118.SH",
+        "shares": 1800,
+        "price": 42.5449,
+        "entry_rank": 3
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "300401.SZ",
+        "shares": 4100,
+        "price": 19.1883,
+        "entry_rank": 4
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "000672.SZ",
+        "shares": 5400,
+        "price": 14.7895,
+        "entry_rank": 5
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "688548.SH",
+        "shares": 3800,
+        "price": 20.7614,
+        "entry_rank": 6
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "301205.SZ",
+        "shares": 400,
+        "price": 190.5403,
+        "entry_rank": 7
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "001337.SZ",
+        "shares": 1700,
+        "price": 46.4828,
+        "entry_rank": 8
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "600963.SH",
+        "shares": 13500,
+        "price": 5.9018,
+        "entry_rank": 9
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "603103.SH",
+        "shares": 2300,
+        "price": 33.4668,
+        "entry_rank": 10
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "688717.SH",
+        "shares": 800,
+        "price": 95.2601,
+        "entry_rank": 11
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "301526.SZ",
+        "shares": 8800,
+        "price": 9.0481,
+        "entry_rank": 12
+      },
+      {
+        "date": "20260206",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "605376.SH",
+        "shares": 500,
+        "price": 100.0898,
+        "entry_rank": 13
+      },
+      {
+        "date": "20260209",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "603103.SH",
+        "shares": 2300,
+        "price": 36.6665,
+        "pnl_pct": 9.78
+      },
+      {
+        "date": "20260209",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "605376.SH",
+        "shares": 200,
+        "price": 104.2381,
+        "winner_pnl_pct": 3.94
+      },
+      {
+        "date": "20260210",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "300401.SZ",
+        "shares": 4100,
+        "price": 17.7444,
+        "pnl_pct": -7.34
+      },
+      {
+        "date": "20260211",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "301205.SZ",
+        "shares": 400,
+        "price": 184.0711,
+        "pnl_pct": -3.2
+      },
+      {
+        "date": "20260211",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "301526.SZ",
+        "shares": 8800,
+        "price": 11.7764,
+        "pnl_pct": 30.41
+      },
+      {
+        "date": "20260211",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "600963.SH",
+        "shares": 100,
+        "price": 6.0922,
+        "winner_pnl_pct": 3.02
+      },
+      {
+        "date": "20260211",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "605118.SH",
+        "shares": 100,
+        "price": 43.3265,
+        "winner_pnl_pct": 1.63
+      },
+      {
+        "date": "20260211",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "000672.SZ",
+        "shares": 100,
+        "price": 15.04,
+        "winner_pnl_pct": 1.49
+      },
+      {
+        "date": "20260224",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "001337.SZ",
+        "shares": 1700,
+        "price": 50.5387,
+        "pnl_pct": 8.94
+      },
+      {
+        "date": "20260224",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "600963.SH",
+        "shares": 200,
+        "price": 6.0621,
+        "winner_pnl_pct": 2.49
+      },
+      {
+        "date": "20260227",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "002985.SZ",
+        "shares": 1800,
+        "price": 41.5168,
+        "pnl_pct": -6.11
+      },
+      {
+        "date": "20260227",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "000672.SZ",
+        "shares": 5500,
+        "price": 14.0618,
+        "pnl_pct": -4.76
+      },
+      {
+        "date": "20260303",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "605599.SH",
+        "shares": 2800,
+        "price": 24.1117,
+        "pnl_pct": -14.07
+      },
+      {
+        "date": "20260303",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "688717.SH",
+        "shares": 800,
+        "price": 125.1392,
+        "pnl_pct": 31.63
+      },
+      {
+        "date": "20260303",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "600963.SH",
+        "shares": 100,
+        "price": 6.1122,
+        "winner_pnl_pct": 3.29
+      },
+      {
+        "date": "20260303",
+        "side": "BUY",
+        "reason": "REINVEST_WINNER",
+        "ts_code": "605376.SH",
+        "shares": 100,
+        "price": 101.6629,
+        "winner_pnl_pct": 0.18
+      },
+      {
+        "date": "20260309",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "600963.SH",
+        "shares": 13900,
+        "price": 5.978,
+        "pnl_pct": 1.41
+      },
+      {
+        "date": "20260310",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "605376.SH",
+        "shares": 800,
+        "price": 98.9317,
+        "pnl_pct": -2.16
+      },
+      {
+        "date": "20260313",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "605118.SH",
+        "shares": 1900,
+        "price": 41.6166,
+        "pnl_pct": -2.08
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "301658.SZ",
+        "shares": 1600,
+        "price": 49.7393,
+        "entry_rank": 1
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "002531.SZ",
+        "shares": 6800,
+        "price": 12.2144,
+        "entry_rank": 2
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "603057.SH",
+        "shares": 2800,
+        "price": 29.7093,
+        "entry_rank": 3
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "688717.SH",
+        "shares": 500,
+        "price": 139.2379,
+        "entry_rank": 4
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "001339.SZ",
+        "shares": 1100,
+        "price": 71.7031,
+        "entry_rank": 5
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "603588.SH",
+        "shares": 5200,
+        "price": 16.0019,
+        "entry_rank": 6
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "601096.SH",
+        "shares": 13000,
+        "price": 6.4028,
+        "entry_rank": 7
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "600746.SH",
+        "shares": 9000,
+        "price": 9.1783,
+        "entry_rank": 8
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "688150.SH",
+        "shares": 2100,
+        "price": 39.3485,
+        "entry_rank": 9
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "301500.SZ",
+        "shares": 3600,
+        "price": 23.056,
+        "entry_rank": 10
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "688523.SH",
+        "shares": 1200,
+        "price": 64.4286,
+        "entry_rank": 11
+      },
+      {
+        "date": "20260316",
+        "side": "BUY",
+        "reason": "REBALANCE_IN",
+        "ts_code": "002541.SZ",
+        "shares": 2600,
+        "price": 23.0961,
+        "entry_rank": 12
+      },
+      {
+        "date": "20260317",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "603057.SH",
+        "shares": 2800,
+        "price": 28.3632,
+        "pnl_pct": -4.34
+      },
+      {
+        "date": "20260317",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "688523.SH",
+        "shares": 1200,
+        "price": 60.6584,
+        "pnl_pct": -5.66
+      },
+      {
+        "date": "20260317",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "002541.SZ",
+        "shares": 2600,
+        "price": 22.2454,
+        "pnl_pct": -3.49
+      },
+      {
+        "date": "20260319",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "600746.SH",
+        "shares": 9000,
+        "price": 8.5229,
+        "pnl_pct": -6.95
+      },
+      {
+        "date": "20260319",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_EARLY",
+        "ts_code": "301500.SZ",
+        "shares": 3600,
+        "price": 19.6506,
+        "pnl_pct": -14.6
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "688548.SH",
+        "shares": 3800,
+        "price": 23.1835,
+        "pnl_pct": 11.89
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "301658.SZ",
+        "shares": 1600,
+        "price": 60.2293,
+        "pnl_pct": 21.33
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "688717.SH",
+        "shares": 500,
+        "price": 143.712,
+        "pnl_pct": 3.42
+      },
+      {
+        "date": "20260320",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "601096.SH",
+        "shares": 13000,
+        "price": 5.8682,
+        "pnl_pct": -8.16
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "001339.SZ",
+        "shares": 1100,
+        "price": 61.7562,
+        "pnl_pct": -13.7
+      },
+      {
+        "date": "20260323",
+        "side": "SELL",
+        "reason": "STOP_LOSS",
+        "ts_code": "603588.SH",
+        "shares": 5200,
+        "price": 13.0638,
+        "pnl_pct": -18.2
+      },
+      {
+        "date": "20260325",
+        "side": "SELL",
+        "reason": "TIGHT_REVIEW_MATURE",
+        "ts_code": "688150.SH",
+        "shares": 2100,
+        "price": 39.6705,
+        "pnl_pct": 1.02
+      }
+    ]
+  }
+}

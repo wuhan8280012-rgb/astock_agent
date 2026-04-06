@@ -1,0 +1,44 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "trend_filter_index_code": "000001.SH",
+  "rule": "Keep baseline -15% stop loss. Additionally, in RANGE state, sell any holding if ma10_angle_deg < 0.",
+  "window_trade_days": 100,
+  "window_start_date": "20251029",
+  "window_end_date": "20260327",
+  "baseline": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 10.51,
+    "annual_return_pct": 28.64,
+    "annual_vol_pct": 29.2,
+    "sharpe": 0.98,
+    "calmar": 2.24,
+    "max_drawdown_pct": -12.81,
+    "max_dd_date": "20260323",
+    "total_trades": 100,
+    "rebalance_count": 5,
+    "final_value": 1105109.25,
+    "benchmark_return_pct": -2.55,
+    "excess_return_pct": 13.07,
+    "yearly_returns": {
+      "2025": 4.79,
+      "2026": 3.94
+    },
+    "trading_days": 100
+  },
+  "range_ma10_angle_exit": {
+    "name": "F_三因子+趋势过滤",
+    "total_return_pct": 7.35,
+    "annual_return_pct": 19.56,
+    "annual_vol_pct": 29.17,
+    "sharpe": 0.67,
+    "max_drawdown_pct": -13.85,
+    "max_dd_date": "20260327",
+    "total_trades": 105,
+    "rebalance_count": 5,
+    "final_value": 1073482.0,
+    "benchmark_return_pct": -2.55,
+    "excess_return_pct": 9.9,
+    "trading_days": 100
+  },
+  "elapsed_sec": 6.84
+}

@@ -1,0 +1,98 @@
+{
+  "strategy": "F + strength_transition_coef >= -0.1",
+  "trend_filter_index_code": "000001.SH",
+  "summary": {
+    "total_return_pct": 269.41,
+    "annual_return_pct": 40.87,
+    "sharpe": 1.34,
+    "max_drawdown_pct": -22.9,
+    "final_value": 3694089.61,
+    "total_profit": 2694089.61,
+    "trading_days": 961
+  },
+  "yearly_nav_breakdown": [
+    {
+      "year": "2022",
+      "start_nav": 1000000.0,
+      "end_nav": 1048444.09,
+      "year_return_pct": 4.84
+    },
+    {
+      "year": "2023",
+      "start_nav": 1048444.09,
+      "end_nav": 1330443.7,
+      "year_return_pct": 26.9
+    },
+    {
+      "year": "2024",
+      "start_nav": 1330443.7,
+      "end_nav": 2046836.46,
+      "year_return_pct": 53.85
+    },
+    {
+      "year": "2025",
+      "start_nav": 2046836.46,
+      "end_nav": 3519042.91,
+      "year_return_pct": 71.93
+    },
+    {
+      "year": "2026",
+      "start_nav": 3519042.91,
+      "end_nav": 3694089.61,
+      "year_return_pct": 4.97
+    }
+  ],
+  "yearly_profit_contribution": [
+    {
+      "year": "2022",
+      "daily_pnl": 48444.086950600264,
+      "contribution_pct_of_profit": 1.7981616772422806
+    },
+    {
+      "year": "2023",
+      "daily_pnl": 281999.6084432005,
+      "contribution_pct_of_profit": 10.467343298615077
+    },
+    {
+      "year": "2024",
+      "daily_pnl": 716392.7616852005,
+      "contribution_pct_of_profit": 26.591274415589496
+    },
+    {
+      "year": "2025",
+      "daily_pnl": 1472206.4578103991,
+      "contribution_pct_of_profit": 54.64578651513757
+    },
+    {
+      "year": "2026",
+      "daily_pnl": 175046.69694659952,
+      "contribution_pct_of_profit": 6.497434093415573
+    }
+  ],
+  "state_profit_contribution": [
+    {
+      "trend_state": "BEAR",
+      "daily_pnl": 28024.33839479997,
+      "contribution_pct_of_profit": 1.0402155248169942,
+      "trading_days": 162,
+      "avg_position_pct": 15.40018574692373,
+      "avg_daily_return": 0.01714112818385483
+    },
+    {
+      "trend_state": "BULL",
+      "daily_pnl": 3267306.0108382,
+      "contribution_pct_of_profit": 121.27681263770427,
+      "trading_days": 538,
+      "avg_position_pct": 91.57236481175292,
+      "avg_daily_return": 0.3089927528084618
+    },
+    {
+      "trend_state": "RANGE",
+      "daily_pnl": -601240.7373970001,
+      "contribution_pct_of_profit": -22.31702816252127,
+      "trading_days": 261,
+      "avg_position_pct": 50.97533093166842,
+      "avg_daily_return": -0.07909902662650149
+    }
+  ]
+}

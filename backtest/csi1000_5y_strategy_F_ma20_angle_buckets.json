@@ -1,0 +1,61 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "results": [
+    {
+      "bucket": "[15,+inf)",
+      "min_angle": 15,
+      "max_angle": NaN,
+      "total_return_pct": 87.69,
+      "annual_return_pct": 17.95,
+      "sharpe": 0.62,
+      "max_drawdown_pct": -26.13,
+      "excess_return_pct": 77.87,
+      "total_trades": 641,
+      "rebalance_count": 49,
+      "final_value": 1876899.07,
+      "elapsed_sec": 26.7
+    },
+    {
+      "bucket": "[0,5)",
+      "min_angle": 0,
+      "max_angle": 5.0,
+      "total_return_pct": 8.44,
+      "annual_return_pct": 2.15,
+      "sharpe": 0.12,
+      "max_drawdown_pct": -32.17,
+      "excess_return_pct": -1.37,
+      "total_trades": 723,
+      "rebalance_count": 48,
+      "final_value": 1084435.71,
+      "elapsed_sec": 25.5
+    },
+    {
+      "bucket": "[5,10)",
+      "min_angle": 5,
+      "max_angle": 10.0,
+      "total_return_pct": -22.73,
+      "annual_return_pct": -6.54,
+      "sharpe": -0.36,
+      "max_drawdown_pct": -42.41,
+      "excess_return_pct": -32.55,
+      "total_trades": 753,
+      "rebalance_count": 48,
+      "final_value": 772651.27,
+      "elapsed_sec": 25.5
+    },
+    {
+      "bucket": "[10,15)",
+      "min_angle": 10,
+      "max_angle": 15.0,
+      "total_return_pct": -38.82,
+      "annual_return_pct": -12.09,
+      "sharpe": -0.66,
+      "max_drawdown_pct": -49.07,
+      "excess_return_pct": -48.63,
+      "total_trades": 745,
+      "rebalance_count": 47,
+      "final_value": 611820.88,
+      "elapsed_sec": 25.7
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y/csi1000_market_bundle_5y.csv",
+  "result": {
+    "name": "F + ma20_angle_deg >= 0",
+    "start_date": "20251029",
+    "end_date": "20260327",
+    "total_return_pct": 9.37,
+    "annual_return_pct": 25.31,
+    "annual_vol_pct": 28.57,
+    "sharpe": 0.89,
+    "max_drawdown_pct": -12.72,
+    "max_dd_date": "20260323",
+    "total_trades": 96,
+    "rebalance_count": 5,
+    "final_value": 1093669.81,
+    "benchmark_return_pct": -5.17,
+    "excess_return_pct": 14.53,
+    "trading_days": 100
+  }
+}

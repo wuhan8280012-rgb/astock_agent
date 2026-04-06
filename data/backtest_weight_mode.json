@@ -1,0 +1,46 @@
+{
+  "backtest_period": "20250206~20260324",
+  "trading_days": 275,
+  "equal": {
+    "total_return": 0.4755586785697994,
+    "annual_return": 0.42832020175972274,
+    "annual_vol": 0.3215636875730418,
+    "sharpe": 1.2542467241986404,
+    "max_drawdown": -0.25197211202587494,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.551094890510949,
+    "total_trades": 811,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1475558.6785697993
+  },
+  "score": {
+    "total_return": 0.30626386426659824,
+    "annual_return": 0.2773988160959171,
+    "annual_vol": 0.3261849329027864,
+    "sharpe": 0.7737905422232978,
+    "max_drawdown": -0.2713152173609215,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5328467153284672,
+    "total_trades": 782,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1306263.8642665981
+  },
+  "tiered": {
+    "total_return": 0.3234421575950006,
+    "annual_return": 0.29278410599848326,
+    "annual_vol": 0.33247401680211236,
+    "sharpe": 0.8054286725144829,
+    "max_drawdown": -0.27157680203230394,
+    "max_dd_date": "20250530",
+    "daily_win_rate": 0.5474452554744526,
+    "total_trades": 725,
+    "rebalance_count": 58,
+    "avg_industry_diversity": 0,
+    "max_industry_concentration": 0,
+    "final_value": 1323442.1575950007
+  }
+}
