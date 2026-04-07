@@ -46,8 +46,8 @@ BACKTEST_SCRIPT = PROJECT_ROOT / "scripts" / "backtest_strategies.py"
 F_STRATEGY_SCRIPT = PROJECT_ROOT / "strategies" / "f_strategy" / "run_backtest.py"
 
 DATASETS = {
-    "csi1000_5y": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y" / "csi1000_market_bundle_5y.csv",
-    "csi1000_5y_pit": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y_pit" / "csi1000_market_bundle_5y_pit.csv",
+    "csi1000_5y": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y" / "csi1000_market_bundle_5y.csv",       # static sample (has survivorship bias)
+    "csi1000_5y_pit": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y_pit" / "csi1000_market_bundle_5y_pit.csv",  # point-in-time (bias-free)
 }
 
 
@@ -137,6 +137,9 @@ def get_rs_angle_config(bt_module):
 # Emergency exit threshold: if transition_coef drops below this,
 # sell immediately without waiting for rebalance day.
 EMERGENCY_EXIT_COEF = -0.5
+
+# Minimum history length needed for RS new-high check (120d lookback + buffer).
+MIN_HISTORY_DAYS = 125
 
 
 def make_rs_angle_backtest(bt_module):
@@ -239,7 +242,7 @@ def make_rs_angle_backtest(bt_module):
                     industry = str(info.get("industry", ""))
 
                 hist = data[data.index <= date]
-                if len(hist) < 125:  # need 120d for RS new-high + buffer
+                if len(hist) < MIN_HISTORY_DAYS:
                     continue
 
                 # Liquidity filter
@@ -275,11 +278,12 @@ def make_rs_angle_backtest(bt_module):
                         )
                         if rs_value is not None:
                             # Build industry returns series for new-high check
-                            ind_rets_series = pd.Series({
-                                d: self._get_industry_ret(d, ind_name)
-                                for d in hist.index[-125:]
-                                if not np.isnan(self._get_industry_ret(d, ind_name))
-                            })
+                            rets_map = {}
+                            for d in hist.index[-MIN_HISTORY_DAYS:]:
+                                r = self._get_industry_ret(d, ind_name)
+                                if not np.isnan(r):
+                                    rets_map[d] = r
+                            ind_rets_series = pd.Series(rets_map)
                             if len(ind_rets_series) > 10:
                                 rs_new_high = is_rs_new_high(
                                     hist, ind_rets_series,

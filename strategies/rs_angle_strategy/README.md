@@ -85,7 +85,7 @@ Exit:   Rank drops below buffer (Top 13)
 
 ## Risk Notes
 
-1. **Must use PIT data** — F strategy lesson: static +269% → PIT +16.57%
+1. **Must use PIT data** — F strategy lesson: static +269% → PIT +16.57% (F strategy results)
 2. **transition_coef look-ahead** — MA20 uses 20 days of data; ensure coef
    only uses T-1 closes in backtest
 3. **Threshold sensitivity** — Recommend testing coef ≥ {-0.2, -0.1, 0, 0.1, 0.2}
