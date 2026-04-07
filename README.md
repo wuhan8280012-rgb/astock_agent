@@ -41,7 +41,7 @@
 ### 回测与研究
 - [backtest](/Users/wuhan/project/stock_agent/new/backtest)：正式回测结果、进化结果、各类实验 JSON 输出。
 - [scripts](/Users/wuhan/project/stock_agent/new/scripts)：一次性研究脚本、专题回测脚本、数据实验脚本。
-- [strategies](/Users/wuhan/project/stock_agent/new/strategies)：单独整理出来的策略目录。当前仅保留 [f_strategy](/Users/wuhan/project/stock_agent/new/strategies/f_strategy)。
+- [strategies](/Users/wuhan/project/stock_agent/new/strategies)：单独整理出来的策略目录。包含 [f_strategy](/Users/wuhan/project/stock_agent/new/strategies/f_strategy) 和 [avwap_profile_strategy](/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy)。
 - [tests](/Users/wuhan/project/stock_agent/new/tests)：自动化测试。
 
 ### 当前独立最优策略
@@ -52,6 +52,15 @@
   [/Users/wuhan/project/stock_agent/new/strategies/f_strategy/run_backtest.py](/Users/wuhan/project/stock_agent/new/strategies/f_strategy/run_backtest.py)
 - 默认结果文件：
   [/Users/wuhan/project/stock_agent/new/backtest/strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_csi1000_5y_transition_coef_ge_neg_0_1.json)
+
+### AVWAP Profile 策略（实验中）
+- [avwap_profile_strategy](/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy)：基于 Anchored VWAP + Volume Profile 的突破/回踩事件驱动策略。
+- 最优参数：`bv=1.3, pv=0.9, daily_failure_exit, ma60`
+- 近 250 日回测：年化 +13.27%，夏普 1.18，最大回撤 -7.97%
+- 默认运行入口：
+  [/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy/run_backtest.py](/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy/run_backtest.py)
+- 实验入口：
+  [/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy/run_recent_100d_experiments.py](/Users/wuhan/project/stock_agent/new/strategies/avwap_profile_strategy/run_recent_100d_experiments.py)
 
 ### 数据与配置
 - [data](/Users/wuhan/project/stock_agent/new/data)：主程序默认读取的数据缓存、持仓状态、周度绩效、信号 JSON。
