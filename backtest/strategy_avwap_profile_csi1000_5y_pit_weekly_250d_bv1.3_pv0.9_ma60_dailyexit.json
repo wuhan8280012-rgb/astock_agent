@@ -1,0 +1,38 @@
+{
+  "data_file": "/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y_pit/csi1000_market_bundle_5y_pit.csv",
+  "result": {
+    "name": "AVWAPProfile_weekly",
+    "execution_mode": "same_close",
+    "total_return_pct": 13.16,
+    "annual_return_pct": 13.27,
+    "annual_vol_pct": 11.29,
+    "sharpe": 1.18,
+    "calmar": 1.67,
+    "max_drawdown_pct": -7.97,
+    "max_dd_date": "20260202",
+    "total_trades": 178,
+    "rebalance_count": 53,
+    "final_value": 1131571.26,
+    "benchmark_return_pct": 14.11,
+    "excess_return_pct": -0.95,
+    "yearly_returns": {
+      "2025": 12.69,
+      "2026": 0.42
+    },
+    "trading_days": 250,
+    "holding_cycle": "weekly",
+    "candidate_count_mean": 3.09,
+    "candidate_count_median": 2.0,
+    "candidate_count_min": 0,
+    "candidate_count_max": 13,
+    "enough_candidates_ratio": 0.2264,
+    "breakout_volume_mult": 1.3,
+    "pullback_volume_frac": 0.9,
+    "daily_failure_exit": true,
+    "market_filter_mode": "ma60",
+    "elapsed_sec": 49.2,
+    "recent_days": 250,
+    "recent_start_date": "20250318",
+    "trend_filter_index_code": "000001.SH"
+  }
+}
