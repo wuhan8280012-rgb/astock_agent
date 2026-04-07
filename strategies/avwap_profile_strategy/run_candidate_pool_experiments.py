@@ -15,16 +15,14 @@ import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from strategies.avwap_profile_strategy.run_backtest import (
+from strategies.avwap_profile_strategy.run_backtest import (  # noqa: E402
     DATASETS,
     DEFAULT_TREND_INDEX_CODE,
-    build_rebalance_dates,
     get_strategy_config,
     load_dataset_with_flow_signals,
     load_module,
@@ -101,8 +99,8 @@ def _make_experiments() -> list[dict]:
 
     # --- Dimension 9: min_amount_20d ---
     for ma in [2e8, 1.5e8]:
-        label = f"{ma / 1e8:.1f}亿"
-        exp = {**BASELINE, "name": f"min_amt={label}", "min_amount_20d": ma}
+        amount_label = f"{ma / 1e8:.1f}亿"
+        exp = {**BASELINE, "name": f"min_amt={amount_label}", "min_amount_20d": ma}
         experiments.append(exp)
 
     # --- Combined: best of each dimension (wide open) ---

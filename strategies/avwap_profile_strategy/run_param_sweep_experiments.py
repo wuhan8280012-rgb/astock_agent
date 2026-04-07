@@ -18,7 +18,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from strategies.avwap_profile_strategy.run_backtest import (
+from strategies.avwap_profile_strategy.run_backtest import (  # noqa: E402
     DATASETS,
     DEFAULT_TREND_INDEX_CODE,
     get_strategy_config,
@@ -28,6 +28,11 @@ from strategies.avwap_profile_strategy.run_backtest import (
 )
 
 BACKTEST_SCRIPT = PROJECT_ROOT / "scripts" / "backtest_strategies.py"
+
+# Sentinel value: stop-loss ≤ -0.99 effectively disables it
+STOP_LOSS_DISABLED = -0.99
+# Minimum trading days before backtest starts (warmup for indicators)
+WARMUP_DAYS = 250
 
 
 # ---------------------------------------------------------------------------
@@ -75,8 +80,8 @@ def _make_experiments() -> list[dict]:
     })
 
     # === P1: Stop-loss variants ===
-    for sl in [-0.15, -0.20, -0.99]:
-        label = "off" if sl <= -0.99 else f"{sl:.0%}"
+    for sl in [-0.15, -0.20, STOP_LOSS_DISABLED]:
+        label = "off" if sl <= STOP_LOSS_DISABLED else f"{sl:.0%}"
         experiments.append({
             "name": f"stop_loss_{label}",
             "holding_cycle": "weekly",
@@ -174,7 +179,7 @@ def _make_experiments() -> list[dict]:
             "angle_deg_min": 0.5,
             "angle_deg_max": 25.0,
         },
-        "config": {**BASE_CONFIG, "stop_loss_pct": -0.99, "top_n": 8, "max_single_weight": 0.12},
+        "config": {**BASE_CONFIG, "stop_loss_pct": STOP_LOSS_DISABLED, "top_n": 8, "max_single_weight": 0.12},
     })
 
     return experiments
@@ -194,7 +199,7 @@ def run_experiment(bt_module, daily, idx, basic, trade_dates, exp: dict) -> dict
     if recent_days > 0:
         start_offset = max(0, len(trade_dates) - recent_days)
     else:
-        start_offset = 250  # full dataset from day 251
+        start_offset = WARMUP_DAYS  # full dataset from day after warmup
 
     captured = io.StringIO()
     t0 = time.time()
@@ -202,7 +207,7 @@ def run_experiment(bt_module, daily, idx, basic, trade_dates, exp: dict) -> dict
         result = bt.run(start_offset=start_offset)
     result["elapsed_sec"] = round(time.time() - t0, 1)
     result["experiment"] = exp["name"]
-    result["recent_days"] = recent_days if recent_days > 0 else len(trade_dates) - 250
+    result["recent_days"] = recent_days if recent_days > 0 else len(trade_dates) - WARMUP_DAYS
     result["recent_start_date"] = trade_dates[start_offset]
     return result
 

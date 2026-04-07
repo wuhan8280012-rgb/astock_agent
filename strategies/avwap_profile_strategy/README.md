@@ -5,7 +5,10 @@
 ## 文件
 
 - 策略脚本：`run_backtest.py`
-- 实验脚本：`run_recent_100d_experiments.py`
+- 实验脚本：
+  - `run_recent_100d_experiments.py` — 近100日参数实验
+  - `run_candidate_pool_experiments.py` — 候选池扩大实验（只统计候选数量，不跑回测）
+  - `run_param_sweep_experiments.py` — 组合构建/止损/调仓周期/大盘过滤全参数扫描
 - 回测结果：
   - `backtest/strategy_avwap_profile_csi1000_5y_pit_weekly_100d.json`（近100日基线）
   - `backtest/strategy_avwap_profile_csi1000_5y_pit_weekly_100d_experiments.json`（近100日参数实验）
@@ -87,6 +90,45 @@
 2. **日线失败退出 + MA60 大盘过滤 是必选组合** — 基线（无退出无过滤）夏普 -1.11，加上后提升到 0.39
 3. **候选池偏小**（均值 2.7~3.1 只，够选率仅 10-23%）— 突破形态天然稀缺，需要更长回看窗口或更宽过滤才能获得足够候选
 
+## 可探索方向（不改策略逻辑）
+
+当前策略最大瓶颈是**信号太稀疏**（候选池 median 仅 2~3 只，够选率 <23%）。以下方向只调外围参数和框架配置：
+
+### P0：扩大候选池
+
+| 参数 | 当前值 | 探索范围 |
+|------|--------|---------|
+| `balance_periods` | 8 周 | 4 / 5 / 6 |
+| `recent_breakout_lookback` | 4 周 | 6 / 8 / 12 |
+| `range_pct_max` | 0.32 | 0.40 / 0.45 |
+| `value_area_width_pct_max` | 0.18 | 0.22 / 0.25 |
+| `poc_distance_max` | 0.05 | 0.08 / 0.10 |
+| `angle_deg` 范围 | 1°~20° | 0.5°~25° |
+| `min_list_days` | 250 | 180 |
+| `min_price` | 5 元 | 3 元 |
+
+→ 运行 `run_candidate_pool_experiments.py` 快速扫描
+
+### P0：5 年全周期 PIT 验证
+
+确认策略是否有长期 alpha，而非仅近 250 日特定市场环境的结果。
+
+### P1：止损 / 调仓周期 / 大盘过滤
+
+| 维度 | 探索内容 |
+|------|---------|
+| 止损 | -15% / -20% / 关闭 |
+| 调仓 | biweekly / monthly |
+| 大盘过滤 | 半仓代替全空仓、ma120、过滤指数换为中证1000 |
+| 持仓数 | 8 / 10 只 |
+| 缓冲带 | 1.3× / 1.5× |
+
+→ 运行 `run_param_sweep_experiments.py` 全参数扫描
+
+### P2：六因子权重网格搜索 / 选股池扩展
+
+以 5% 步长遍历六因子权重组合；扩大到 CSI500+1000 选股池。
+
 ## 运行方式
 
 ```bash
@@ -101,6 +143,28 @@ python strategies/avwap_profile_strategy/run_backtest.py \
   --daily-failure-exit \
   --market-filter-mode ma60
 
-# 参数实验
+# 自定义候选池参数
+python strategies/avwap_profile_strategy/run_backtest.py \
+  --recent-days 250 \
+  --breakout-volume-mult 1.3 \
+  --pullback-volume-frac 0.9 \
+  --daily-failure-exit \
+  --market-filter-mode ma60 \
+  --balance-periods 6 \
+  --recent-breakout-lookback 8 \
+  --range-pct-max 0.40 \
+  --angle-deg-min 0.5 \
+  --angle-deg-max 25 \
+  --holding-cycle biweekly \
+  --top-n 8 \
+  --stop-loss-pct -0.20
+
+# 候选池大小实验（只统计候选数量，不跑回测，很快）
+python strategies/avwap_profile_strategy/run_candidate_pool_experiments.py
+
+# 全参数扫描实验
+python strategies/avwap_profile_strategy/run_param_sweep_experiments.py
+
+# 近 100 日参数实验
 python strategies/avwap_profile_strategy/run_recent_100d_experiments.py
 ```
