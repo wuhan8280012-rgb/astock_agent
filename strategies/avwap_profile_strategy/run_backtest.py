@@ -114,6 +114,10 @@ def period_key(series: pd.Series, cycle: str) -> pd.Series:
 
 def build_rebalance_dates(trade_dates: list[str], cycle: str) -> set[str]:
     df = pd.DataFrame({"trade_date": trade_dates})
+    if cycle == "biweekly":
+        df["period_key"] = period_key(df["trade_date"], "weekly")
+        weekly_last = df.groupby("period_key", sort=False)["trade_date"].last().tolist()
+        return set(weekly_last[::2])
     df["period_key"] = period_key(df["trade_date"], cycle)
     return set(df.groupby("period_key", sort=False)["trade_date"].last().tolist())
 
@@ -134,9 +138,9 @@ def clip_score(value: float, low: float = 0.0, high: float = 1.0) -> float:
     return float(np.clip(value, low, high))
 
 
-def get_strategy_config(bt_module, holding_cycle: str):
-    interval = 20 if holding_cycle == "monthly" else 5
-    return bt_module.BacktestConfig(
+def get_strategy_config(bt_module, holding_cycle: str, **overrides):
+    interval = 20 if holding_cycle == "monthly" else (10 if holding_cycle == "biweekly" else 5)
+    cfg_kwargs = dict(
         name=f"AVWAPProfile_{holding_cycle}",
         top_n=6,
         hold_buffer_ratio=1.20,
@@ -152,6 +156,8 @@ def get_strategy_config(bt_module, holding_cycle: str):
         min_price=5.0,
         min_list_days=250,
     )
+    cfg_kwargs.update(overrides)
+    return bt_module.BacktestConfig(**cfg_kwargs)
 
 
 def market_filter_params(mode: str) -> tuple[int, float, float]:
@@ -169,10 +175,20 @@ def make_avwap_profile_backtest(
     pullback_volume_frac: float = 0.8,
     daily_failure_exit: bool = False,
     market_filter_mode: str = "off",
+    *,
+    balance_periods_override: int | None = None,
+    recent_breakout_lookback_override: int | None = None,
+    range_pct_max: float = 0.32,
+    value_area_width_pct_max: float = 0.18,
+    poc_distance_max: float = 0.05,
+    angle_deg_min: float = 1.0,
+    angle_deg_max: float = 20.0,
+    market_filter_half_position: bool = False,
 ):
-    ma_window = 4 if holding_cycle == "monthly" else 8
-    balance_periods = 6 if holding_cycle == "monthly" else 8
-    recent_breakout_lookback = 2 if holding_cycle == "monthly" else 4
+    cycle_for_data = "weekly" if holding_cycle == "biweekly" else holding_cycle
+    ma_window = 4 if cycle_for_data == "monthly" else 8
+    balance_periods = balance_periods_override if balance_periods_override is not None else (6 if cycle_for_data == "monthly" else 8)
+    recent_breakout_lookback = recent_breakout_lookback_override if recent_breakout_lookback_override is not None else (2 if cycle_for_data == "monthly" else 4)
     market_ma_days, market_angle_span, market_angle_floor = market_filter_params(market_filter_mode)
 
     class AVWAPProfileBacktest(bt_module.Backtest):
@@ -180,6 +196,7 @@ def make_avwap_profile_backtest(
             super().__init__(cfg, daily, idx, basic, trade_dates)
             self.holding_cycle = holding_cycle
             self._rebalance_dates = build_rebalance_dates(trade_dates, holding_cycle)
+            self._cycle_for_data = cycle_for_data
             self._period_data = {
                 code: self._build_period_frame(df.reset_index())
                 for code, df in self._stock_data.items()
@@ -189,7 +206,7 @@ def make_avwap_profile_backtest(
 
         def _build_period_frame(self, stock_daily: pd.DataFrame) -> pd.DataFrame:
             df = stock_daily.copy()
-            df["period_key"] = period_key(df["trade_date"], self.holding_cycle)
+            df["period_key"] = period_key(df["trade_date"], self._cycle_for_data)
             grouped = (
                 df.groupby("period_key", sort=True)
                 .agg(
@@ -239,9 +256,9 @@ def make_avwap_profile_backtest(
                 not np.isfinite(range_pct)
                 or not np.isfinite(value_area_width_pct)
                 or not np.isfinite(poc_distance)
-                or range_pct > 0.32
-                or value_area_width_pct > 0.18
-                or poc_distance > 0.05
+                or range_pct > range_pct_max
+                or value_area_width_pct > value_area_width_pct_max
+                or poc_distance > poc_distance_max
             ):
                 return None
 
@@ -382,7 +399,7 @@ def make_avwap_profile_backtest(
 
                 weekly_close = period_hist["close"].astype(float)
                 angle_deg = calc_ma_angle_deg(weekly_close, ma_window=ma_window)
-                if not np.isfinite(angle_deg) or angle_deg < 1.0 or angle_deg > 20.0:
+                if not np.isfinite(angle_deg) or angle_deg < angle_deg_min or angle_deg > angle_deg_max:
                     continue
                 ma_now = weekly_close.rolling(ma_window).mean().iloc[-1]
                 ma_prev3 = weekly_close.rolling(ma_window).mean().iloc[-3] if len(weekly_close) >= ma_window + 2 else np.nan
@@ -570,7 +587,12 @@ def make_avwap_profile_backtest(
                 if should_rebalance:
                     scores = self._score_universe(date)
                     market_ok = self._market_filter_pass(date)
-                    target_count = min(cfg.top_n, len(scores)) if market_ok else 0
+                    if market_ok:
+                        target_count = min(cfg.top_n, len(scores))
+                    elif market_filter_half_position:
+                        target_count = min(max(1, cfg.top_n // 2), len(scores))
+                    else:
+                        target_count = 0
                     target_codes = [item[0] for item in scores[:target_count]]
                     buffer_count = min(
                         len(scores),
@@ -658,6 +680,14 @@ def make_avwap_profile_backtest(
             result["pullback_volume_frac"] = pullback_volume_frac
             result["daily_failure_exit"] = daily_failure_exit
             result["market_filter_mode"] = market_filter_mode
+            result["balance_periods"] = balance_periods
+            result["recent_breakout_lookback"] = recent_breakout_lookback
+            result["range_pct_max"] = range_pct_max
+            result["value_area_width_pct_max"] = value_area_width_pct_max
+            result["poc_distance_max"] = poc_distance_max
+            result["angle_deg_min"] = angle_deg_min
+            result["angle_deg_max"] = angle_deg_max
+            result["market_filter_half_position"] = market_filter_half_position
             return result
 
     return AVWAPProfileBacktest
@@ -666,13 +696,31 @@ def make_avwap_profile_backtest(
 def main():
     parser = argparse.ArgumentParser(description="Weekly/Monthly AVWAP profile breakout backtest")
     parser.add_argument("--dataset", choices=sorted(DATASETS), default="csi1000_5y_pit")
-    parser.add_argument("--holding-cycle", choices=["weekly", "monthly"], default="weekly")
+    parser.add_argument("--holding-cycle", choices=["weekly", "biweekly", "monthly"], default="weekly")
     parser.add_argument("--recent-days", type=int, default=100)
     parser.add_argument("--trend-index-code", type=str, default=DEFAULT_TREND_INDEX_CODE)
     parser.add_argument("--breakout-volume-mult", type=float, default=1.5)
     parser.add_argument("--pullback-volume-frac", type=float, default=0.8)
     parser.add_argument("--daily-failure-exit", action="store_true")
     parser.add_argument("--market-filter-mode", choices=["off", "ma60", "ma120"], default="off")
+    # Candidate pool tuning
+    parser.add_argument("--balance-periods", type=int, default=None, help="Override balance periods (default: auto by cycle)")
+    parser.add_argument("--recent-breakout-lookback", type=int, default=None, help="Override breakout lookback (default: auto by cycle)")
+    parser.add_argument("--range-pct-max", type=float, default=0.32, help="Max balance range amplitude")
+    parser.add_argument("--value-area-width-pct-max", type=float, default=0.18, help="Max value area width")
+    parser.add_argument("--poc-distance-max", type=float, default=0.05, help="Max POC-AVWAP distance")
+    parser.add_argument("--angle-deg-min", type=float, default=1.0, help="Min MA angle degrees")
+    parser.add_argument("--angle-deg-max", type=float, default=20.0, help="Max MA angle degrees")
+    # Market filter tuning
+    parser.add_argument("--market-filter-half-position", action="store_true", help="Use half position when market filter fails")
+    # Portfolio construction
+    parser.add_argument("--top-n", type=int, default=6, help="Number of holdings")
+    parser.add_argument("--hold-buffer-ratio", type=float, default=1.20)
+    parser.add_argument("--max-single-weight", type=float, default=0.18)
+    parser.add_argument("--stop-loss-pct", type=float, default=-0.12)
+    parser.add_argument("--min-amount-20d", type=float, default=3e8)
+    parser.add_argument("--min-price", type=float, default=5.0)
+    parser.add_argument("--min-list-days", type=int, default=250)
     args = parser.parse_args()
 
     bt_module = load_module(BACKTEST_SCRIPT, "backtest_strategies")
@@ -682,7 +730,17 @@ def main():
         trend_index_code=args.trend_index_code,
     )
 
-    cfg = get_strategy_config(bt_module, args.holding_cycle)
+    cfg = get_strategy_config(
+        bt_module,
+        args.holding_cycle,
+        top_n=args.top_n,
+        hold_buffer_ratio=args.hold_buffer_ratio,
+        max_single_weight=args.max_single_weight,
+        stop_loss_pct=args.stop_loss_pct,
+        min_amount_20d=args.min_amount_20d,
+        min_price=args.min_price,
+        min_list_days=args.min_list_days,
+    )
     strategy_cls = make_avwap_profile_backtest(
         bt_module,
         args.holding_cycle,
@@ -690,6 +748,14 @@ def main():
         pullback_volume_frac=args.pullback_volume_frac,
         daily_failure_exit=args.daily_failure_exit,
         market_filter_mode=args.market_filter_mode,
+        balance_periods_override=args.balance_periods,
+        recent_breakout_lookback_override=args.recent_breakout_lookback,
+        range_pct_max=args.range_pct_max,
+        value_area_width_pct_max=args.value_area_width_pct_max,
+        poc_distance_max=args.poc_distance_max,
+        angle_deg_min=args.angle_deg_min,
+        angle_deg_max=args.angle_deg_max,
+        market_filter_half_position=args.market_filter_half_position,
     )
     bt = strategy_cls(cfg, daily, idx, basic, trade_dates)
 
