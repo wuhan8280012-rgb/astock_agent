@@ -1,48 +1,62 @@
-# RS + MA20 Angle Strategy (龙头策略 v2)
+# Trend Initiation Strategy (趋势启动策略)
 
 ## Thesis
 
-Combine **industry-relative strength** (RS) with **MA20 angle transition
-coefficient** to identify leaders that are *accelerating* their outperformance.
+Buy stocks emerging from a **consolidation / shakeout phase** (振仓) where
+the transition coefficient is **accelerating** and momentum is picking up —
+but the stock has **not yet topped**.
 
-The two core indicators answer complementary questions:
-- **RS vs industry**: "Who is the leader?" (cross-sectional ranking)
-- **Transition coefficient**: "Is the leadership strengthening?" (time-series signal)
+The core insight: the best entry is NOT when a stock is already in a strong
+trend (that's where the old RS+Angle strategy bought and failed), but at the
+**initiation point** — when the trend is just starting after a quiet period.
 
-Their intersection — stocks with RS > 1.0 **and** rising transition_coef — captures
-leaders entering their acceleration phase, the most valuable signal for entry.
+## Why the Previous Strategy (RS+Angle v2) Failed
 
-## Difference from Leader Strategy v1
+| Problem | Detail |
+|---------|--------|
+| 3 stacked hard filters | coef≥0 AND RS>1.0 AND angle>0 shrank pool to ~30 stocks |
+| Emergency exit whipsaw | coef<-0.5 triggered 176 times (18.3% of trades) — systematic buy-high sell-low |
+| Correlated factors | All 3 filters measured the same dimension (trend) |
+| 10d rebalance + 1.3× buffer | Extremely high churn, ~78% cumulative trading cost |
+| Result | -64.86% total, Sharpe -0.74, identical on static & PIT data |
 
-| Aspect | Leader v1 | RS + Angle v2 |
-|--------|-----------|---------------|
-| Primary signal | 5-factor blend (mom/RS/absorption/vol) | RS + transition_coef (70% combined) |
-| Hard filters | Basic filters only | transition_coef ≥ 0, RS > 1.0, MA20 angle > 0 |
-| Emergency exit | None | coef < -0.5 = immediate sell |
-| Rebalance | Monthly (20d) | Biweekly (10d) |
-| Buffer band | 1.5× | 1.3× (tighter) |
-| Absorption factor | 20% weight | Removed — RS + angle captures the same signal |
+## New Design: Trend Initiation
 
-## Factor Design
+### Key Changes from RS+Angle v2
 
-### Hard Filters (all must pass)
+| Aspect | RS+Angle v2 (failed) | Trend Initiation |
+|--------|----------------------|------------------|
+| Hard filters | 3 correlated trend filters | **None** on signal dimensions |
+| Emergency exit | coef < -0.5 daily check | **Removed** |
+| Core signal | RS + coef level (already in trend) | **coef delta** (trend starting) |
+| Factor diversity | All trend-correlated | Mixed: trend + volatility + headroom |
+| Holdings | 10 concentrated | 15 diversified |
+| Rebalance | 10d (biweekly) | 20d (monthly) |
+| Buffer | 1.3× (Top 13) | 1.5× (Top 22) |
+| Max single | 12% | 8% |
+| RS dependency | Yes (industry calc) | **No** — simpler, larger pool |
 
-| Filter | Threshold | Purpose |
-|--------|-----------|---------|
-| transition_coef ≥ 0 | 0.0 | Only stocks with strengthening MA20 trends |
-| RS vs industry > 1.0 | 1.0 | Must outperform its sector |
-| ma20_angle_deg > 0 | 0° | MA20 must be sloping upward |
+### Factor Design
 
-### Ranking Factors
+| Factor | Weight | Signal | Direction | Captures |
+|--------|--------|--------|-----------|----------|
+| **coef_delta_5d** | 30% | `coef_today - coef_5d_ago` | Higher = better | coef 加速 — trend initiation |
+| **vol_contraction** | 25% | `vol_10d / vol_60d` | Lower = better | 振仓后压缩 — prior consolidation |
+| **mom_accel** | 25% | `ret_20d - ret_prev_20d` | Higher = better | 动量加速 — momentum speeding up |
+| **headroom** | 20% | `close / max_60d` | Lower = better | 未到顶 — room to run |
 
-| Factor | Weight | Direction | Why |
-|--------|--------|-----------|-----|
-| **RS vs industry** | 40% | Higher = better | Core leader definition |
-| **transition_coef** | 30% | Higher = better | Trend acceleration — the angle is *getting steeper* |
-| **RS new-high (120d)** | 15% | 1/0 binary | Breakout confirmation |
-| **60d momentum** | 15% | Higher = better | Absolute return baseline |
+### How the Factors Work Together
 
-### Transition Coefficient Deep Dive
+```
+1. vol_contraction < 1   →  Stock was volatile, now quiet (consolidation complete)
+2. coef_delta > 0        →  MA20 angle is accelerating (trend starting)
+3. mom_accel > 0         →  Recent returns > prior returns (momentum building)
+4. headroom < 1          →  Below 60d high (hasn't topped yet)
+
+Together: "quiet stock waking up with accelerating trend, still early"
+```
+
+### Transition Coefficient Recap
 
 ```python
 base = tanh(a0 / 10.0)      # Current angle strength
@@ -50,52 +64,41 @@ turn = tanh((a0 - a1) / 5.0) # Angle acceleration
 coef = 0.7 * base + 0.3 * turn
 ```
 
-| State | base | turn | coef | Trading meaning |
-|-------|------|------|------|-----------------|
-| **Launch acceleration** | small+ / 0 | large+ | 0.1~0.5 | Best entry — angle flipping from 0° to positive |
-| **Sustained strength** | large+ | ~0 | 0.5~1.0 | Hold position |
-| **Topping deceleration** | large+ | negative | Declining | Angle still positive but shrinking — caution |
-| **Breakdown** | negative | large- | -0.5~-1.0 | Emergency exit trigger |
+The **delta** (coef_today - coef_5d_ago) captures stocks where this
+composite is **rising** — the trend is initiating or accelerating.
 
 ## Portfolio Rules
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| Holdings | 10 | Leaders are few; concentrate |
-| Max single weight | 12% | Give true leaders room |
-| Rebalance | Biweekly (10d) | Leader rotation is faster than sector rotation |
-| Buffer band | 1.3× (Top 13) | Tighter than v1; reduce stale holdings |
-| Trend filter | CSI1000 > 200d MA | No leaders in bear markets |
-| Bear position | 30% max | Aggressive reduction |
-| Stop loss | -15% individual | Hard backstop |
-| Emergency exit | coef < -0.5 | Trend collapse — sell immediately, don't wait for rebalance |
-| Slippage | 0.3% | Concentrated buying premium |
-| Min 20d avg amount | 3亿 | Leaders must be liquid |
+| Holdings | 15 | More diversified — reduce single-stock risk |
+| Max single weight | 8% | Less concentrated than v2's 12% |
+| Rebalance | Monthly (20d) | Half the trading cost of v2's 10d |
+| Buffer band | 1.5× (Top 22) | Less churn than v2's 1.3× |
+| Trend filter | CSI1000 > 200d MA | Reduce equity in bear markets |
+| Range position | 50% max | Less aggressive than v2's 30% |
+| Bear position | 0% | Full cash in deep bear |
+| Stop loss | -20% individual | Wider — give trend time to develop |
+| Slippage | 0.2% | Lower — less concentrated buying |
+| Min 20d avg amount | 2亿 | Slightly lower bar than v2's 3亿 |
 
 ## Entry / Hold / Exit
 
 ```
-Entry:  RS > 1.0  AND  transition_coef >= 0  AND  ma20_angle > 0°  AND  Top 10 rank
-Hold:   Stay in Top 13 buffer  AND  coef >= -0.5
-Exit:   Rank drops below buffer (Top 13)
-        OR  transition_coef < -0.5 (emergency — don't wait for rebalance)
-        OR  individual stop loss -15%
-        OR  trend filter off (reduce to 30%)
+Entry:  Top 15 composite rank (no hard signal filters)
+Hold:   Stay in Top 22 buffer
+Exit:   Rank drops below buffer (Top 22)
+        OR  individual stop loss -20%
+        OR  trend filter off (reduce to 50% → 0%)
 ```
 
-## Risk Notes
-
-1. **Must use PIT data** — F strategy lesson: static +269% → PIT +16.57% (F strategy results)
-2. **transition_coef look-ahead** — MA20 uses 20 days of data; ensure coef
-   only uses T-1 closes in backtest
-3. **Threshold sensitivity** — Recommend testing coef ≥ {-0.2, -0.1, 0, 0.1, 0.2}
-4. **10d rebalance cost** — More trades than 20d; 0.3% slippage accounts for this
+No emergency exit — the old mechanism was the #1 source of losses.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `run_backtest.py` | Backtest entry point; `RSAngleBacktest._score_universe()` + emergency exit `run()` |
+| `run_backtest.py` | Backtest entry point; `TrendInitBacktest._score_universe()` |
 | `README.md` | This file |
 
 ## Usage
