@@ -1,0 +1,68 @@
+{
+  "dataset": "csi1000_5y_pit",
+  "window_trade_days": 100,
+  "window_start": "20251029",
+  "window_end": "20260327",
+  "cases": [
+    {
+      "case": "with_angle_trend",
+      "result": {
+        "name": "F_recent100_with_angle_trend",
+        "execution_mode": "same_close",
+        "total_return_pct": 27.06,
+        "annual_return_pct": 82.84,
+        "annual_vol_pct": 33.41,
+        "sharpe": 2.48,
+        "calmar": 5.25,
+        "max_drawdown_pct": -15.77,
+        "max_dd_date": "20260323",
+        "total_trades": 115,
+        "rebalance_count": 5,
+        "final_value": 1270551.28,
+        "benchmark_return_pct": -2.55,
+        "excess_return_pct": 29.61,
+        "yearly_returns": {
+          "2025": 16.62,
+          "2026": 9.0
+        },
+        "trading_days": 100,
+        "window_start": "20251029",
+        "window_end": "20260327",
+        "dataset": "csi1000_5y_pit",
+        "angle_trend_factor_enabled": true,
+        "angle_trend_days": 10,
+        "angle_trend_weight": 0.15
+      }
+    },
+    {
+      "case": "without_angle_trend",
+      "result": {
+        "name": "F_recent100_without_angle_trend",
+        "execution_mode": "same_close",
+        "total_return_pct": 1.36,
+        "annual_return_pct": 3.47,
+        "annual_vol_pct": 34.82,
+        "sharpe": 0.1,
+        "calmar": 0.21,
+        "max_drawdown_pct": -16.51,
+        "max_dd_date": "20260323",
+        "total_trades": 98,
+        "rebalance_count": 5,
+        "final_value": 1013610.34,
+        "benchmark_return_pct": -2.55,
+        "excess_return_pct": 3.92,
+        "yearly_returns": {
+          "2025": 9.08,
+          "2026": -8.75
+        },
+        "trading_days": 100,
+        "window_start": "20251029",
+        "window_end": "20260327",
+        "dataset": "csi1000_5y_pit",
+        "angle_trend_factor_enabled": false,
+        "angle_trend_days": 10,
+        "angle_trend_weight": 0.15
+      }
+    }
+  ]
+}

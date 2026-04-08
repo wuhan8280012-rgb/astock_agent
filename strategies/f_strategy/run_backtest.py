@@ -5,14 +5,19 @@ import argparse
 import importlib.util
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from data_pipeline.pit_constituents import load_or_fetch_pit_universe
+from strategies.f_strategy.scoring import ScoreFilters, calc_strength_transition_coef, score_universe
+
 BACKTEST_SCRIPT = PROJECT_ROOT / "scripts" / "backtest_strategies.py"
 ENV_PATH = PROJECT_ROOT / "config" / ".env"
 DEFAULT_TREND_INDEX_CODE = "000001.SH"
@@ -20,6 +25,11 @@ DEFAULT_TREND_INDEX_NAME = "上证指数"
 
 DATASETS = {
     "csi1000_5y": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y" / "csi1000_market_bundle_5y.csv",
+    "csi1000_5y_pit": PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y_pit" / "csi1000_market_bundle_5y_pit.csv",
+}
+DATASET_INDEX_CODES = {
+    "csi1000_5y": "000852.SH",
+    "csi1000_5y_pit": "000852.SH",
 }
 
 
@@ -179,13 +189,6 @@ def load_dataset(
     daily = enrich_industry_strength20_features(daily, idx)
     return daily, idx, basic, trade_dates
 
-
-def calc_strength_transition_coef(a0: float, a1: float) -> float:
-    base = np.tanh(a0 / 10.0)
-    turn = np.tanh((a0 - a1) / 5.0)
-    return float(np.clip(0.7 * base + 0.3 * turn, -1.0, 1.0))
-
-
 def enrich_industry_strength20_features(daily: pd.DataFrame, idx: pd.DataFrame) -> pd.DataFrame:
     if "sw_l1_name" not in daily.columns:
         return daily
@@ -236,117 +239,20 @@ def make_filtered_backtest(
     class FilteredBacktest(module.Backtest):
         def __init__(self, cfg, daily, idx, basic, trade_dates):
             super().__init__(cfg, daily, idx, basic, trade_dates)
+            self._score_filters = ScoreFilters(
+                min_ma20_angle=min_ma20_angle,
+                min_transition_coef=min_transition_coef,
+                min_industry_strength20_vs_market=min_industry_strength20_vs_market,
+            )
 
         def _score_universe(self, date: str):
-            cfg = self.cfg
-            scores = []
-            for code, data in self._stock_data.items():
-                if date not in data.index:
-                    continue
-                row = data.loc[date]
-
-                close = row["close"]
-                if pd.isna(close) or close < cfg.min_price:
-                    continue
-
-                info = self._basic_map.get(code)
-                if info is not None:
-                    name = str(info.get("name", ""))
-                    if "ST" in name.upper():
-                        continue
-                    list_date = str(info.get("list_date", ""))
-                    if list_date and len(list_date) >= 8:
-                        try:
-                            from datetime import datetime
-                            ld = datetime.strptime(list_date[:8], "%Y%m%d")
-                            cd = datetime.strptime(date, "%Y%m%d")
-                            if (cd - ld).days < cfg.min_list_days:
-                                continue
-                        except Exception:
-                            pass
-
-                hist = data[data.index <= date]
-                if len(hist) < max(cfg.momentum_days[0], 60) + 5:
-                    continue
-
-                avg_amount = hist.tail(20)["amount"].mean() * 1000
-                if avg_amount < cfg.min_amount_20d:
-                    continue
-
-                if row["pct_chg"] >= 9.5:
-                    continue
-
-                if min_ma20_angle is not None:
-                    angle = row.get("ma20_angle_deg", np.nan)
-                    if pd.isna(angle) or angle < min_ma20_angle:
-                        continue
-
-                if min_transition_coef is not None:
-                    if "ma20_angle_deg" not in hist.columns:
-                        continue
-                    angles = hist["ma20_angle_deg"].tail(2).values.astype(float)
-                    if len(angles) < 2 or np.isnan(angles[-1]) or np.isnan(angles[-2]):
-                        continue
-                    coef = calc_strength_transition_coef(float(angles[-1]), float(angles[-2]))
-                    if coef < min_transition_coef:
-                        continue
-
-                if min_industry_strength20_vs_market is not None:
-                    ratio = row.get("sw_l1_strength20_vs_market", np.nan)
-                    if pd.isna(ratio) or float(ratio) < min_industry_strength20_vs_market:
-                        continue
-
-                closes = hist["close"].values.astype(float)
-                mom_score = 0.0
-                for lb, w in zip(cfg.momentum_days, cfg.momentum_weights):
-                    if len(closes) >= lb + 1:
-                        ret = closes[-1] / closes[-(lb + 1)] - 1
-                        mom_score += ret * w
-                    else:
-                        mom_score = np.nan
-                        break
-                if np.isnan(mom_score):
-                    continue
-
-                if cfg.subtract_short_momentum and len(closes) >= cfg.short_momentum_days + 1:
-                    short_ret = closes[-1] / closes[-(cfg.short_momentum_days + 1)] - 1
-                    mom_score -= short_ret
-
-                vol_component = 0.0
-                if cfg.use_volatility_factor and len(closes) >= cfg.volatility_days + 1:
-                    rets = np.diff(closes[-cfg.volatility_days - 1:]) / closes[-cfg.volatility_days - 1:-1]
-                    vol = np.std(rets)
-                    if vol > 0:
-                        vol_component = -vol
-
-                size_component = 0.0
-                if cfg.use_size_factor:
-                    circ_mv = row.get("circ_mv", None)
-                    if circ_mv and not pd.isna(circ_mv) and circ_mv > 0:
-                        size_component = -np.log(circ_mv)
-
-                scores.append((code, mom_score, vol_component, size_component))
-
-            if not scores:
-                return []
-
-            df = pd.DataFrame(scores, columns=["code", "mom", "vol", "size"])
-            df["mom_rank"] = df["mom"].rank(ascending=False)
-            df["vol_rank"] = df["vol"].rank(ascending=False)
-            df["size_rank"] = df["size"].rank(ascending=False)
-
-            mom_weight = 1.0
-            vol_w = cfg.volatility_weight if cfg.use_volatility_factor else 0
-            size_w = cfg.size_weight if cfg.use_size_factor else 0
-            total_w = mom_weight + vol_w + size_w
-
-            df["composite_rank"] = (
-                (mom_weight / total_w) * df["mom_rank"] +
-                (vol_w / total_w) * df["vol_rank"] +
-                (size_w / total_w) * df["size_rank"]
+            return score_universe(
+                self._stock_data,
+                self._basic_map,
+                self.cfg,
+                date,
+                filters=self._score_filters,
             )
-            df = df.sort_values("composite_rank").reset_index(drop=True)
-            return list(zip(df["code"], df["composite_rank"]))
 
     return FilteredBacktest
 
@@ -420,6 +326,67 @@ def make_regime_industry_excess_rank_boost_backtest(
     return RegimeIndustryExcessRankBoostBacktest
 
 
+def resolve_start_offset(trade_dates: list[str], start_date: str | None, minimum_warmup: int = 250) -> int:
+    if start_date is None:
+        return minimum_warmup
+    if start_date not in trade_dates:
+        raise ValueError(f"start_date 不在交易日历中: {start_date}")
+    return max(minimum_warmup, trade_dates.index(start_date))
+
+
+def run_train_test_split(bt, trade_dates: list[str], train_end: str | None, test_start: str | None) -> dict:
+    split = {}
+    if train_end is not None:
+        if train_end not in trade_dates:
+            raise ValueError(f"train_end 不在交易日历中: {train_end}")
+        split["train"] = bt.run(start_offset=250, end_date=train_end)
+        split["train"]["window_start"] = trade_dates[250]
+        split["train"]["window_end"] = train_end
+    if test_start is not None:
+        test_offset = resolve_start_offset(trade_dates, test_start, minimum_warmup=250)
+        split["test"] = bt.run(start_offset=test_offset, end_date=trade_dates[-1])
+        split["test"]["window_start"] = trade_dates[test_offset]
+        split["test"]["window_end"] = trade_dates[-1]
+    return split
+
+
+def run_walk_forward(bt, trade_dates: list[str], train_days: int, test_days: int, step_days: int | None = None) -> dict:
+    step = step_days or test_days
+    if train_days < 250:
+        raise ValueError("walk-forward 训练窗口至少需要 250 个交易日")
+    segments = []
+    test_start_idx = train_days
+    while test_start_idx + test_days - 1 < len(trade_dates):
+        train_end_idx = test_start_idx - 1
+        test_end_idx = test_start_idx + test_days - 1
+        train_end = trade_dates[train_end_idx]
+        test_start = trade_dates[test_start_idx]
+        test_end = trade_dates[test_end_idx]
+        train_result = bt.run(start_offset=250, end_date=train_end)
+        test_result = bt.run(start_offset=test_start_idx, end_date=test_end)
+        segments.append(
+            {
+                "train_window_start": trade_dates[250],
+                "train_window_end": train_end,
+                "test_window_start": test_start,
+                "test_window_end": test_end,
+                "train": train_result,
+                "test": test_result,
+            }
+        )
+        test_start_idx += step
+
+    test_sharpes = [seg["test"].get("sharpe", 0.0) for seg in segments if isinstance(seg.get("test"), dict)]
+    test_returns = [seg["test"].get("total_return_pct", 0.0) for seg in segments if isinstance(seg.get("test"), dict)]
+    summary = {
+        "segment_count": len(segments),
+        "avg_test_sharpe": round(sum(test_sharpes) / len(test_sharpes), 2) if test_sharpes else None,
+        "avg_test_total_return_pct": round(sum(test_returns) / len(test_returns), 2) if test_returns else None,
+        "positive_test_segments": sum(1 for value in test_returns if value > 0),
+    }
+    return {"summary": summary, "segments": segments}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=sorted(DATASETS), default="csi1000_5y")
@@ -429,6 +396,16 @@ def main():
     parser.add_argument("--industry-excess-rank-bonus-weight", type=optional_float, default=None)
     parser.add_argument("--industry-excess-active-regimes", type=str, default="RANGE,BEAR")
     parser.add_argument("--trend-index-code", type=str, default=DEFAULT_TREND_INDEX_CODE)
+    parser.add_argument("--execution-mode", choices=["same_close", "next_open"], default="same_close")
+    parser.add_argument("--use-pit-constituents", action="store_true")
+    parser.add_argument("--pit-index-code", type=str, default=None)
+    parser.add_argument("--refresh-pit-cache", action="store_true")
+    parser.add_argument("--train-end", type=str, default=None)
+    parser.add_argument("--test-start", type=str, default=None)
+    parser.add_argument("--walk-forward", action="store_true")
+    parser.add_argument("--wf-train-days", type=int, default=252 * 3)
+    parser.add_argument("--wf-test-days", type=int, default=252)
+    parser.add_argument("--wf-step-days", type=int, default=None)
     args = parser.parse_args()
 
     module = load_backtest_module()
@@ -436,6 +413,7 @@ def main():
     daily, idx, basic, trade_dates = load_dataset(data_path, module, trend_index_code=args.trend_index_code)
 
     cfg = [s for s in module.get_strategies() if s.name == "F_三因子+趋势过滤"][0]
+    cfg.execution_mode = args.execution_mode
     active_regimes = tuple(part.strip().upper() for part in args.industry_excess_active_regimes.split(",") if part.strip())
     if args.industry_excess_rank_bonus_weight is not None and args.industry_excess_rank_bonus_weight > 0:
         backtest_cls = make_regime_industry_excess_rank_boost_backtest(
@@ -456,14 +434,71 @@ def main():
 
     t0 = time.time()
     bt = backtest_cls(cfg, daily, idx, basic, trade_dates)
-    result = bt.run(start_offset=250)
-    result["elapsed_sec"] = round(time.time() - t0, 1)
-    result["trend_filter_index_code"] = args.trend_index_code
+    pit_summary = {"enabled": False}
+    if args.use_pit_constituents:
+        pit_index_code = (args.pit_index_code or DATASET_INDEX_CODES.get(args.dataset) or "").strip()
+        if not pit_index_code:
+            raise ValueError(f"dataset={args.dataset} 未配置默认 PIT 指数代码，请显式传入 --pit-index-code")
+        pit_universe = load_or_fetch_pit_universe(
+            index_code=pit_index_code,
+            trade_dates=trade_dates,
+            refresh=args.refresh_pit_cache,
+        )
+        bt._universe_codes_by_date = pit_universe.constituents_by_date
+        pit_summary = {
+            "enabled": True,
+            "index_code": pit_universe.index_code,
+            "snapshot_count": pit_universe.snapshot_count,
+            "unique_codes": pit_universe.unique_codes,
+            "constituent_count_max": pit_universe.constituent_count_max,
+            "earliest_snapshot_date": pit_universe.earliest_snapshot_date,
+            "latest_snapshot_date": pit_universe.latest_snapshot_date,
+            "fallback_to_earliest_days": pit_universe.fallback_to_earliest_days,
+            "cache_path": pit_universe.cache_path,
+            "bundle_unique_codes": int(daily["ts_code"].astype(str).nunique()),
+        }
+        if pit_summary["bundle_unique_codes"] >= pit_universe.unique_codes:
+            pit_summary["survivorship_bias_note"] = (
+                "PIT 成分股过滤已启用，当前 bundle 已覆盖 index_weight 快照中的全部历史成分股代码。"
+                "若历史接口本身缺失个别退市证券数据，仍可能存在残余样本缺口。"
+            )
+        else:
+            pit_summary["survivorship_bias_note"] = (
+                "PIT 成分股过滤已启用，但当前 bundle 未完全覆盖历史成分股全集。"
+                "历史退样/退市股票若不在 bundle 中，幸存者偏差仍未完全消除。"
+            )
+    full_result = bt.run(start_offset=250)
+    full_result["trend_filter_index_code"] = args.trend_index_code
+    full_result["execution_mode"] = args.execution_mode
+    full_result["pit_constituents"] = pit_summary
     if args.industry_excess_rank_bonus_weight is not None and args.industry_excess_rank_bonus_weight > 0:
-        result["industry_excess_rank_bonus_weight"] = args.industry_excess_rank_bonus_weight
-        result["industry_excess_active_regimes"] = list(active_regimes)
+        full_result["industry_excess_rank_bonus_weight"] = args.industry_excess_rank_bonus_weight
+        full_result["industry_excess_active_regimes"] = list(active_regimes)
+
+    result: dict = {"mode": "full", "full": full_result}
+    if args.train_end or args.test_start:
+        result["mode"] = "train_test"
+        result["train_test"] = run_train_test_split(bt, trade_dates, train_end=args.train_end, test_start=args.test_start)
+    if args.walk_forward:
+        result["mode"] = "walk_forward"
+        result["walk_forward"] = run_walk_forward(
+            bt,
+            trade_dates=trade_dates,
+            train_days=args.wf_train_days,
+            test_days=args.wf_test_days,
+            step_days=args.wf_step_days,
+        )
+    result["elapsed_sec"] = round(time.time() - t0, 1)
 
     suffix = f"_{args.dataset}"
+    if args.train_end or args.test_start:
+        suffix += "_train_test"
+    if args.walk_forward:
+        suffix += "_walk_forward"
+    if args.execution_mode != "same_close":
+        suffix += f"_{args.execution_mode}"
+    if args.use_pit_constituents:
+        suffix += "_pit"
     if args.min_transition_coef is not None:
         suffix += f"_transition_coef_ge_{str(args.min_transition_coef).replace('.', '_').replace('-', 'neg_')}"
     if args.min_ma20_angle is not None:

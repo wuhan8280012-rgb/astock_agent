@@ -17,12 +17,17 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from strategies.f_strategy.scoring import score_universe  # noqa: E402
+
 # ══════════════════════════════════════════════════════════════════
 #  数据加载
 # ══════════════════════════════════════════════════════════════════
 
-DATA_PATH = Path(__file__).parent.parent / "data_exports" / "tushare_20210329_20260327_csi1000_5y" / "csi1000_market_bundle_5y.csv"
-ENV_PATH = Path(__file__).parent.parent / "config" / ".env"
+DATA_PATH = PROJECT_ROOT / "data_exports" / "tushare_20210329_20260327_csi1000_5y" / "csi1000_market_bundle_5y.csv"
+ENV_PATH = PROJECT_ROOT / "config" / ".env"
 DEFAULT_TREND_INDEX_CODE = "000001.SH"
 
 
@@ -150,6 +155,11 @@ class BacktestConfig:
     volatility_weight: float = 0.3
     use_size_factor: bool = False
     size_weight: float = 0.2
+    use_angle_trend_factor: bool = False
+    angle_trend_days: int = 10
+    angle_trend_weight: float = 0.15
+    angle_trend_slope_weight: float = 0.6
+    angle_trend_persistence_weight: float = 0.4
     # 组合参数
     top_n: int = 15
     hold_buffer_ratio: float = 1.5
@@ -165,6 +175,7 @@ class BacktestConfig:
     commission: float = 0.0003
     stamp_tax: float = 0.001
     slippage: float = 0.002
+    execution_mode: str = "same_close"  # same_close|next_open
     # 过滤
     min_amount_20d: float = 1e8       # 20日均成交额 >= 1亿
     min_price: float = 3.0
@@ -194,19 +205,27 @@ class Backtest:
         for _, row in basic.iterrows():
             self._basic_map[row["ts_code"]] = row
 
-    def run(self, start_offset: int = 250, include_daily: bool = False) -> dict:
+    def run(self, start_offset: int = 250, include_daily: bool = False, end_date: str | None = None) -> dict:
         """
         运行回测。start_offset: 跳过前N个交易日用于计算指标。
         """
         cfg = self.cfg
+        if getattr(cfg, "execution_mode", "same_close") == "next_open":
+            return self._run_next_open(start_offset=start_offset, include_daily=include_daily, end_date=end_date)
         dates = self.trade_dates
         if start_offset >= len(dates):
             return {"error": "数据不足"}
+        if end_date is not None and end_date not in dates:
+            return {"error": f"end_date 不在交易日历中: {end_date}"}
+        end_idx = dates.index(end_date) if end_date is not None else len(dates) - 1
+        if end_idx < start_offset:
+            return {"error": "回测结束日早于起始偏移"}
 
         start_date = dates[start_offset]
+        final_date = dates[end_idx]
         print(f"\n{'='*60}")
         print(f"回测: {cfg.name}")
-        print(f"区间: {start_date} ~ {dates[-1]} ({len(dates) - start_offset} 交易日)")
+        print(f"区间: {start_date} ~ {final_date} ({end_idx - start_offset + 1} 交易日)")
         print(f"参数: top_n={cfg.top_n}, 调仓间隔={cfg.rebalance_interval}d, "
               f"止损={cfg.stop_loss_pct:.0%}")
         print(f"{'='*60}")
@@ -220,7 +239,7 @@ class Backtest:
         rebalance_count = 0
         last_rebalance_idx = start_offset - cfg.rebalance_interval  # 允许首日调仓
 
-        for i in range(start_offset, len(dates)):
+        for i in range(start_offset, end_idx + 1):
             date = dates[i]
 
             # 1. 更新持仓价格
@@ -363,7 +382,26 @@ class Backtest:
                 }
             )
 
-        # 计算指标
+        return self._build_result(
+            nav_history=nav_history,
+            capital=capital,
+            start_date=start_date,
+            end_date=final_date,
+            trade_count=trade_count,
+            rebalance_count=rebalance_count,
+            include_daily=include_daily,
+        )
+
+    def _build_result(
+        self,
+        nav_history: list[dict],
+        capital: float,
+        start_date: str,
+        end_date: str,
+        trade_count: int,
+        rebalance_count: int,
+        include_daily: bool,
+    ) -> dict:
         nav_df = pd.DataFrame(nav_history)
         nav_df["daily_return"] = nav_df["nav"].pct_change()
         total_return = (nav_df["nav"].iloc[-1] / capital - 1) * 100
@@ -373,18 +411,15 @@ class Backtest:
         annual_vol = nav_df["daily_return"].std() * np.sqrt(252) * 100
         sharpe = annual_return / annual_vol if annual_vol > 0 else 0
 
-        # 最大回撤
         cummax = nav_df["nav"].cummax()
         drawdown = (nav_df["nav"] - cummax) / cummax
         max_dd = drawdown.min() * 100
         max_dd_date = nav_df.loc[drawdown.idxmin(), "date"] if len(nav_df) > 0 else ""
 
-        # 基准收益
         idx_start = self._idx_series.get(start_date, None)
-        idx_end = self._idx_series.get(dates[-1], None)
+        idx_end = self._idx_series.get(end_date, None)
         benchmark_return = ((idx_end / idx_start) - 1) * 100 if idx_start and idx_end else 0
 
-        # 分年度收益
         nav_df["year"] = nav_df["date"].str[:4]
         yearly = {}
         for year, grp in nav_df.groupby("year"):
@@ -392,11 +427,10 @@ class Backtest:
                 yr = (grp["nav"].iloc[-1] / grp["nav"].iloc[0] - 1) * 100
                 yearly[year] = round(yr, 2)
 
-        # Calmar ratio
         calmar = annual_return / abs(max_dd) if max_dd != 0 else 0
-
         result = {
-            "name": cfg.name,
+            "name": self.cfg.name,
+            "execution_mode": getattr(self.cfg, "execution_mode", "same_close"),
             "total_return_pct": round(total_return, 2),
             "annual_return_pct": round(annual_return, 2),
             "annual_vol_pct": round(annual_vol, 2),
@@ -423,14 +457,193 @@ class Backtest:
         print(f"交易次数={trade_count}, 调仓次数={rebalance_count}")
         print(f"分年度: {yearly}")
         print(f"基准: {benchmark_return:.2f}%, 超额: {total_return - benchmark_return:.2f}%")
-
         return result
 
-    def _get_prices(self, date: str) -> dict:
-        """获取指定日期所有股票的收盘价"""
+    def _run_next_open(self, start_offset: int = 250, include_daily: bool = False, end_date: str | None = None) -> dict:
+        cfg = self.cfg
+        dates = self.trade_dates
+        if start_offset >= len(dates):
+            return {"error": "数据不足"}
+        if end_date is not None and end_date not in dates:
+            return {"error": f"end_date 不在交易日历中: {end_date}"}
+        end_idx = dates.index(end_date) if end_date is not None else len(dates) - 1
+        if end_idx < start_offset:
+            return {"error": "回测结束日早于起始偏移"}
+
+        start_date = dates[start_offset]
+        final_date = dates[end_idx]
+        print(f"\n{'='*60}")
+        print(f"回测: {cfg.name}")
+        print(f"区间: {start_date} ~ {final_date} ({end_idx - start_offset + 1} 交易日)")
+        print(
+            f"参数: top_n={cfg.top_n}, 调仓间隔={cfg.rebalance_interval}d, "
+            f"止损={cfg.stop_loss_pct:.0%}, 成交模式=next_open"
+        )
+        print(f"{'='*60}")
+
+        capital = 1_000_000.0
+        cash = capital
+        positions = {}
+        nav_history = []
+        trade_count = 0
+        rebalance_count = 0
+        last_rebalance_idx = start_offset - cfg.rebalance_interval
+        pending_orders = None
+
+        for i in range(start_offset, end_idx + 1):
+            date = dates[i]
+            open_prices = self._get_prices(date, field="open")
+            close_prices = self._get_prices(date, field="close")
+
+            if pending_orders:
+                liquidate_all = bool(pending_orders.get("liquidate_all"))
+                sell_codes = list(positions.keys()) if liquidate_all else list(pending_orders.get("sell_codes", []))
+                for code in sell_codes:
+                    if code not in positions:
+                        continue
+                    ref_price = open_prices.get(code, close_prices.get(code, positions[code].get("current_price", positions[code]["cost_price"])))
+                    if ref_price <= 0:
+                        continue
+                    sell_price = ref_price * (1 - cfg.slippage)
+                    proceeds = positions[code]["shares"] * sell_price
+                    cost = proceeds * (cfg.commission + cfg.stamp_tax)
+                    cash += proceeds - cost
+                    trade_count += 1
+                    del positions[code]
+
+                if pending_orders.get("rebalance"):
+                    portfolio_value_open = cash + sum(
+                        pos["shares"] * open_prices.get(code, close_prices.get(code, pos.get("current_price", pos["cost_price"])))
+                        for code, pos in positions.items()
+                    )
+                    current_position_value = sum(
+                        pos["shares"] * open_prices.get(code, close_prices.get(code, pos.get("current_price", pos["cost_price"])))
+                        for code, pos in positions.items()
+                    )
+                    max_equity = portfolio_value_open * pending_orders.get("max_position_pct", 1.0)
+                    available_for_equity = max_equity - current_position_value
+                    available_cash = min(cash, available_for_equity) if available_for_equity > 0 else 0.0
+                    buy_slots = cfg.top_n - len(positions)
+
+                    for code in pending_orders.get("target_codes", []):
+                        if buy_slots <= 0 or available_cash < 10000:
+                            break
+                        if code in positions:
+                            continue
+                        ref_price = open_prices.get(code, close_prices.get(code, 0.0))
+                        if ref_price <= 0:
+                            continue
+                        buy_price = ref_price * (1 + cfg.slippage)
+                        target_amount = min(portfolio_value_open * cfg.max_single_weight, available_cash * 0.95)
+                        shares = int(target_amount / buy_price / 100) * 100
+                        if shares < 100:
+                            continue
+                        amount = shares * buy_price
+                        cost = amount * cfg.commission
+                        cash -= (amount + cost)
+                        available_cash -= (amount + cost)
+                        positions[code] = {
+                            "shares": shares,
+                            "cost_price": buy_price,
+                            "entry_date": date,
+                            "current_price": close_prices.get(code, ref_price),
+                        }
+                        trade_count += 1
+                        buy_slots -= 1
+                    rebalance_count += 1
+
+                pending_orders = None
+
+            portfolio_value = cash
+            for code, pos in list(positions.items()):
+                if code in close_prices:
+                    pos["current_price"] = close_prices[code]
+                    portfolio_value += pos["shares"] * close_prices[code]
+                else:
+                    portfolio_value += pos["shares"] * pos.get("current_price", pos["cost_price"])
+
+            should_rebalance = (i - last_rebalance_idx) >= cfg.rebalance_interval
+            max_position_pct = 1.0
+            if cfg.use_trend_filter:
+                max_position_pct = self._get_trend_position(date)
+
+            trend_state = self._get_trend_state(date) if cfg.use_trend_filter else "FULL"
+
+            if i < end_idx:
+                next_orders = {
+                    "sell_codes": set(),
+                    "target_codes": [],
+                    "rebalance": False,
+                    "liquidate_all": False,
+                    "max_position_pct": max_position_pct,
+                }
+
+                if cfg.stop_loss_pct > -0.99:
+                    for code, pos in positions.items():
+                        if code not in close_prices:
+                            continue
+                        pnl = close_prices[code] / pos["cost_price"] - 1
+                        if pnl <= cfg.stop_loss_pct:
+                            next_orders["sell_codes"].add(code)
+
+                if should_rebalance:
+                    halt = False
+                    if cfg.use_halt:
+                        halt = self._check_halt(date)
+                        if halt:
+                            next_orders["sell_codes"].update(positions.keys())
+                            next_orders["rebalance"] = True
+                            next_orders["liquidate_all"] = True
+                            last_rebalance_idx = i
+                    if not halt:
+                        scores = self._score_universe(date)
+                        if len(scores) >= cfg.top_n:
+                            target_codes = [s[0] for s in scores[:cfg.top_n]]
+                            buffer_codes = set(s[0] for s in scores[:int(cfg.top_n * cfg.hold_buffer_ratio)])
+                            next_orders["sell_codes"].update(code for code in positions if code not in buffer_codes)
+                            next_orders["target_codes"] = target_codes
+                            next_orders["rebalance"] = True
+                            last_rebalance_idx = i
+
+                if next_orders["sell_codes"] or next_orders["rebalance"]:
+                    pending_orders = next_orders
+
+            final_value = cash + sum(
+                pos["shares"] * close_prices.get(code, pos.get("current_price", pos["cost_price"]))
+                for code, pos in positions.items()
+            )
+            position_value = sum(
+                pos["shares"] * close_prices.get(code, pos.get("current_price", pos["cost_price"]))
+                for code, pos in positions.items()
+            )
+            nav_history.append(
+                {
+                    "date": date,
+                    "nav": final_value,
+                    "cash": cash,
+                    "position_value": position_value,
+                    "position_pct": position_value / final_value if final_value > 0 else 0.0,
+                    "max_position_pct": max_position_pct,
+                    "trend_state": trend_state,
+                    "idx_close": float(self._idx_series.get(date, np.nan)),
+                }
+            )
+
+        return self._build_result(
+            nav_history=nav_history,
+            capital=capital,
+            start_date=start_date,
+            end_date=final_date,
+            trade_count=trade_count,
+            rebalance_count=rebalance_count,
+            include_daily=include_daily,
+        )
+
+    def _get_prices(self, date: str, field: str = "close") -> dict:
+        """获取指定日期所有股票的价格字段。"""
         mask = (self.daily["trade_date"] == date)
-        d = self.daily.loc[mask, ["ts_code", "close"]]
-        return dict(zip(d["ts_code"], d["close"]))
+        d = self.daily.loc[mask, ["ts_code", field]]
+        return dict(zip(d["ts_code"], d[field]))
 
     def _check_halt(self, date: str) -> bool:
         """检查是否触发HALT (与现有系统相同的逻辑)"""
@@ -469,131 +682,10 @@ class Backtest:
         return "BEAR"
 
     def _score_universe(self, date: str) -> list:
-        """对全市场评分，返回 [(ts_code, score), ...] 降序"""
-        cfg = self.cfg
-        date_idx = self.trade_dates.index(date) if date in self.trade_dates else -1
-        if date_idx < 0:
-            return []
-
-        scores = []
-        for code, data in self._stock_data.items():
-            # 必须有当日数据
-            if date not in data.index:
-                continue
-
-            row = data.loc[date]
-
-            # 基本过滤
-            close = row["close"]
-            if pd.isna(close) or close < cfg.min_price:
-                continue
-
-            # 上市天数
-            info = self._basic_map.get(code)
-            if info is not None:
-                name = str(info.get("name", ""))
-                if "ST" in name.upper():
-                    continue
-                list_date = str(info.get("list_date", ""))
-                if list_date and len(list_date) >= 8:
-                    try:
-                        from datetime import datetime
-                        ld = datetime.strptime(list_date[:8], "%Y%m%d")
-                        cd = datetime.strptime(date, "%Y%m%d")
-                        if (cd - ld).days < cfg.min_list_days:
-                            continue
-                    except:
-                        pass
-
-            # 获取历史数据
-            hist = data[data.index <= date]
-            if len(hist) < max(cfg.momentum_days[0], 60) + 5:
-                continue
-
-            # 成交额过滤
-            recent_20 = hist.tail(20)
-            avg_amount = recent_20["amount"].mean() * 1000
-            if avg_amount < cfg.min_amount_20d:
-                continue
-
-            # 涨停不买
-            if row["pct_chg"] >= 9.5:
-                continue
-
-            closes = hist["close"].values.astype(float)
-
-            # ── 动量/反转因子 ──
-            mom_score = 0.0
-            if cfg.use_reversal_factor:
-                # 反转因子：过去N日跌幅越大 → 分数越高（买超跌）
-                rev_lb = cfg.reversal_days
-                if len(closes) >= rev_lb + 1:
-                    past_ret = closes[-1] / closes[-(rev_lb + 1)] - 1
-                    mom_score = -past_ret  # 取负：跌得越多分数越高
-                else:
-                    mom_score = np.nan
-            else:
-                for lb, w in zip(cfg.momentum_days, cfg.momentum_weights):
-                    if len(closes) >= lb + 1:
-                        ret = closes[-1] / closes[-(lb + 1)] - 1
-                        mom_score += ret * w
-                    else:
-                        mom_score = np.nan
-                        break
-
-            if np.isnan(mom_score):
-                continue
-
-            # 减去短期收益 (跳空过滤，仅用于非反转模式)
-            if not cfg.use_reversal_factor and cfg.subtract_short_momentum and len(closes) >= cfg.short_momentum_days + 1:
-                short_ret = closes[-1] / closes[-(cfg.short_momentum_days + 1)] - 1
-                mom_score -= short_ret
-
-            final_score = mom_score
-
-            # ── 波动率因子 ──
-            vol_component = 0.0
-            if cfg.use_volatility_factor and len(closes) >= cfg.volatility_days + 1:
-                rets = np.diff(closes[-cfg.volatility_days - 1:]) / closes[-cfg.volatility_days - 1:-1]
-                vol = np.std(rets)
-                if vol > 0:
-                    vol_component = -vol  # 低波动越好
-
-            # ── 小市值因子 ──
-            size_component = 0.0
-            if cfg.use_size_factor:
-                circ_mv = row.get("circ_mv", None)
-                if circ_mv and not pd.isna(circ_mv) and circ_mv > 0:
-                    size_component = -np.log(circ_mv)  # 小市值越好
-
-            scores.append((code, mom_score, vol_component, size_component))
-
-        if not scores:
-            return []
-
-        # 转为排名合成
-        df = pd.DataFrame(scores, columns=["code", "mom", "vol", "size"])
-
-        # 分因子排名 (升序 → 高分排名靠前)
-        df["mom_rank"] = df["mom"].rank(ascending=False)
-        df["vol_rank"] = df["vol"].rank(ascending=False)  # vol越小(越负)越好
-        df["size_rank"] = df["size"].rank(ascending=False)  # size越负(越小)越好
-
-        # 合成评分 (排名越小越好)
-        mom_weight = cfg.reversal_weight if cfg.use_reversal_factor else 1.0
-        vol_w = cfg.volatility_weight if cfg.use_volatility_factor else 0
-        size_w = cfg.size_weight if cfg.use_size_factor else 0
-        total_w = mom_weight + vol_w + size_w
-
-        df["composite_rank"] = (
-            (mom_weight / total_w) * df["mom_rank"] +
-            (vol_w / total_w) * df["vol_rank"] +
-            (size_w / total_w) * df["size_rank"]
-        )
-
-        df = df.sort_values("composite_rank").reset_index(drop=True)
-
-        return list(zip(df["code"], df["composite_rank"]))
+        """对全市场评分，返回 [(ts_code, score), ...]，分数越小越好。"""
+        universe_map = getattr(self, "_universe_codes_by_date", None)
+        allowed_codes = universe_map.get(date) if isinstance(universe_map, dict) else None
+        return score_universe(self._stock_data, self._basic_map, self.cfg, date, allowed_codes=allowed_codes)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -612,6 +704,11 @@ def get_strategies():
         volatility_weight=0.25,
         use_size_factor=True,
         size_weight=0.2,
+        use_angle_trend_factor=True,
+        angle_trend_days=10,
+        angle_trend_weight=0.15,
+        angle_trend_slope_weight=0.6,
+        angle_trend_persistence_weight=0.4,
         top_n=15,
         hold_buffer_ratio=1.5,
         max_single_weight=0.08,

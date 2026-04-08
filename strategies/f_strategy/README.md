@@ -42,6 +42,7 @@
 - 主因子：`60` 日动量
 - 辅因子：`60` 日低波动
 - 辅因子：小市值偏好
+- 新增因子：`MA20` 角度趋势增强
 
 策略不是直接把原始值硬加总，而是：
 - 先对每个因子分别做排名
@@ -52,6 +53,55 @@
 - 动量：`1.0`
 - 低波：`0.25`
 - 小市值：`0.2`
+- 角度趋势：`0.15`
+
+### 1.1 `MA20` 角度趋势因子
+
+这个新因子不是简单看 `ma20_angle_deg >= 0`，而是量化：
+
+- 最近一段时间 `MA20` 角度变化的**斜率**
+- 最近一段时间 `MA20` 角度继续改善的**持续性**
+
+当前默认口径：
+
+- 窗口：最近 `10` 个交易日
+- 斜率：对最近 `10` 日 `ma20_angle_deg` 做线性回归，取回归斜率
+- 持续性：`50% * 角度为正的比例 + 50% * 日度角度继续上升的比例`
+- 因子得分：`0.6 * tanh(slope / 1.5) + 0.4 * (2 * persistence - 1)`
+
+含义：
+
+- 斜率高，代表 `MA20` 角度在持续抬升
+- 持续性高，代表这不是单日跳变，而是一个更平滑、更连续的改善过程
+- 这个因子只参与**排序加分**，不替代原本的 `strength_transition_coef >= -0.1` 买入门槛
+
+### 1.2 最近 `100` 个交易日 PIT 验证
+
+这个新因子已经做过一轮短窗 `PIT` 对照验证，窗口是：
+
+- `2025-10-29` 到 `2026-03-27`
+
+结果文件：
+
+- [/Users/wuhan/project/stock_agent/new/backtest/strategy_f_recent_100d_pit_angle_trend_compare.json](/Users/wuhan/project/stock_agent/new/backtest/strategy_f_recent_100d_pit_angle_trend_compare.json)
+
+对照结果：
+
+- 含角度趋势因子：
+  - 总收益 `27.06%`
+  - 年化 `82.84%`
+  - 夏普 `2.48`
+  - 最大回撤 `-15.77%`
+  - 相对基准超额 `29.61%`
+- 不含角度趋势因子：
+  - 总收益 `1.36%`
+  - 年化 `3.47%`
+  - 夏普 `0.10`
+  - 最大回撤 `-16.51%`
+  - 相对基准超额 `3.92%`
+
+这说明在最近 `100` 个交易日的 `PIT` 口径下，角度趋势因子有明显增益。
+但这仍然只是短窗口验证，不能替代完整 `PIT 5y` 结论。
 
 ### 2. 股票过滤
 
@@ -132,6 +182,11 @@ strength_transition_coef =
 - `volatility_weight = 0.25`
 - `use_size_factor = true`
 - `size_weight = 0.2`
+- `use_angle_trend_factor = true`
+- `angle_trend_days = 10`
+- `angle_trend_weight = 0.15`
+- `angle_trend_slope_weight = 0.6`
+- `angle_trend_persistence_weight = 0.4`
 - `top_n = 15`
 - `hold_buffer_ratio = 1.5`
 - `max_single_weight = 0.08`
@@ -166,6 +221,34 @@ cd /Users/wuhan/project/stock_agent/new
 python3 strategies/f_strategy/run_backtest.py
 ```
 
+按更接近实盘的口径回测：
+
+```bash
+cd /Users/wuhan/project/stock_agent/new
+python3 strategies/f_strategy/run_backtest.py --execution-mode next_open
+```
+
+按历史指数成分做 PIT 过滤：
+
+```bash
+cd /Users/wuhan/project/stock_agent/new
+python3 strategies/f_strategy/run_backtest.py --use-pit-constituents
+```
+
+做 train/test 分割：
+
+```bash
+cd /Users/wuhan/project/stock_agent/new
+python3 strategies/f_strategy/run_backtest.py --train-end 20241231 --test-start 20250102
+```
+
+做 walk-forward：
+
+```bash
+cd /Users/wuhan/project/stock_agent/new
+python3 strategies/f_strategy/run_backtest.py --walk-forward
+```
+
 跑旧版 `MA20` 角度门槛：
 
 ```bash
@@ -182,6 +265,7 @@ python3 strategies/f_strategy/run_daily_signal.py --test-notify
 python3 strategies/f_strategy/run_daily_signal.py --status
 python3 strategies/f_strategy/run_daily_signal.py
 python3 strategies/f_strategy/run_daily_signal.py --date 20260327
+python3 strategies/f_strategy/run_daily_signal.py --force
 python3 strategies/f_strategy/run_daily_signal.py --confirm 20260327
 ```
 
@@ -196,11 +280,35 @@ F 独立持仓文件：
 
 说明：
 - `run_daily_signal.py` 现在会输出 `f_signal_YYYYMMDD.json` 和 `latest_f_signal.json`
+- 同一交易日若信号文件已存在，默认跳过重复生成；加 `--force` 才会覆盖并重新提醒
 - 若配置了企业微信 webhook，默认会推送“手动执行提醒”，直接给出买卖清单和确认命令
 - 若配置了 `TUSHARE_TOKEN`，默认会先把本地 `5y` 样本增量补到最新可用交易日，再生成信号
+- 出信号前会做运行时数据校验；失败会写入 `data/signals/error_log.json` 并拒绝发单
 - `--confirm` 会自动读取 F 信号并回写到 F 独立持仓文件
+- 同一 `signal_id` 只会被确认一次，重复执行 `--confirm` 不会重复记账
 - `--test-notify` 可先测试企业微信是否能收到消息
 - 默认会拒绝使用超过 `3` 天未更新的样本做“默认最新日”信号；离线复盘可显式加 `--date`、`--allow-stale-data`，或 `--disable-live-update`
+
+回测补充说明：
+- `run_backtest.py` 现已支持 `--execution-mode next_open`
+- `run_backtest.py` 现已支持 `--train-end / --test-start / --walk-forward`
+- `--use-pit-constituents` 会按历史 `index_weight` 快照过滤每个交易日的可选股票
+- 但当前本地 `csi1000_5y` bundle 仍只有 1000 只样本股，未覆盖历史退样/退市股票，所以 PIT 目前只消除了“历史成分过滤缺失”，还没有完全消除幸存者偏差
+
+PIT 历史样本扩容：
+
+```bash
+cd /Users/wuhan/project/stock_agent/new
+python3 scripts/build_csi1000_5y_pit_bundle.py
+python3 strategies/f_strategy/run_backtest.py --dataset csi1000_5y_pit --use-pit-constituents
+```
+
+说明：
+- `build_csi1000_5y_pit_bundle.py` 会拉取 `000852.SH` 历史 `index_weight`，把 5 年内曾经属于 CSI1000 的股票并入新 bundle
+- 输出目录默认是 [/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y_pit](/Users/wuhan/project/stock_agent/new/data_exports/tushare_20210329_20260327_csi1000_5y_pit)
+- 新 dataset key 是 `csi1000_5y_pit`
+- 即使换成 PIT bundle，回测时仍建议保留 `--use-pit-constituents`，因为 bundle 包含的是“历史上曾经入选过的全集”，而不是“每天只保留当日成分股”
+- 这版 PIT bundle 优先保证 F 主策略可跑：核心日线、`daily_basic`、`adj_factor`、趋势指数和技术特征齐全；行业/主题/HFSF 等扩展字段会尽量从旧 bundle 继承，历史新增股票没有旧映射时会留空
 
 ### 企业微信半自动实盘
 
