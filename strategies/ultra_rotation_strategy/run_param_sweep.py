@@ -233,6 +233,7 @@ def main():
     suffix = f"_{args.dataset}"
     if args.use_pit_constituents:
         suffix += "_pit"
+    suffix += f"_{args.sweep}"
     out_path = PROJECT_ROOT / "backtest" / f"strategy_ultra_rotation_param_sweep{suffix}.json"
     out_path.write_text(
         json.dumps(all_results, ensure_ascii=False, indent=2),

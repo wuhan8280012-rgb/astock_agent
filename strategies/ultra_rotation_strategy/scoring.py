@@ -239,10 +239,11 @@ def score_universe_ultra(
         if pd.notna(rs_val):
             industry_rs = float(rs_val)
         else:
+            # Use excess return (difference) to avoid division-by-near-zero instability
             ind_ret = row.get("sw_l1_ret20", np.nan)
             mkt_ret = row.get("market_ret20", np.nan)
-            if pd.notna(ind_ret) and pd.notna(mkt_ret) and abs(float(mkt_ret)) > 1e-12:
-                industry_rs = float(ind_ret) / float(mkt_ret)
+            if pd.notna(ind_ret) and pd.notna(mkt_ret):
+                industry_rs = float(ind_ret) - float(mkt_ret)
 
         records.append({
             "code": code,
