@@ -52,17 +52,65 @@
 - **流动性门槛**: 20d 均成交额 >= 1.5 亿
 - **缓冲带**: 持仓窗口 1.3×top_n = 13 只，减少因排名微小波动的换手
 
-## 使用方法
+## 回测模式
+
+### 1. 全量回测 (默认)
 
 ```bash
-# 默认 (static 5y 数据)
+# Static 5y 数据
 python strategies/ultra_rotation_strategy/run_backtest.py
 
-# PIT 数据 (真实历史成分股，消除幸存者偏差)
+# PIT 数据 (消除幸存者偏差)
 python strategies/ultra_rotation_strategy/run_backtest.py \
-    --dataset csi1000_5y_pit \
-    --use-pit-constituents
+    --dataset csi1000_5y_pit --use-pit-constituents
+```
 
+### 2. Train/Test 分段回测
+
+将回测区间分为训练期和测试期，验证样本外表现：
+
+```bash
+python strategies/ultra_rotation_strategy/run_backtest.py \
+    --dataset csi1000_5y_pit --use-pit-constituents \
+    --train-end 20240401 --test-start 20240401
+```
+
+### 3. Walk-Forward 滚动分析
+
+滚动训练/测试窗口，评估策略稳定性：
+
+```bash
+# 默认: 3年训练 + 1年测试
+python strategies/ultra_rotation_strategy/run_backtest.py \
+    --dataset csi1000_5y_pit --use-pit-constituents \
+    --walk-forward
+
+# 自定义窗口
+python strategies/ultra_rotation_strategy/run_backtest.py \
+    --walk-forward --wf-train-days 504 --wf-test-days 126 --wf-step-days 63
+```
+
+### 4. 最近 N 日回测
+
+只回测最近 N 个交易日，快速验证近期表现：
+
+```bash
+python strategies/ultra_rotation_strategy/run_backtest.py \
+    --dataset csi1000_5y_pit --use-pit-constituents \
+    --recent-days 100
+```
+
+### 5. Static vs PIT A/B 对比
+
+同一参数下对比静态样本和 PIT 历史成分股样本，量化幸存者偏差：
+
+```bash
+python strategies/ultra_rotation_strategy/run_backtest.py --compare-pit
+```
+
+### 参数调优
+
+```bash
 # 调整因子权重
 python strategies/ultra_rotation_strategy/run_backtest.py \
     --w-momentum 0.30 --w-accel 0.20 --w-volume 0.15 \
@@ -71,6 +119,10 @@ python strategies/ultra_rotation_strategy/run_backtest.py \
 # 调整组合参数
 python strategies/ultra_rotation_strategy/run_backtest.py \
     --top-n 8 --rebalance-interval 3 --stop-loss-pct -0.08
+
+# 参数扫描实验 (因子权重 × 组合参数 × 止损)
+python strategies/ultra_rotation_strategy/run_param_sweep.py \
+    --dataset csi1000_5y_pit --use-pit-constituents --sweep all
 ```
 
 ## 交易成本模型
@@ -88,7 +140,33 @@ python strategies/ultra_rotation_strategy/run_backtest.py \
 strategies/ultra_rotation_strategy/
 ├── __init__.py
 ├── scoring.py             # 6-factor scoring engine
-├── run_backtest.py        # CLI entry point
+├── run_backtest.py        # Comprehensive CLI backtest (5 modes)
+├── run_param_sweep.py     # Parameter sweep experiments
 ├── strategy_config.json   # Default configuration
 └── README.md              # This file
 ```
+
+## CLI 参数一览
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--dataset` | `csi1000_5y` | 数据集 (`csi1000_5y` / `csi1000_5y_pit`) |
+| `--use-pit-constituents` | off | 启用 PIT 历史成分股过滤 |
+| `--execution-mode` | `same_close` | 执行模式 (`same_close` / `next_open`) |
+| `--w-momentum` | 0.25 | 多时间框架动量权重 |
+| `--w-accel` | 0.20 | 动量加速度权重 |
+| `--w-volume` | 0.15 | 量能突破权重 |
+| `--w-lowvol` | 0.15 | 低波动率权重 |
+| `--w-angle` | 0.15 | MA20 角度趋势权重 |
+| `--w-industry` | 0.10 | 行业相对强度权重 |
+| `--top-n` | 10 | 目标持仓数量 |
+| `--rebalance-interval` | 5 | 调仓间隔 (交易日) |
+| `--stop-loss-pct` | -0.10 | 个股止损阈值 |
+| `--max-single-weight` | 0.12 | 最大单只权重 |
+| `--train-end` | — | 训练期结束日期 (YYYYMMDD) |
+| `--test-start` | — | 测试期开始日期 (YYYYMMDD) |
+| `--walk-forward` | off | 启用 walk-forward 分析 |
+| `--wf-train-days` | 756 | WF 训练窗口 (交易日) |
+| `--wf-test-days` | 252 | WF 测试窗口 (交易日) |
+| `--recent-days` | — | 最近 N 日回测 |
+| `--compare-pit` | off | Static vs PIT A/B 对比 |
